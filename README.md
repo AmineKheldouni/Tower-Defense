@@ -2,5 +2,5 @@
 Python project
 
 
-Ceci est la modification de Victor Marchais
-Yonatan Deloro
+Projet de groupe sur le jeu Tower Defense développé en Python selon le module
+pygame.
