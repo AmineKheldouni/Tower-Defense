@@ -16,6 +16,14 @@ fenetre.blit(fond, (0,0))
 perso = pygame.image.load("images/tower.png").convert_alpha()
 fenetre.blit(perso, (200,300))
 
+
+
+#Chargement place de construction
+place_construction = pygame.image.load("images/tourelle2.png").convert_alpha()
+pos_place_construction = place_construction.get_rect()
+fenetre.blit(place_construction, pos_place_construction)
+
+
 #Rafraîchissement de l'écran
 pygame.display.flip()
 
@@ -25,6 +33,8 @@ continuer = 1
 while continuer:
 	for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 		if event.type == MOUSEBUTTONDOWN and event.button == 1:
-			print("Zone dangereuse")
+			pos_mouse = event.pos
+			print pos_mouse
+			pos_place_construction.move(pos_mouse[0], pos_mouse[1])
 		if event.type == QUIT:     #Si un de ces événements est de type QUIT
 			continuer = 0      #On arrête la boucle
