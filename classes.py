@@ -28,11 +28,13 @@ class Carte:
 
 
 class Base:
-	def __init__(self, hp = 1, cout_entretien, cout_amelioration, position):
+	def __init__(self, hp = 1, utilisateur, cout_entretien,\
+	 cout_amelioration, position):
 		self._vie = hp
 		self._cout_entretien = cout_entretien
 		self._cout_amelioration = cout_amelioration
 		self._position = position
+		self._utilisateur = utilisateur
 @property
 	def vie(self):
 		return self._vie
@@ -45,8 +47,10 @@ class Base:
 		return False
 
 	def ameliorer(self):
-
-
+		if self._utilisateur.argent >= self._cout_entretien:
+			self._vie += 1
+			self._utilisateur.argent -= self._cout_entretien
+			self._cout_entretien += 1 # = liste_entretien_base[id_entretien+1] => Creer une liste de couts d'entretiens sur un Excel, pour augmenter le cout d'entretien.
 class Affichage_fenetre:
 	def __init__(self, carte):
 		self._liste_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
