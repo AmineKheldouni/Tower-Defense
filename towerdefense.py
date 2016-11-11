@@ -9,17 +9,17 @@ pygame.init()
 fenetre = pygame.display.set_mode((640, 480))
 
 #Chargement et collage du fond
-fond = pygame.image.load("images/background2.jpg").convert()
+fond = pygame.image.load("images/interface/background2.jpg").convert()
 fenetre.blit(fond, (0,0))
 
 #Chargement et collage du personnage
-perso = pygame.image.load("images/tower.png").convert_alpha()
+perso = pygame.image.load("images/tours/tour2.png").convert_alpha()
 fenetre.blit(perso, (200,300))
 
 
 
 #Chargement place de construction
-place_construction = pygame.image.load("images/tourelle2.png").convert_alpha()
+place_construction = pygame.image.load("images/tours/tour1.png").convert_alpha()
 pos_place_construction = place_construction.get_rect()
 fenetre.blit(place_construction, pos_place_construction)
 
