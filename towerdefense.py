@@ -5,13 +5,13 @@ from pygame.locals import *
 
 pygame.init()
 hauteur = 480
-largeur = 640
-nb_cases_h = 20
-nb_cases_l = 20
-pas_largeur = largeur/nb_cases_l
-pas_hauteur = hauteur/nb_cases_h
+largeur = 630
+pas_l = 30
+pas_h = 30
+nb_cases_h = hauteur/pas_h
+nb_cases_l = largeur/pas_l
 #Ouverture de la fenêtre Pygame
-fenetre = pygame.display.set_mode((640, 480))
+fenetre = pygame.display.set_mode((630, 480))
 
 #Chargement et collage du fond
 fond = pygame.image.load("images/interface/background2.jpg").convert()
@@ -28,10 +28,8 @@ for i in range(0, nb_cases_l):
 	fenetre.blit(route, (i*largeur/nb_cases_l, hauteur/nb_cases_h*(nb_cases_h//2)))
 
 
-base = pygame.image.load("images/interface/base.png").convert_alpha()
+base = pygame.image.load("images/interface/arbre.png").convert_alpha()
 fenetre.blit(base, ((nb_cases_l-1)*largeur/nb_cases_l, hauteur/nb_cases_h*(nb_cases_h//2)))
-
-
 
 #Chargement place de construction
 place_construction = pygame.image.load("images/tours/tour1.png").convert_alpha()
