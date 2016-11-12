@@ -4,7 +4,12 @@ import pygame
 from pygame.locals import *
 
 pygame.init()
-
+hauteur = 480
+largeur = 640
+nb_cases_h = 20
+nb_cases_l = 20
+pas_largeur = largeur/nb_cases_l
+pas_hauteur = hauteur/nb_cases_h
 #Ouverture de la fenêtre Pygame
 fenetre = pygame.display.set_mode((640, 480))
 
@@ -15,6 +20,16 @@ fenetre.blit(fond, (0,0))
 #Chargement et collage du personnage
 perso = pygame.image.load("images/tours/tour2.png").convert_alpha()
 fenetre.blit(perso, (200,300))
+
+
+
+route = pygame.image.load("images/interface/route.jpg").convert_alpha()
+for i in range(0, nb_cases_l):
+	fenetre.blit(route, (i*largeur/nb_cases_l, hauteur/nb_cases_h*(nb_cases_h//2)))
+
+
+base = pygame.image.load("images/interface/base.png").convert_alpha()
+fenetre.blit(base, ((nb_cases_l-1)*largeur/nb_cases_l, hauteur/nb_cases_h*(nb_cases_h//2)))
 
 
 
@@ -35,6 +50,5 @@ while continuer:
 		if event.type == MOUSEBUTTONDOWN and event.button == 1:
 			pos_mouse = event.pos
 			print pos_mouse
-			pos_place_construction.move(pos_mouse[0], pos_mouse[1])
 		if event.type == QUIT:     #Si un de ces événements est de type QUIT
 			continuer = 0      #On arrête la boucle
