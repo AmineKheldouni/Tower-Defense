@@ -115,6 +115,62 @@ class Tour:
 	# A COMPLETER
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
+class Soldat:
+        def __init(self,vie,vitesse,position,degat,valeur_soldat):
+                """
+                les champs position et vitesse sont deux vecteurs de composantes x et y
+                valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine
+                """
+                self._vie=vie
+                self._vitesse=vitesse
+                self._position=position
+                self._degat=degat
+                self._valeur_soldat=valeur_soldat
+
+        @property
+        def vie(self):
+                return self._vie
+        
+        def vitesse(self):
+                return self._vitesse
+        
+        def position(self):
+                return self._position
+        
+        def degat(self):
+                return self._degat
+        
+        def valeur_soldat(self):
+                return self._valeur_soldat
+
+        def miseajourscore(self,joueur):
+                """
+                mise à jour du score du joueur en cas d'élimination du soldat
+                """
+                if(self.vie==0):
+                        joueur._score+=self.valeur_soldat
+
+        def deplacement_soldat(self):
+                """
+                 mise à jour de la position du soldat avec le champs vitesse
+                 """
+                (vx,vy)=self.vitesse
+                self.position[0]+=vx
+                self.position[1]+=vy
+                
+        #A Faire: fonction de gestion du mouvement du soldat en fonction de sa distance à la base et du chemin
+
+
+class Armee:
+        def __init(self,tableau_soldat,position_base):
+                self._taille_effectif=len(tableau)
+                self._liste_soldat=tableau_soldat
+                #position des bases
+                self._position_objectifs=position_base
+        # Faire la gestion du mouvement des troupes
+                
+                
+                
 
 class Joueur:
 	def __init__(self, carte, argent = 50, score = 0):
@@ -195,6 +251,9 @@ class Affichage_fenetre:
 	def affichage_tours(self):
 		for T in self._joueur._liste_tours:
 			self.ajouter_element(self._liste_tours[T._id_tour], T._position)
+
+
+ 
 def main():
 	pygame.init()
 
