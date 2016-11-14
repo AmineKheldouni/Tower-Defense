@@ -126,6 +126,7 @@ class Soldat:
 		self._position = position
 		self._degat = degat
 		self._valeur_soldat = valeur_soldat	# Score du joueur en tuant ce type de soldat
+		self._direction = 0 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 
 	@property
 	def vie(self):
@@ -154,7 +155,6 @@ class Soldat:
 	    tmp_x = self._vitesse[0] + self._position[0]
 	    tmp_y = self._vitesse[1] + self._position[1]
 	    self._position = tmp_x, tmp_y
-	    print self._position
 
 	#A Faire: fonction de gestion du mouvement du soldat en fonction de sa distance à la base et du chemin
 
@@ -166,7 +166,7 @@ class Armee:
 		self._carte = carte
         #position des bases
 		self._position_objectifs=position_base
-		self._voisins = [(10,0), (-10,0), (0, -10), (0, 10)] # FAIRE UN DICTIONNAIRE
+		self._voisins = [(0, 10), (-10,0), (0, -10), (10, 0)] # FAIRE UN DICTIONNAIRE
     # Faire la gestion du mouvement des troupes
 
     def mouvement_troupe(self):
@@ -177,14 +177,13 @@ class Armee:
 		for voisin in self._voisins:
 			if self._carte[pos[0]+voisin[0], pos[1]+voisin[1]] != 4 and self._carte[pos[0]+voisin[0], pos[1]+voisin[1]] != 1:
 				dist_base2 = m.sqrt((pos[0]+voisin[0]-self._position_objectifs[0])**2+(pos[1]+voisin[1]-self._position_objectifs[1])**2)
-				print "dist :", dist_base, dist_base2
 				if dist_base2 <= dist_base:
-					print "voisin : ", voisin
 					meilleur_voisin = voisin
-					print "meilleur voisin actuel : ", meilleur_voisin
 					dist_base = dist_base2
-		print meilleur_voisin
 		for soldat in self._liste_soldat:
+			for i in range(len(self._voisins)):
+				if self._voisins[i][0] == meilleur_voisin[0] and self._voisins[i][1] == meilleur_voisin[1]:
+					soldat._direction = i
 			soldat._vitesse = meilleur_voisin
 			soldat.deplacement_soldat()
 
@@ -212,7 +211,7 @@ class Affichage_fenetre:
 	def __init__(self, carte, joueur):
 		self._liste_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
-		self._liste_soldats = ["images/armee/boss/boss_bas.png"]
+		self._liste_soldats = [["images/armee/boss/boss_bas.png", "images/armee/boss/boss_gauche.png", "images/armee/boss/boss_haut.png", "images/armee/boss/boss_droite.png"]]
 		self._carte = carte
 		self._fenetre = pygame.display.set_mode((self._carte._largeur, self._carte._hauteur))
 		self._nb_decor = [10, 15] # 10 Rochers, 5 Arbres
@@ -303,7 +302,7 @@ class Affichage_fenetre:
 		for b in self._bases:
 			for soldat in armee._liste_soldat:
 				type_soldat = soldat._type_soldat
-				self.ajouter_element(self._liste_soldats[type_soldat], soldat._position)
+				self.ajouter_element(self._liste_soldats[type_soldat][soldat._direction], soldat._position)
 def main():
 	pygame.init()
 
