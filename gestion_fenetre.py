@@ -19,18 +19,28 @@ class Carte:
 		self._largeur = largeur
 		self._nb_cases_h = nb_cases_h
 		self._nb_cases_l = nb_cases_l
-		self._grille = [[5 for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)] # 5 = Case libre (verdure)
+		self._grille = [["herbe" for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)] # 5 = Case libre (verdure)
 		self._carte_couts = [10000]
 		self._liste_construction = []
 		self._liste_chemin = []
-		self._liste_tour = []
 		self._liste_bases = [((nb_cases_l-1)*largeur/nb_cases_l, hauteur/nb_cases_h*(nb_cases_h//2))]
 		self._liste_decor = []
 
 	@property
 	def carte_couts(self):
 		return self._carte_couts
-
+	@property
+	def largeur(self):
+		return self._largeur
+	@property
+	def hauteur(self):
+		return self._hauteur
+	@property
+	def nb_cases_h(self):
+		return self._nb_cases_h
+	@property
+	def nb_cases_l(self):
+		return self._nb_cases_l
 	def __contains__(self, position):
 	    lig, col = position
 	    return (lig >= 0) and (lig < self._nb_cases_l) and (col >= 0) \
@@ -50,29 +60,34 @@ class Carte:
 		""" Retourne les coordonnées de la case de l'objet """
 		for i in range(0, self._nb_cases_l):
 			for j in range(0, self._nb_cases_h):
-				if objet_position[0]-i*self._largeur/self._nb_cases_l >=0 and \
-				objet_position[0]-i*self._largeur/self._nb_cases_l < self._largeur/self._nb_cases_l \
-				and objet_position[1]-j*self._hauteur/self._nb_cases_h >=0 and \
-				objet_position[1]-j*self._hauteur/self._nb_cases_h < self._hauteur/self._nb_cases_h:
+				if objet_position[0]-i*self.largeur/self.nb_cases_l >=0 and \
+				objet_position[0]-i*self.largeur/self.nb_cases_l < self.largeur/self.nb_cases_l \
+				and objet_position[1]-j*self.hauteur/self.nb_cases_h >=0 and \
+				objet_position[1]-j*self.hauteur/self.nb_cases_h < self.hauteur/self.nb_cases_h:
 					return i, j
+	def positionner_objet(self, pos_case):
+		return pos_case[0]*self.largeur/self.nb_cases_l, pos_case[1]*self.hauteur/self.nb_cases_h
 
 	def case_construction(self, i, j):
 		self._liste_construction.append((i, j))
-		self._grille[i, j] = 2
-
+		self._grille[i, j] = "place construction"
 
 	def case_chemin(self, i, j):
 		self._liste_chemin.append((i, j))
-		self._grille[i, j] = 0 # La case est un chemin
+		self._grille[i, j] = "chemin" # La case est un chemin
 
-	def case_chemin(self, i, j):
-		self._liste_tour.append((i, j))
-		self._grille[i, j] = 3 # La case est une tour
+	def case_tour(self, i, j):
+		self._grille[i, j] = "tour" # La case est une tour
 
 	def case_decor(self, i, j):
 		self._liste_decor.append((i, j))
-		self._grille[i, j] = 4 # La case est un rocher/arbre
+		self._grille[i, j] = "decor" # La case est un rocher/arbre
+	def case_base(self, i, j):
+		self._liste_bases.append((i, j))
+		self._grille[i, j] = "base" # La case est un rocher/arbre
 
+	def case_utilisateur(self, i, j):
+		self._grille[i, j] = "utilisateur" # La case est un rocher/arbre
 
 class Base:
 	def __init__(self, position, carte, cout_entretien=100,\
@@ -82,11 +97,12 @@ class Base:
 		self._cout_entretien = cout_entretien
 		self._cout_amelioration = cout_amelioration
 		self._position = position
-		self._carte[position] = 6 # 6 = base
+		self._carte[position] = "base" # 6 = base
 
 	@property
 	def vie(self):
 		return self._vie
+	@property
 	def position(self):
 		return self._position
 
