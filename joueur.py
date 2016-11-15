@@ -27,5 +27,18 @@ class Joueur:
 					self._liste_tours.append(T)
 					self._argent -= T._cout_construction
 					self._carte[pos_x, pos_y] = "tour"
+					if pos_y>0:
+						self._carte[pos_x, pos_y-1] = "tour"
 				else:
 					print "Vous n'avez pas suffisamment d'argent."
+	def affichage_portee(self, fenetre):
+		pos = pygame.mouse.get_pos()
+		pos_case = self.carte.objet_dans_case(pos)
+		if self._carte[pos_case] == "tour" :
+			tmp = self._carte.objet_dans_case(pos)
+			pos = self._carte.positionner_objet(tmp)
+			for T in self._liste_tours:
+				if T._position == pos:
+					pos = self._carte.positionner_objet((tmp[0]+0.5, tmp[1]+0.5))
+					print pos
+					pygame.draw.circle(fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), 100, 2) # 100 = PORTEE TOUR

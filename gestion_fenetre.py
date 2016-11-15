@@ -66,8 +66,10 @@ class Carte:
 				objet_position[1]-j*self.hauteur/self.nb_cases_h < self.hauteur/self.nb_cases_h:
 					return i, j
 	def positionner_objet(self, pos_case):
-		return pos_case[0]*self.largeur/self.nb_cases_l, pos_case[1]*self.hauteur/self.nb_cases_h
+		return (pos_case[0]*self.largeur/self.nb_cases_l, pos_case[1]*self.hauteur/self.nb_cases_h)
 
+	def centre_case(self, (i, j)):
+		return (int((i+0.5)*self.largeur/self.nb_cases_l), int((j+0.5)*self.hauteur/self.nb_cases_h))
 	def case_construction(self, i, j):
 		self._liste_construction.append((i, j))
 		self._grille[i, j] = "place construction"
