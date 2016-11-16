@@ -12,8 +12,8 @@ def main():
 	F = Affichage_fenetre(J)
 	pos_source = (C.nb_cases_l//5, C.nb_cases_h-1)
 	pos_source = C.positionner_objet(pos_source)
-	S = Soldat(pos_source)
-	A = Armee([S], (19*C._largeur/20, 8*C._hauteur/16), F._joueur)
+	S = Soldat(pos_source, F._joueur, (C.nb_cases_l//2, 0))
+	A = Armee([S], F._joueur)
 	continuer = 1
 	#Chargement et collage du fond
 	F.affichage_statique()
@@ -31,9 +31,9 @@ def main():
 		F.affichage_chemin()
 		F._joueur.affichage_portee(F._fenetre)
 		F.affichage_armee(A)
-		F.affichage_decor()
 		F.affichage_tours()
-		if (temps % 1 == 0):
+		F.affichage_decor()
+		if (temps % 2 == 0):
 			A.mouvement_troupe()
 		for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 

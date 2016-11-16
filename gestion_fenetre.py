@@ -10,8 +10,8 @@ import copy
 import sys
 import numpy as np
 import math as m
-
-
+import copy
+import numpy.random as rd
 class Carte:
 	def __init__(self, hauteur=800, largeur=1000, nb_cases_h = 16, \
 	nb_cases_l = 20):
@@ -25,7 +25,6 @@ class Carte:
 		self._liste_chemin = []
 		self._liste_bases = [((nb_cases_l-1)*largeur/nb_cases_l, hauteur/nb_cases_h*(nb_cases_h//2))]
 		self._liste_decor = []
-
 	@property
 	def carte_couts(self):
 		return self._carte_couts
@@ -56,17 +55,17 @@ class Carte:
 	    if position in self:
 	        self._grille[lig][col] = valeur
 
+
 	def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnées de la case de l'objet """
-		for i in range(0, self._nb_cases_l):
-			for j in range(0, self._nb_cases_h):
-				if objet_position[0]-i*self.largeur/self.nb_cases_l >=0 and \
-				objet_position[0]-i*self.largeur/self.nb_cases_l < self.largeur/self.nb_cases_l \
-				and objet_position[1]-j*self.hauteur/self.nb_cases_h >=0 and \
-				objet_position[1]-j*self.hauteur/self.nb_cases_h < self.hauteur/self.nb_cases_h:
-					return i, j
+		pas_l = int(self.largeur/self.nb_cases_l)
+		pas_h = int(self.hauteur/self.nb_cases_h)
+		return (objet_position[0]//pas_l, objet_position[1]//pas_h)
+
 	def positionner_objet(self, pos_case):
-		return (pos_case[0]*self.largeur/self.nb_cases_l, pos_case[1]*self.hauteur/self.nb_cases_h)
+		a = int(pos_case[0]*self.largeur/self.nb_cases_l)
+		b = int(pos_case[1]*self.hauteur/self.nb_cases_h)
+		return (a, b)
 
 	def case_construction(self, i, j):
 		self._liste_construction.append((i, j))
@@ -97,7 +96,7 @@ class Base:
 		self._cout_entretien = cout_entretien
 		self._cout_amelioration = cout_amelioration
 		self._position = position
-		self._carte[position] = "base" # 6 = base
+		self._carte[position] = "base"
 
 	@property
 	def vie(self):

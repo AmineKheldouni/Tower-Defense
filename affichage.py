@@ -13,7 +13,7 @@ class Affichage_fenetre:
 		self._nb_decor = [5, 5] # 10 Rochers, 5 Arbres
 		self._liste_rochers = []
 		self._liste_arbre = []
-		self._bases = [Base(((self._joueur._carte._nb_cases_l-1)*self._joueur._carte._largeur/self._joueur._carte._nb_cases_l, self._joueur._carte._hauteur/self._joueur._carte._nb_cases_h*(self._joueur._carte._nb_cases_h//2)), self._joueur._carte)]
+		self._bases = [Base((10*self._joueur._carte.largeur/20, 0), self._joueur._carte)]
 		self._places_construction = [(10,10), (15, 10), (3, 2)] # A MODIFIER
 		self._chemin = []
 	@property
@@ -63,7 +63,7 @@ class Affichage_fenetre:
 	def affichage_chemin(self):
 		for position_chemin in self._chemin:
 			pos = self.carte.objet_dans_case(position_chemin)
-			self.ajouter_element("images/interface/route2.jpg", position_chemin)
+			self.ajouter_element("images/interface/route3.png", position_chemin)
 			self._joueur._carte[pos] = "chemin"
 
 	def formation_chemin(self):
@@ -90,6 +90,10 @@ class Affichage_fenetre:
 		self._chemin.append(pos)
 		for i in range(1, self.carte.nb_cases_l-1):
 			pos = (i, self.carte.nb_cases_h//2-2)
+			pos = self.carte.positionner_objet(pos)
+			self._chemin.append(pos)
+		for j in range(1, self.carte.nb_cases_h//2-2):
+			pos = (self.carte.nb_cases_l//2, j)
 			pos = self.carte.positionner_objet(pos)
 			self._chemin.append(pos)
 
