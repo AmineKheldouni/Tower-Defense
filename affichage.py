@@ -7,7 +7,7 @@ class Affichage_fenetre:
 	def __init__(self, joueur):
 		self._listenoms_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
-		self._listenoms_soldats = [[["images/armee/boss/boss_bas.png", "images/armee/boss/boss_bas_pd.png", "images/armee/boss/boss_bas_pg.png"], "images/armee/boss/boss_gauche.png", "images/armee/boss/boss_haut.png", ["images/armee/boss/boss_droite.png", "images/armee/boss/boss_droite_pd.png", "images/armee/boss/boss_droite_pg.png"]]]
+		self._listenoms_soldats = [[["images/armee/boss/boss_bas.png", "images/armee/boss/boss_bas_pd.png", "images/armee/boss/boss_bas_pg.png"], ["images/armee/boss/boss_gauche.png", "images/armee/boss/boss_gauche_pd.png", "images/armee/boss/boss_gauche_pg.png"], ["images/armee/boss/boss_haut.png", "images/armee/boss/boss_haut_pd.png", "images/armee/boss/boss_haut_pg.png"], ["images/armee/boss/boss_droite.png", "images/armee/boss/boss_droite_pd.png", "images/armee/boss/boss_droite_pg.png"]]]
 		self._joueur = joueur
 		self._fenetre = pygame.display.set_mode((self._joueur._carte._largeur, self._joueur._carte._hauteur))
 		self._nb_decor = [5, 5] # 10 Rochers, 5 Arbres
@@ -15,7 +15,7 @@ class Affichage_fenetre:
 		self._liste_arbre = []
 		self._bases = [Base(((self._joueur._carte._nb_cases_l-1)*self._joueur._carte._largeur/self._joueur._carte._nb_cases_l, self._joueur._carte._hauteur/self._joueur._carte._nb_cases_h*(self._joueur._carte._nb_cases_h//2)), self._joueur._carte)]
 		self._places_construction = [(10,10), (15, 10), (3, 2)] # A MODIFIER
-
+		self._chemin = []
 	@property
 	def carte(self):
 		return self._joueur._carte
@@ -40,11 +40,6 @@ class Affichage_fenetre:
 		# Affichage chemin :
 		source = (0, self._joueur._carte._hauteur/2)
 		tmp_case = source
-		chemin = [source]
-		self._joueur._carte[source] = "chemin"
-		for position_chemin in chemin:
-			self.ajouter_element("images/interface/route2.jpg", position_chemin)
-			self._joueur._carte[self._joueur._carte.objet_dans_case(position_chemin)] = "chemin"
 		# Affichage bases :
 		for b in self._bases:
 			self.ajouter_element("images/interface/base.png", b._position)
@@ -64,6 +59,39 @@ class Affichage_fenetre:
 			pos_x, pos_y = self._joueur._carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_arbre.append((pos_x, pos_y))
+
+	def affichage_chemin(self):
+		for position_chemin in self._chemin:
+			pos = self.carte.objet_dans_case(position_chemin)
+			self.ajouter_element("images/interface/route2.jpg", position_chemin)
+			self._joueur._carte[pos] = "chemin"
+
+	def formation_chemin(self):
+		for j in range(self.carte.nb_cases_h//2, self.carte.nb_cases_h):
+			pos = (self.carte.nb_cases_l//5, j)
+			pos2 = (self.carte.nb_cases_l*2//5, j)
+			pos3 = (self.carte.nb_cases_l*3//5, j)
+			pos4 = (self.carte.nb_cases_l*4//5, j)
+			pos = self.carte.positionner_objet(pos)
+			pos2 = self.carte.positionner_objet(pos2)
+			pos3 = self.carte.positionner_objet(pos3)
+			pos4 = self.carte.positionner_objet(pos4)
+			self._chemin.append(pos)
+			self._chemin.append(pos2)
+			self._chemin.append(pos3)
+			self._chemin.append(pos4)
+		for i in range(1, self.carte.nb_cases_l-1):
+			pos = (i, self.carte.nb_cases_h//2)
+			pos = self.carte.positionner_objet(pos)
+			self._chemin.append(pos)
+		pos = self.carte.positionner_objet((1, self.carte.nb_cases_h//2-1))
+		self._chemin.append(pos)
+		pos = self.carte.positionner_objet((self.carte.nb_cases_l-2, self.carte.nb_cases_h//2-1))
+		self._chemin.append(pos)
+		for i in range(1, self.carte.nb_cases_l-1):
+			pos = (i, self.carte.nb_cases_h//2-2)
+			pos = self.carte.positionner_objet(pos)
+			self._chemin.append(pos)
 
 	def affichage_decor(self):
 		for pos in self._liste_rochers:

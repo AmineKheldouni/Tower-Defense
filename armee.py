@@ -65,20 +65,22 @@ class Armee:
 		return self._joueur
 
 	def mouvement_troupe(self):
+		# A MODIFIER
 		assert(self._taille_effectif != 0)
 		pos = self._liste_soldat[0]._position
 		dist_base = m.sqrt((pos[0]-self._position_objectifs[0])**2+(pos[1]-self._position_objectifs[1])**2)
 		meilleur_voisin = (0, 0)
 		for voisin in self._voisins:
-			p_l = self._joueur._carte._nb_cases_l/self._joueur._carte.largeur
-			p_h = self._joueur._carte._nb_cases_h/self._joueur._carte.hauteur
-			if self._joueur._carte[(pos[0]+voisin[0])*p_l, (pos[1]+voisin[1])*p_h] != "decor":
+			nouvelle_position = self._joueur._carte.objet_dans_case(pos)
+			tmp_x, tmp_y = nouvelle_position
+			tmp_x += voisin[0]/10.
+			tmp_y += voisin[1]/10.
+			nouvelle_position = int(tmp_x), int(tmp_y)
+			if self._joueur._carte[nouvelle_position] == "chemin" or self._joueur._carte[nouvelle_position] == "base" :
 				dist_base2 = m.sqrt((pos[0]+voisin[0]-self._position_objectifs[0])**2+(pos[1]+voisin[1]-self._position_objectifs[1])**2)
-			else:
-				dist_base2 = 10000000
-			if dist_base2 <= dist_base:
-				meilleur_voisin = voisin
-				dist_base = dist_base2
+				if dist_base2 <= dist_base:
+					meilleur_voisin = voisin
+					dist_base = dist_base2
 		for soldat in self._liste_soldat:
 			for i in range(len(self._voisins)):
 				if self._voisins[i][0] == meilleur_voisin[0] and self._voisins[i][1] == meilleur_voisin[1]:
