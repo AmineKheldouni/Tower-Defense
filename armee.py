@@ -19,7 +19,7 @@ class Soldat:
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
 		self._joueur = joueur
 		self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
-		self.pas = 10.
+		self.pas = 5.
 		self._voisins = [(0, int(self.pas)), (-int(self.pas),0), (0, -int(self.pas)), (int(self.pas), 0)] # FAIRE UN DICTIONNAIRE
 		self._chemin = []
 		self.liste_voisins = []
@@ -64,7 +64,7 @@ class Soldat:
 			if (self._joueur._carte[case_voisin] == "chemin" or self._joueur._carte[case_voisin] == "base") and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != pos_case:
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
-		print self.liste_voisins, self.liste_vitesses
+
 		for i in range(len(self.liste_voisins)):
 			for j in range(len(self.liste_voisins)):
 				if self.liste_voisins[i][1] == self.liste_voisins[j][1] and i!=j:
@@ -76,10 +76,6 @@ class Soldat:
 					choix_voisin = self.liste_voisins[j], self.liste_vitesses[j]
 		self._direction = self._voisins.index(choix_voisin[1])
 		self._vitesse = choix_voisin[1]
-
-		print self._direction, self._vitesse
-		print self._position, self._joueur._carte.positionner_objet(choix_voisin[0])
-
 		while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
 			self.deplacement_soldat()
 

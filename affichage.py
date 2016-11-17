@@ -28,22 +28,7 @@ class Affichage_fenetre:
 			self._joueur._carte._hauteur/self._joueur._carte._nb_cases_h))
 		else:
 			self._fenetre.blit(element, position)
-	def affichage_pc(self):
-		# Affichage place de construction : A COMPLETER !
-		for pc in self._places_construction:
-			if self._joueur._carte[pc] != "tour":
-				pos_x, pos_y = self._joueur._carte.positionner_objet(pc)
-				self._joueur._carte[pc] = "place construction" # La case devient une place de construction
-				self.ajouter_element("images/interface/place_construction.png", (pos_x, pos_y))
-	def affichage_statique(self):
-		self.ajouter_element("images/interface/background2.jpg", (0, 0))
-		# Affichage chemin :
-		source = (0, self._joueur._carte._hauteur/2)
-		tmp_case = source
-		# Affichage bases :
-		for b in self._bases:
-			self.ajouter_element("images/interface/base.png", b._position)
-			self._joueur._carte[self._joueur._carte.objet_dans_case(b._position)] = "base"
+
 	def genere_decor(self):
 		for i in range(self._nb_decor[0]):
 			tmp1, tmp2 = np.random.randint(self._joueur._carte._nb_cases_l-1), np.random.randint(self._joueur._carte._nb_cases_h-1)
@@ -59,12 +44,6 @@ class Affichage_fenetre:
 			pos_x, pos_y = self._joueur._carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_arbre.append((pos_x, pos_y))
-
-	def affichage_chemin(self):
-		for position_chemin in self._chemin:
-			pos = self.carte.objet_dans_case(position_chemin)
-			self.ajouter_element("images/interface/route3.png", position_chemin)
-			self._joueur._carte[pos] = "chemin"
 
 	def formation_chemin(self):
 		for j in range(self.carte.nb_cases_h//2, self.carte.nb_cases_h):
@@ -96,22 +75,39 @@ class Affichage_fenetre:
 			pos = (self.carte.nb_cases_l//2, j)
 			pos = self.carte.positionner_objet(pos)
 			self._chemin.append(pos)
+	def affichage_terrain(self):
+		self.ajouter_element("images/interface/background2.jpg", (0, 0))
+	def affichage_chemin(self):
+		# Affichage chemin :
+		for position_chemin in self._chemin:
+			pos = self.carte.objet_dans_case(position_chemin)
+			self.ajouter_element("images/interface/route3.png", position_chemin)
+			self._joueur._carte[pos] = "chemin"
 
-	def affichage_decor(self):
+	def affichage_statique(self):
+		# Affichage bases :
+		for b in self._bases:
+			self.ajouter_element("images/interface/base.png", b._position)
+			self._joueur._carte[self._joueur._carte.objet_dans_case(b._position)] = "base"
 		for pos in self._liste_rochers:
 			self.ajouter_element("images/interface/rock.png", pos)
 			self._joueur._carte[self._joueur._carte.objet_dans_case(pos)] = "decor"
+		# Affichage place de construction : A COMPLETER !
+		for pc in self._places_construction:
+			if self._joueur._carte[pc] != "tour":
+				pos_x, pos_y = self._joueur._carte.positionner_objet(pc)
+				self._joueur._carte[pc] = "place construction" # La case devient une place de construction
+				self.ajouter_element("images/interface/place_construction.png", (pos_x, pos_y))
 		for pos in self._liste_arbre:
 			self.ajouter_element("images/interface/arbre.png", pos)
 			self._joueur._carte[self._joueur._carte.objet_dans_case(pos)] = "decor"
-
-	def affichage_tours(self):
 		for T in self._joueur._liste_tours:
 			self.ajouter_element(self._listenoms_tours[T._id_tour], T._position)
 
 	def affichage_armee(self, armee):
 		for b in self._bases:
 			for soldat in armee._liste_soldat:
-				type_soldat = soldat._type_soldat
-				anim_soldat = soldat._animation
-				self.ajouter_element(self._listenoms_soldats[type_soldat][soldat._direction][anim_soldat], soldat._position)
+				if soldat.vie != 0 and soldat._position != b._position:
+					type_soldat = soldat._type_soldat
+					anim_soldat = soldat._animation
+					self.ajouter_element(self._listenoms_soldats[type_soldat][soldat._direction][anim_soldat], soldat._position)

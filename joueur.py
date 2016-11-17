@@ -22,7 +22,7 @@ class Joueur:
 			elif self._carte[pos_x, pos_y] == "place construction":
 				pos_pix = pos_x*self._carte._largeur/self._carte._nb_cases_l\
 				, pos_y*self._carte._hauteur/self._carte._nb_cases_h
-				T = Tour(pos_pix, 1)
+				T = Tour(pos_pix, self)
 				if T._cout_construction <= self._argent:
 					self._liste_tours.append(T)
 					self._argent -= T._cout_construction

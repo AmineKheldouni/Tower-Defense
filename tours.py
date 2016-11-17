@@ -75,8 +75,8 @@ class Projectile:
         self._position = (x,y)
 
 class Tour:
-    def __init__(self, position, projectile,hp = 10, portee = 400, cout_construction=10,
-              cout_entretien=2, cout_amelioration = 50, degat = 1, id_tour=1):
+    def __init__(self, position, joueur, projectile=None, hp = 10, portee = 400, cout_construction=10,
+              cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1):
 
         #projectile en argument ne sert à rien
         self._cout_construction = cout_construction
@@ -85,11 +85,10 @@ class Tour:
         self._position = position
         self._cout_entretien = cout_entretien
         self._projectile = None
-
         self._vie = hp
         self._portee = portee
         self._degat = degat
-
+        self._joueur = joueur
         self._cout_amelioration = cout_amelioration
         #du prochain niveau de tour, pour passer id_tour=2
 
@@ -114,10 +113,10 @@ class Tour:
 
     def attaque(self,armee):
         '''_liste_soldat est le tableau des personnages de Armee'''
-        cible = -1 #indice du soldat de _liste_soldat qui est choisi pour cibles
-        distance_cible = math.inf
-        for indice_soldat,soldat in enumerate(armee._liste_soldat):
-            distance_soldat = (soldat.position[0]-self._position[0])**2 + (soldat.position[1]-self._position[1])**2
+        cible = -1  #indice du soldat de _liste_soldat qui est choisi pour cibles
+        distance_cible = 10000000
+        for indice_soldat, soldat in enumerate(armee._liste_soldat):
+            distance_soldat = m.sqrt((soldat._position[0]-self._position[0])**2 + (soldat._position[1]-self._position[1])**2)
             if distance_soldat < self._portee :
                if distance_soldat < distance_cible:
                    cible = indice_soldat
