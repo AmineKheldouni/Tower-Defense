@@ -38,9 +38,9 @@ du type :
     while notEndgame (armee eliminee ou base detruite) :
         t+=dt
         if t%DT = 0 :
-            on donne la possibilité au joueur de construire/améliorer 
+            on donne la possibilité au joueur de construire/améliorer
             et AFFICHER JEU à chaque opération puis ATTENDRE
-        
+
          sinon il fait que regarder pendant dt :
             attaque(tour)
             bouge(projectile) pour toutes les tours où projectile existe
@@ -58,7 +58,7 @@ class Projectile:
     Il y a donc deux échelles de temps : dt = entre deux affichages du jeu
     et DT = N*dt (ou N à fixer) entre deux affichages du jeu où le joueur peut jouer
     Mieux si variables globales.
-    ''' 
+    '''
 
     def __init__(self, position_Tour, position_Cible):
         global DT
@@ -73,67 +73,67 @@ class Projectile:
         x=self._position[0]+dt*self._vitesse[0]
         y=self._position[1]+dt*self._vitesse[1]
         self._position = (x,y)
-        
+
 class Tour:
-    def __init__(self, position, projectile,hp = 10, portee = 400, cout_construction=10, 
+    def __init__(self, position, projectile,hp = 10, portee = 400, cout_construction=10,
               cout_entretien=2, cout_amelioration = 50, degat = 1, id_tour=1):
-        
+
         #projectile en argument ne sert à rien
-        self._cout_construction = cout_construction  
+        self._cout_construction = cout_construction
 
         self._id_tour = id_tour
         self._position = position
         self._cout_entretien = cout_entretien
         self._projectile = None
-        
+
         self._vie = hp
         self._portee = portee
         self._degat = degat
-        
-        self._cout_amelioration = cout_amelioration  
+
+        self._cout_amelioration = cout_amelioration
         #du prochain niveau de tour, pour passer id_tour=2
-                  
+
 	# A COMPLETER
- 
+
     def vieillit(self):
         #à appeler si le joueur n'a plus d'argent pour l'entretenir
         self._portee /= 2
- 
+
     def ameliore(self):
         #à appeler si le joueur demande une amélioration et a l'argent nécessaire
         #pour le faire
         #Les améliorations peuvent porter sur 3 choses : VIE/PORTEE/DEGAT
         #paramètres d'amélioration à modifier peut-être avec une IA
         self._id_tour += 1
-         
+
         self._vie *= 2
-        self._portee *= 2 
+        self._portee *= 2
         self._degat *= 2
-         
+
         self._cout_amelioration *= 2
-        
+
     def attaque(self,armee):
         '''_liste_soldat est le tableau des personnages de Armee'''
         cible = -1 #indice du soldat de _liste_soldat qui est choisi pour cibles
         distance_cible = math.inf
         for indice_soldat,soldat in enumerate(armee._liste_soldat):
-            distance_soldat = (soldat.position[0]-self._position[0])**2 + (soldat.position[1]-self._position[1])**2 
+            distance_soldat = (soldat.position[0]-self._position[0])**2 + (soldat.position[1]-self._position[1])**2
             if distance_soldat < self._portee :
                if distance_soldat < distance_cible:
                    cible = indice_soldat
                    distance_cible = distance_soldat
-                   
+
         if cible != -1 :
             self._projectile = Projectile(self._position, soldat._position)
             armee._liste_soldat[cible].vie = max(0,armee._liste_soldat[cible].vie-self._degat)
-            
-'''  
+
+'''
 Polymorphisme de tours (pour plus tard)
-#class Tour_de_Base(Tour):       
+#class Tour_de_Base(Tour):
 #class Tour_d_Elite(Tour):
     #ajouter attribut/capacité : 2 attaques en simultannées
     #changer la portée par exemple'''
-    
+
 '''class Tour:
 	def __init__(self, position, projectile,hp = 10, portee = 400, cout_construction=10, \
 	cout_entretien=2, cout_amelioration = 50, id_tour=1):
@@ -149,7 +149,7 @@ Polymorphisme de tours (pour plus tard)
 
 P=Projectile((0,0),(10,10))
 P.bouge()
- 
+
 T=Tour((3,3), P)
 T.vieillit()
 T.ameliore()

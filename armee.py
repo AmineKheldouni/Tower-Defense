@@ -8,7 +8,7 @@ class Soldat:
 	def __init__(self, position, joueur, position_base, rang_soldat=0, vie=10, vitesse=(1,0), degat=3, valeur_soldat=10):
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
-
+		self.pos_init = position_base
 		self._type_soldat = rang_soldat
 		self._vie = vie
 		self._vitesse = vitesse
@@ -19,8 +19,11 @@ class Soldat:
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
 		self._joueur = joueur
 		self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
-		self.pas = 25.
+		self.pas = 10.
 		self._voisins = [(0, int(self.pas)), (-int(self.pas),0), (0, -int(self.pas)), (int(self.pas), 0)] # FAIRE UN DICTIONNAIRE
+		self._chemin = []
+		self.liste_voisins = []
+		self.liste_vitesses = []
 	@property
 	def vie(self):
 		return self._vie
@@ -52,33 +55,36 @@ class Soldat:
 	    if self._animation == 3:
 			self._animation = 0
 
-	def voisins_chemin(self):
-		pos_soldat = self._position
-		case_soldat = self._joueur._carte.objet_dans_case(pos_soldat)
-		liste_voisins_chemin = []
-		liste_distance = []
-		for voisin in self._voisins:
-			tmp_a, tmp_b = int(case_soldat[0]+voisin[0]/self.pas), int(case_soldat[1]+voisin[1]/self.pas)
-			case_voisin = (tmp_a, tmp_b)
-			if self._joueur._carte[case_voisin] == "chemin":
-				liste_voisins_chemin.append(voisin)
-				pos_voisin = self._joueur._carte.positionner_objet(case_voisin)
-				dist_tmp = abs(pos_voisin[0]-self._position_objectifs[0])+abs(pos_voisin[1]-self._position_objectifs[1])
-				liste_distance.append(dist_tmp)
-			print("Liste voisins chemin : ", liste_voisins_chemin)
-			print("Liste distances : ", liste_distance)
-		for i in range(len(liste_voisins_chemin)):
-			if liste_distance[i] == min(liste_distance):
-				return liste_voisins_chemin[i]
-
 	def maj_direction(self):
-		pos_soldat = self._position
-		case_soldat = self._joueur._carte.objet_dans_case(pos_soldat)
-		pos_tmp = self._joueur._carte.positionner_objet(case_soldat)
-		if pos_soldat == pos_tmp:
-			meilleur_voisin = self.voisins_chemin()
-			self._direction = self._voisins.index(meilleur_voisin)
-	#A Faire: fonction de gestion du mouvement du soldat en fonction de sa distance à la base et du chemin
+		pos_case = self._joueur._carte.objet_dans_case(self._position)
+		choix_voisin = None
+		for voisin in self._voisins:
+			tmp_a, tmp_b = int(pos_case[0]+voisin[0]/self.pas), int(pos_case[1]+voisin[1]/self.pas)
+			case_voisin = (tmp_a, tmp_b)
+			if (self._joueur._carte[case_voisin] == "chemin" or self._joueur._carte[case_voisin] == "base") and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != pos_case:
+				self.liste_voisins.append(case_voisin)
+				self.liste_vitesses.append(voisin)
+		print self.liste_voisins, self.liste_vitesses
+		for i in range(len(self.liste_voisins)):
+			for j in range(len(self.liste_voisins)):
+				if self.liste_voisins[i][1] == self.liste_voisins[j][1] and i!=j:
+					p = rd.randint(0, len(self.liste_voisins))
+					choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
+				elif self.liste_voisins[i][1] < self.liste_voisins[j][1]:
+					choix_voisin = self.liste_voisins[i], self.liste_vitesses[i]
+				else:
+					choix_voisin = self.liste_voisins[j], self.liste_vitesses[j]
+		self._direction = self._voisins.index(choix_voisin[1])
+		self._vitesse = choix_voisin[1]
+
+		print self._direction, self._vitesse
+		print self._position, self._joueur._carte.positionner_objet(choix_voisin[0])
+
+		while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
+			self.deplacement_soldat()
+
+
+
 
 
 class Armee:
@@ -94,11 +100,4 @@ class Armee:
 	def mouvement_troupe(self):
 		assert(self._taille_effectif != 0)
 		for soldat in self._liste_soldat:
-			for i in range(4):
-				if soldat._direction == i:
-					soldat._vitesse = soldat._voisins[i]
-					soldat_copy = copy.deepcopy(soldat)
-					soldat_copy.deplacement_soldat()
-					if (self._joueur._carte[self._joueur._carte.objet_dans_case(soldat_copy._position)] == "chemin"):
-						soldat.deplacement_soldat()
 			soldat.maj_direction()
