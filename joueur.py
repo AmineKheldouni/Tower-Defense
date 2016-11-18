@@ -40,4 +40,4 @@ class Joueur:
 			for T in self._liste_tours:
 				if T._position == pos:
 					pos = self._carte.positionner_objet((tmp[0]+0.5, tmp[1]+0.5))
-					pygame.draw.circle(fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), 100, 2) # 100 = PORTEE TOUR
+					pygame.draw.circle(fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee, 2) # 100 = PORTEE TOUR

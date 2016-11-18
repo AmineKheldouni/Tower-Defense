@@ -13,7 +13,11 @@ class Affichage_fenetre:
 		self._nb_decor = [5, 5] # 10 Rochers, 5 Arbres
 		self._liste_rochers = []
 		self._liste_arbre = []
-		self._bases = [Base((10*self._joueur._carte.largeur/20, 0), self._joueur._carte)]
+		self._bases = []
+		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
+		for x in liste_x:
+			pos_base = self._joueur._carte.positionner_objet((x, 0))
+			self._bases.append(Base(pos_base, self._joueur))
 		self._places_construction = [(10,10), (15, 10), (3, 2)] # A MODIFIER
 		self._chemin = []
 	@property
@@ -25,22 +29,22 @@ class Affichage_fenetre:
 		element = pygame.image.load(nom_image).convert_alpha()
 		if "tour" in nom_image or "arbre" in nom_image:
 			self._fenetre.blit(element, (position[0], position[1]-\
-			self._joueur._carte._hauteur/self._joueur._carte._nb_cases_h))
+			self._joueur._carte._hauteur/self._joueur._carte.nb_cases_h))
 		else:
 			self._fenetre.blit(element, position)
 
 	def genere_decor(self):
 		for i in range(self._nb_decor[0]):
-			tmp1, tmp2 = np.random.randint(self._joueur._carte._nb_cases_l-1), np.random.randint(self._joueur._carte._nb_cases_h-1)
+			tmp1, tmp2 = np.random.randint(self._joueur._carte.nb_cases_l-1), np.random.randint(self._joueur._carte.nb_cases_h-1)
 			while self._joueur._carte[tmp1, tmp2] != "herbe":
-				tmp1, tmp2 = np.random.randint(self._joueur._carte._nb_cases_l-1), np.random.randint(self._joueur._carte._nb_cases_h-1)
+				tmp1, tmp2 = np.random.randint(self._joueur._carte.nb_cases_l-1), np.random.randint(self._joueur._carte.nb_cases_h-1)
 			pos_x, pos_y = self._joueur._carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_rochers.append((pos_x, pos_y))
 		for i in range(self._nb_decor[1]):
-			tmp1, tmp2 = np.random.randint(self._joueur._carte._nb_cases_l-1), np.random.randint(self._joueur._carte._nb_cases_h-1)
+			tmp1, tmp2 = np.random.randint(self._joueur._carte.nb_cases_l-1), np.random.randint(self._joueur._carte.nb_cases_h-1)
 			while self._joueur._carte[tmp1, tmp2] != "herbe":
-				tmp1, tmp2 = np.random.randint(self._joueur._carte._nb_cases_l-1), np.random.randint(self._joueur._carte._nb_cases_h-1)
+				tmp1, tmp2 = np.random.randint(self._joueur._carte.nb_cases_l-1), np.random.randint(self._joueur._carte.nb_cases_h-1)
 			pos_x, pos_y = self._joueur._carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_arbre.append((pos_x, pos_y))
@@ -71,12 +75,30 @@ class Affichage_fenetre:
 			pos = (i, self.carte.nb_cases_h//2-2)
 			pos = self.carte.positionner_objet(pos)
 			self._chemin.append(pos)
-		for j in range(1, self.carte.nb_cases_h//2-2):
+		for j in range(1, self.carte.nb_cases_h//2-3):
 			pos = (self.carte.nb_cases_l//2, j)
 			pos = self.carte.positionner_objet(pos)
 			self._chemin.append(pos)
+
+		liste_x = [self.carte.nb_cases_l//10, 2*self.carte.nb_cases_l//5, 3*self.carte.nb_cases_l//5,  4*self.carte.nb_cases_l//5]
+		for x in liste_x:
+			self._chemin.append(self.carte.positionner_objet((x, self.carte.nb_cases_h//2-3)))
+		y = self.carte.nb_cases_h//2-4
+		for x in range(self.carte.nb_cases_l//10, self.carte.nb_cases_l//10+3):
+			self._chemin.append(self.carte.positionner_objet((x, y)))
+		for x in range(2*self.carte.nb_cases_l//5, 3*self.carte.nb_cases_l//5+1):
+			self._chemin.append(self.carte.positionner_objet((x, y)))
+		for x in range(4*self.carte.nb_cases_l//5-1, 4*self.carte.nb_cases_l//5+1):
+			self._chemin.append(self.carte.positionner_objet((x, y)))
+
+		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
+		for x in liste_x:
+			for j in range(0, self.carte.nb_cases_h//2-3):
+				self._chemin.append(self.carte.positionner_objet((x, j)))
+
 	def affichage_terrain(self):
 		self.ajouter_element("images/interface/background2.jpg", (0, 0))
+
 	def affichage_chemin(self):
 		# Affichage chemin :
 		for position_chemin in self._chemin:
@@ -110,4 +132,5 @@ class Affichage_fenetre:
 				if soldat.vie != 0 and soldat._position != b._position:
 					type_soldat = soldat._type_soldat
 					anim_soldat = soldat._animation
+					soldat.arriver_base(self._bases)
 					self.ajouter_element(self._listenoms_soldats[type_soldat][soldat._direction][anim_soldat], soldat._position)

@@ -12,6 +12,8 @@ import numpy as np
 import math as m
 import copy
 import numpy.random as rd
+import time
+
 class Carte:
 	def __init__(self, hauteur=800, largeur=1000, nb_cases_h = 16, \
 	nb_cases_l = 20):
@@ -20,11 +22,6 @@ class Carte:
 		self._nb_cases_h = nb_cases_h
 		self._nb_cases_l = nb_cases_l
 		self._grille = [["herbe" for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)] # 5 = Case libre (verdure)
-		self._carte_couts = [10000]
-		self._liste_construction = []
-		self._liste_chemin = []
-		self._liste_bases = [((nb_cases_l-1)*largeur/nb_cases_l, hauteur/nb_cases_h*(nb_cases_h//2))]
-		self._liste_decor = []
 	@property
 	def carte_couts(self):
 		return self._carte_couts
@@ -89,14 +86,14 @@ class Carte:
 		self._grille[i, j] = "utilisateur" # La case est un rocher/arbre
 
 class Base:
-	def __init__(self, position, carte, cout_entretien=100,\
-	 cout_amelioration=20, hp = 1):
+	def __init__(self, position, joueur, cout_entretien=100,\
+	 cout_amelioration=20, hp = 1000):
 		self._vie = hp
-		self._carte = carte
+		self._joueur = joueur
 		self._cout_entretien = cout_entretien
 		self._cout_amelioration = cout_amelioration
 		self._position = position
-		self._carte[position] = "base"
+		self._joueur._carte[position] = "base"
 
 	@property
 	def vie(self):

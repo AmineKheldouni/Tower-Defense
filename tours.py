@@ -48,7 +48,7 @@ du type :
             AFFICHER LE JEU pendant dt
 '''
 
-class Projectile:
+class Projectile():
     '''
     Yo considère le mouvement de Projectile pour un jeu tout par tour (ie le
     joueur ne fait rien pendant DT et regarde le projectile atteindre sa cible)
@@ -60,22 +60,38 @@ class Projectile:
     Mieux si variables globales.
     '''
 
-    def __init__(self, position_Tour, position_Cible):
+    def __init__(self, position_Tour, position_Cible, id_projectile, joueur):
         global DT
+        self._position_initiale = position_Tour
         self._position = position_Tour
+        self._id = id_projectile
+        self._arrivee = position_Cible
+        self._joueur = joueur
         v_x = (position_Cible[0]-position_Tour[0])//DT
         v_y = (position_Cible[1]-position_Tour[1])//DT
         self._vitesse = (v_x,v_y)
+        self._animation = 10 # Nombre d'étapes d'affichage
 
     def bouge(self):
         global dt
         '''A appeler à chaque pas de temps dt entre t0 et t0 + DT'''
         x=self._position[0]+dt*self._vitesse[0]
         y=self._position[1]+dt*self._vitesse[1]
-        self._position = (x,y)
+        self._position = (x, y)
+
+    def affichage(self, F):
+        projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
+        for k in range(self._animation):
+            F._fenetre.blit(projectile, self._position)
+            pas_x, pas_y = (self._arrivee[0]-self._position_initiale[0])/self._animation, \
+             (self._arrivee[1]-self._position_initiale[1])/self._animation
+            pos_tmp = self._position_initiale[0]+k*pas_x, \
+            self._position_initiale[1]+k*pas_y
+            self._position = pos_tmp
+            case_projectile = self._joueur._carte.objet_dans_case(self._position)
 
 class Tour:
-    def __init__(self, position, joueur, projectile=None, hp = 10, portee = 400, cout_construction=10,
+    def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=10,
               cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1):
 
         #projectile en argument ne sert à rien
@@ -90,6 +106,7 @@ class Tour:
         self._degat = degat
         self._joueur = joueur
         self._cout_amelioration = cout_amelioration
+        self._peut_tirer = 0
         #du prochain niveau de tour, pour passer id_tour=2
 
 	# A COMPLETER
@@ -111,20 +128,27 @@ class Tour:
 
         self._cout_amelioration *= 2
 
-    def attaque(self,armee):
+    def attaque(self, armee, F):
         '''_liste_soldat est le tableau des personnages de Armee'''
         cible = -1  #indice du soldat de _liste_soldat qui est choisi pour cibles
         distance_cible = 10000000
         for indice_soldat, soldat in enumerate(armee._liste_soldat):
-            distance_soldat = m.sqrt((soldat._position[0]-self._position[0])**2 + (soldat._position[1]-self._position[1])**2)
+            pos_case = self._joueur._carte.objet_dans_case(soldat._position)
+            pos_milieu = pos_case[0]+0.5, pos_case[1]+0.5
+            milieu_soldat = self._joueur._carte.positionner_objet(pos_milieu)
+            distance_soldat = m.sqrt((milieu_soldat[0]-self._position[0])**2 + (milieu_soldat[1]-self._position[1])**2)
             if distance_soldat < self._portee :
                if distance_soldat < distance_cible:
                    cible = indice_soldat
                    distance_cible = distance_soldat
-
-        if cible != -1 :
-            self._projectile = Projectile(self._position, soldat._position)
+        if cible != -1 and distance_cible != 10000000 and self._peut_tirer%4 != 0:
+            self._projectile = Projectile(self._position, armee._liste_soldat[cible]._position, 0, self._joueur)
+            self._projectile.affichage(F)
             armee._liste_soldat[cible].vie = max(0,armee._liste_soldat[cible].vie-self._degat)
+            armee.maj_troupe()
+            self._peut_tirer = False
+        elif (self._peut_tirer%4 == 0):
+            self._peut_tirer = True
 
 '''
 Polymorphisme de tours (pour plus tard)
@@ -146,9 +170,10 @@ Polymorphisme de tours (pour plus tard)
 		self._position = position
   # A COMPLETER'''
 
-P=Projectile((0,0),(10,10))
+"""P=Projectile((0,0),(10,10))
 P.bouge()
 
 T=Tour((3,3), P)
 T.vieillit()
 T.ameliore()
+"""
