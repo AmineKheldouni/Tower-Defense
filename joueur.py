@@ -18,7 +18,7 @@ class Joueur:
 			pos_x, pos_y = self._carte.objet_dans_case(event.pos)
 			if self._carte[pos_x, pos_y] == "tour":
 				# PROPOSER AMELIORATION OU REPARATION
-				print "Amélioration ? Réparation ?"
+				print ("Amélioration ? Réparation ?")
 			elif self._carte[pos_x, pos_y] == "place construction":
 				pos_pix = pos_x*self._carte._largeur/self._carte._nb_cases_l\
 				, pos_y*self._carte._hauteur/self._carte._nb_cases_h
@@ -30,7 +30,7 @@ class Joueur:
 					if pos_y>0:
 						self._carte[pos_x, pos_y-1] = "tour"
 				else:
-					print "Vous n'avez pas suffisamment d'argent."
+					print ("Vous n'avez pas suffisamment d'argent.")
 	def affichage_portee(self, fenetre):
 		pos = pygame.mouse.get_pos()
 		pos_case = self.carte.objet_dans_case(pos)

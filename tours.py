@@ -22,7 +22,7 @@ et DT = N*dt (ou N à fixer) entre deux affichages du jeu où le joueur peut agi
 Mieux si variables globales.'''
 
 dt = 1
-DT = 5
+DT = dt*5
 
 '''
 Pour Yo :

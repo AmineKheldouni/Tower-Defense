@@ -47,6 +47,6 @@ while continuer:
 	for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 		if event.type == MOUSEBUTTONDOWN and event.button == 1:
 			pos_mouse = event.pos
-			print pos_mouse
+			print( pos_mouse)
 		if event.type == QUIT:     #Si un de ces événements est de type QUIT
 			continuer = 0      #On arrête la boucle

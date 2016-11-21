@@ -10,6 +10,12 @@ import sys
 import numpy as np
 import math as m
 
+'''
+Contient les classes :
+Cartes
+'''
+
+
 class Carte:
 	def __init__(self, hauteur=800, largeur=1000, nb_cases_h = 16, \
 	nb_cases_l = 20):
@@ -205,7 +211,7 @@ class Joueur:
 						self._argent -= T._cout_construction
 						self._carte[pos_x, pos_y] = 10
 					else:
-						print "Vous n'avez pas suffisamment d'argent."
+						print ("Vous n'avez pas suffisamment d'argent.")
 
 class Affichage_fenetre:
 	def __init__(self, carte, joueur):

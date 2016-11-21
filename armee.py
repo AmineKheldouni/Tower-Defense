@@ -118,12 +118,7 @@ class Soldat:
 			if (self._joueur._carte[case_voisin] == "chemin" or self._joueur._carte[case_voisin] == "base") and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
-		for i in range(len(self.liste_voisins)):
-			for j in range(len(self.liste_voisins)):
-				if len(self.liste_voisins) == 2:
-					p = rd.randint(0, 2)
-					choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
-				else:
+			else:
 					choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
 		if choix_voisin != None:
 			self._direction = self._voisins.index(choix_voisin[1])
