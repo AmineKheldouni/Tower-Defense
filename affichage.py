@@ -5,6 +5,7 @@ from joueur import *
 
 class Affichage_fenetre:
 	def __init__(self, joueur):
+		self.projectile = []
 		self._listenoms_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
 		self._listenoms_soldats = [[["images/armee/boss/boss_bas.png", "images/armee/boss/boss_bas_pd.png", "images/armee/boss/boss_bas_pg.png"], ["images/armee/boss/boss_gauche.png", "images/armee/boss/boss_gauche_pd.png", "images/armee/boss/boss_gauche_pg.png"], ["images/armee/boss/boss_haut.png", "images/armee/boss/boss_haut_pd.png", "images/armee/boss/boss_haut_pg.png"], ["images/armee/boss/boss_droite.png", "images/armee/boss/boss_droite_pd.png", "images/armee/boss/boss_droite_pg.png"]]]
@@ -23,6 +24,7 @@ class Affichage_fenetre:
 	@property
 	def carte(self):
 		return self._joueur._carte
+	@property
 	def joueur(self):
 		return self._joueur
 	def ajouter_element(self, nom_image, position):
@@ -134,3 +136,6 @@ class Affichage_fenetre:
 					anim_soldat = soldat._animation
 					soldat.arriver_base(self._bases)
 					self.ajouter_element(self._listenoms_soldats[type_soldat][soldat._direction][anim_soldat], soldat._position)
+	def affichage_projectile(self,projectile):
+		# im_projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
+		self.ajouter_element("images/tours/balle.png",projectile._position)

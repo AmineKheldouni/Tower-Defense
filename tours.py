@@ -59,7 +59,6 @@ class Projectile():
     et DT = N*dt (ou N à fixer) entre deux affichages du jeu où le joueur peut jouer
     Mieux si variables globales.
     '''
-
     def __init__(self, position_Tour, position_Cible, id_projectile, joueur):
         global DT
         self._position_initiale = position_Tour
@@ -71,36 +70,48 @@ class Projectile():
         v_y = (position_Cible[1]-position_Tour[1])//DT
         self._vitesse = (v_x,v_y)
         self._animation = 10 # Nombre d'étapes d'affichage
+        self._etape = self._animation #Gere l'animation du projectile
+    #
+    # def bouge(self):
+    #     global dt
+    #     '''A appeler à chaque pas de temps dt entre t0 et t0 + DT'''
+    #     x=self._position[0]+dt*self._vitesse[0]
+    #     y=self._position[1]+dt*self._vitesse[1]
+    #     self._position = (x, y)
 
+    # def affichage(self, F):
+    #     projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
+    #     for k in range(self._animation):
+    #         F._fenetre.blit(projectile, self._position)
+    #         pas_x, pas_y = (self._arrivee[0]-self._position_initiale[0])/self._animation, \
+    #          (self._arrivee[1]-self._position_initiale[1])/self._animation
+    #         pos_tmp = self._position_initiale[0]+k*pas_x, \
+    #         self._position_initiale[1]+k*pas_y
+    #         self._position = pos_tmp
+    #         case_projectile = self._joueur._carte.objet_dans_case(self._position)
     def bouge(self):
-        global dt
-        '''A appeler à chaque pas de temps dt entre t0 et t0 + DT'''
-        x=self._position[0]+dt*self._vitesse[0]
-        y=self._position[1]+dt*self._vitesse[1]
-        self._position = (x, y)
-
-    def affichage(self, F):
-        projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
-        for k in range(self._animation):
-            F._fenetre.blit(projectile, self._position)
-            pas_x, pas_y = (self._arrivee[0]-self._position_initiale[0])/self._animation, \
-             (self._arrivee[1]-self._position_initiale[1])/self._animation
-            pos_tmp = self._position_initiale[0]+k*pas_x, \
-            self._position_initiale[1]+k*pas_y
-            self._position = pos_tmp
-            case_projectile = self._joueur._carte.objet_dans_case(self._position)
-
+        pas_x, pas_y = (self._arrivee[0]-self._position_initiale[0])/self._animation, \
+        (self._arrivee[1]-self._position_initiale[1]) / self._animation
+        pos_tmp = self._position_initiale[0]+pas_x, \
+        self._position_initiale[1]+pas_y
+        self._position = pos_tmp
+        case_self = self._joueur._carte.objet_dans_case(self._position)
+        self._etape=self._etape-1
+    def is_over(self):
+        if(self._etape==0):
+            return True
+        else:
+            return False
 class Tour:
     def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=10,
               cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1):
 
         #projectile en argument ne sert à rien
         self._cout_construction = cout_construction
-
         self._id_tour = id_tour
         self._position = position
         self._cout_entretien = cout_entretien
-        self._projectile = None
+        #self._projectile = None
         self._vie = hp
         self._portee = portee
         self._degat = degat
@@ -121,15 +132,14 @@ class Tour:
         #Les améliorations peuvent porter sur 3 choses : VIE/PORTEE/DEGAT
         #paramètres d'amélioration à modifier peut-être avec une IA
         self._id_tour += 1
-
         self._vie *= 2
         self._portee *= 2
         self._degat *= 2
-
         self._cout_amelioration *= 2
 
     def attaque(self, armee, F):
         '''_liste_soldat est le tableau des personnages de Armee'''
+        '''Renvoie (False/True, un projectile si true)'''
         cible = -1  #indice du soldat de _liste_soldat qui est choisi pour cibles
         distance_cible = 10000000
         for indice_soldat, soldat in enumerate(armee._liste_soldat):
@@ -142,13 +152,15 @@ class Tour:
                    cible = indice_soldat
                    distance_cible = distance_soldat
         if cible != -1 and distance_cible != 10000000 and self._peut_tirer%4 != 0:
-            self._projectile = Projectile(self._position, armee._liste_soldat[cible]._position, 0, self._joueur)
-            self._projectile.affichage(F)
             armee._liste_soldat[cible].vie = max(0,armee._liste_soldat[cible].vie-self._degat)
             armee.maj_troupe()
             self._peut_tirer = False
+            return (True,Projectile(self._position, armee._liste_soldat[cible]._position, 0, self._joueur))
         elif (self._peut_tirer%4 == 0):
             self._peut_tirer = True
+            return (False,0)
+        else:
+            return (False,0)
 
 '''
 Polymorphisme de tours (pour plus tard)
@@ -157,7 +169,8 @@ Polymorphisme de tours (pour plus tard)
     #ajouter attribut/capacité : 2 attaques en simultannées
     #changer la portée par exemple'''
 
-'''class Tour:
+'''
+class Tour:
 	def __init__(self, position, projectile,hp = 10, portee = 400, cout_construction=10, \
 	cout_entretien=2, cout_amelioration = 50, id_tour=1):
 		self._projectile = projectile
@@ -168,7 +181,8 @@ Polymorphisme de tours (pour plus tard)
 		self._cout_amelioration = cout_amelioration
 		self._id_tour = id_tour
 		self._position = position
-  # A COMPLETER'''
+  # A COMPLETER
+'''
 
 """P=Projectile((0,0),(10,10))
 P.bouge()
