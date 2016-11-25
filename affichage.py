@@ -162,27 +162,36 @@ class Affichage_fenetre:
 		pos_menu = self.carte.positionner_objet((0, 14))
 		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
 		font_menu = pygame.font.Font(None, 36)
-		text_menu=font_menu.render("MENU TEST",1,(255,255,255))
+		text_menu=font_menu.render("Menu d'Objet",1,(255,255,255))
 		self._fenetre.blit(text_menu,(0,self.carte.hauteur))
 		pos = pygame.mouse.get_pos()
 		pos_case = self.carte.objet_dans_case(pos)
 		if self.carte[pos_case] == "tour" :
-                        self.ajouter_element("images/tours/tour2.png", (self.carte.largeur//3,self.carte.hauteur+50))
+                        self.ajouter_element("images/tours/tour2.png", (self.carte.largeur//4,self.carte.hauteur+50))
                         tmp = self.carte.objet_dans_case(pos)
 			pos = self.carte.positionner_objet(tmp)
 			for T in self._joueur.liste_tours:
 				if T._position == pos:
-                                        text_tour=font_menu.render(str(T._vie),1,(255,255,255))
-                                        self._fenetre.blit(text_tour,(self.carte.largeur//3 + 50, self.carte.hauteur+50))
+                                        text_tour=font_menu.render("Tour : niveau de vie = "+str(T._vie),1,(255,0,0))
+                                        self._fenetre.blit(text_tour,(self.carte.largeur//4 + 55, self.carte.hauteur+50))
                         
                 if self.carte[pos_case]=="base":
-                        self.ajouter_element("images/interface/bases/base_state1.png", (self.carte.largeur//3,self.carte.hauteur+50))
+                        self.ajouter_element("images/interface/bases/base_state1.png", (self.carte.largeur//4,self.carte.hauteur+50))
                         tmp = self.carte.objet_dans_case(pos)
 			pos = self.carte.positionner_objet(tmp)
 			for T in self._bases:
 				if T._position == pos:
-                                        text_base=font_menu.render(str(T._vie),1,(255,255,255))
-                                        self._fenetre.blit(text_base,(self.carte.largeur//3 + 50, self.carte.hauteur+50))
+                                        text_base=font_menu.render("Base : niveau de vie = "+str(T._vie),1,(255,0,0))
+                                        self._fenetre.blit(text_base,(self.carte.largeur//4 + 55, self.carte.hauteur+50))
+                if self.carte[pos_case]=="soldat":
+                        self.ajouter_element("images/interface/bases/base_state1.png", (self.carte.largeur//4,self.carte.hauteur+50))
+                        tmp = self.carte.objet_dans_case(pos)
+			pos = self.carte.positionner_objet(tmp)
+			for T in self._bases:
+				if T._position == pos:
+                                        text_base=font_menu.render("Base :"+str(T._vie),1,(255,255,255))
+                                        self._fenetre.blit(text_base,(self.carte.largeur//4 + 50, self.carte.hauteur+50))
+                        
 
 	def affichage_menu2(self):
 		""" Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
