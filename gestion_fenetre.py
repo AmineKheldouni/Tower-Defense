@@ -87,7 +87,8 @@ class Carte:
 
 class Base:
 	def __init__(self, position, joueur, cout_entretien=100,\
-	 cout_amelioration=20, hp = 1000):
+	 cout_amelioration=20, hp = 100):
+	 	self.vie_depart = hp
 		self._vie = hp
 		self._joueur = joueur
 		self._cout_entretien = cout_entretien

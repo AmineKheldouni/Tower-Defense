@@ -20,7 +20,7 @@ class Soldat:
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
 		self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
-		self.pas = 2.
+		self.pas = 1.
 		self._voisins = [(0, int(self.pas)), (-int(self.pas),0), (0, -int(self.pas)), (int(self.pas), 0)] # FAIRE UN DICTIONNAIRE
 		self._chemin = []
 		self.liste_voisins = []
@@ -50,9 +50,9 @@ class Soldat:
 	    if (self.vie == 0):
 	        joueur._score+=self.valeur_soldat
 
-	def deplacement_soldat(self):
-	    tmp_x = self._vitesse[0] + self._position[0]
-	    tmp_y = self._vitesse[1] + self._position[1]
+	def deplacement_soldat(self, dt):
+	    tmp_x = self._vitesse[0]*dt + self._position[0]
+	    tmp_y = self._vitesse[1]*dt + self._position[1]
 	    self._position = tmp_x, tmp_y
 	    self._animation += 1
 	    if self._animation == 3:
@@ -65,12 +65,10 @@ class Soldat:
 				if case_base == pos_case:
 					base._vie = max(0, base._vie-self._vie)
 					self._est_mort = True
-					if base._vie == 0:
-						print "Base morte"
 					return True
 		return False
 
-	def maj_direction(self):
+	def maj_direction(self, dt):
 		# A MODIFIER
 		pos_case = self._joueur._carte.objet_dans_case(self._position)
 		choix_voisin = None
@@ -103,11 +101,11 @@ class Soldat:
 			self._vitesse = choix_voisin[1]
 			self._ancienne_position = self._position
 			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
-				self.deplacement_soldat()
+				self.deplacement_soldat(dt)
 
 
 
-	def maj_direction2(self):
+	def maj_direction2(self, dt):
 		pos_case = self._joueur._carte.objet_dans_case(self._position)
 		choix_voisin = None
 		self.liste_voisins = []
@@ -125,7 +123,7 @@ class Soldat:
 			self._vitesse = choix_voisin[1]
 			self._ancienne_position = self._position
 			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
-				self.deplacement_soldat()
+				self.deplacement_soldat(dt)
 
 
 class Armee:
@@ -138,12 +136,12 @@ class Armee:
 	def joueur(self):
 		return self._joueur
 
-	def mouvement_troupe(self, liste_bases):
+	def mouvement_troupe(self, liste_bases, dt):
 		assert(self._taille_effectif != 0)
 		soldats_arrives = []
 		for i in range(len(self._liste_soldat)):
 			soldat = self._liste_soldat[i]
-			soldat.maj_direction()
+			soldat.maj_direction(dt)
 			if soldat.arriver_base(liste_bases):
 				soldats_arrives.append(i)
 		for i in soldats_arrives:

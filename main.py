@@ -6,7 +6,7 @@ from affichage import *
 
 def main():
 	pygame.init()
-	clock = pygame.time.Clock()
+
 	#Ouverture de la fenêtre Pygame
 	C = Carte()
 	J = Joueur(C)
@@ -23,6 +23,13 @@ def main():
 	A = Armee([S, S2, S3], F._joueur)
 	tableau_projectile =[] # Tableau des projectiles
 	continuer = 1
+
+	clock = pygame.time.Clock()
+	FPS = 120
+	#font_cambria = pygame.font.SysFont('Cambria', 24)
+	#fps_label = font_cambria.render('FPS : {}'.format(clock.get_fps()), True, (255, 255, 255))
+	#fps_rect = fps_label.get_rect(bottomright = (C.largeur, C.hauteur))
+	#pygame.time.set_timer()
 	#Chargement et collage du fond
 	F.affichage_terrain()
 	F.formation_chemin()
@@ -32,20 +39,35 @@ def main():
 	F.affichage_chemin()
 	F.affichage_statique()
 	last_time = time.time()
-	last_time_proj = time.time();
+	last_time_proj = time.time()
 	F.affichage_menu()
+
 	#Boucle infinie
 	while continuer:
-		pygame.display.flip()
+		clock.tick(FPS)
+		#time.sleep(0.02)
+
+		for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
+			F._joueur.gestion_tour(event)
+			F.affichage_statique()
+			if event.type == QUIT:     #Si un de ces événements est de type QUIT
+				continuer = 0      #On arrête la boucle
+		#dt = clock.tick() / 1000
+		dt=1
+		# Vider la fenêtre
+		#F._fenetre.fill((0, 0, 0))
+
 		F.affichage_terrain()
 		F.affichage_chemin()
-		temps = pygame.time.get_ticks()
-		F._joueur.affichage_portee(F._fenetre)
 		F.affichage_statique()
 		F.affichage_armee(A)
 		F.affichage_statique()
+		F.affichage_menu()
+		F.affichage_menu2()
+		F.affichage_portee()
+		#F._fenetre.blit(fps_label, fps_rect)
 		if True:
-		# if((time.time()-last_time_proj)> 0.05):
+			# if((time.time()-last_time_proj)> 0.05):
 			last_time_proj=time.time()
 			# Gestion de l'avancée des projectiles
 			#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
@@ -55,12 +77,13 @@ def main():
 				tableau_projectile[i].bouge()
 				if(tableau_projectile[i].is_over()):
 					del(tableau_projectile[i])
-
 					i=i-1
 				i=i+1
+		pygame.display.flip()
 		if (time.time()-last_time > 0.1):
-			A.mouvement_troupe(F._bases)
+			A.mouvement_troupe(F._bases, dt)
 			last_time = time.time()
+		temps = pygame.time.get_ticks()
 		if (temps % 10 == 0):
 			S = Soldat(pos_source, F._joueur, (C.nb_cases_l//2, 0))
 			S2 = Soldat(pos_source2, F._joueur, (C.nb_cases_l//2, 0))
@@ -75,11 +98,6 @@ def main():
 				if(stock_attaque[0]):
 					tableau_projectile.append(stock_attaque[1])
 			last_time = time.time()
-		for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
-			F._joueur.gestion_tour(event)
-			F.affichage_statique()
-			if event.type == QUIT:     #Si un de ces événements est de type QUIT
-				continuer = 0      #On arrête la boucle
 
 
 

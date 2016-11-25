@@ -31,7 +31,7 @@ class Affichage_fenetre:
 		return self._joueur
 	def ajouter_element(self, nom_image, position):
 		element = pygame.image.load(nom_image).convert_alpha()
-		if "tour" in nom_image or "arbre" in nom_image:
+		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
 			self._fenetre.blit(element, (position[0], position[1]-\
 			self.carte.hauteur/self.carte.nb_cases_h))
 		else:
@@ -39,14 +39,14 @@ class Affichage_fenetre:
 
 	def genere_decor(self):
 		for i in range(self._nb_decor[0]):
-			tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
+			tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(1, self.carte.nb_cases_h-1)
 			while self.carte[tmp1, tmp2] != "herbe":
 				tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
 			pos_x, pos_y = self.carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_rochers.append((pos_x, pos_y))
 		for i in range(self._nb_decor[1]):
-			tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
+			tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(1, self.carte.nb_cases_h-1)
 			while self.carte[tmp1, tmp2] != "herbe":
 				tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
 			pos_x, pos_y = self.carte.positionner_objet((tmp1,tmp2))
@@ -109,14 +109,29 @@ class Affichage_fenetre:
 			pos = self.carte.objet_dans_case(position_chemin)
 			self.ajouter_element("images/interface/route3.png", position_chemin)
 			self._joueur._carte[pos] = "chemin"
+	def affichage_portee(self):
+		pos = pygame.mouse.get_pos()
+		pos_case = self.carte.objet_dans_case(pos)
+		if self.carte[pos_case] == "tour" :
+			tmp = self.carte.objet_dans_case(pos)
+			pos = self.carte.positionner_objet(tmp)
+			for T in self._joueur.liste_tours:
+				if T._position == pos:
+					pos = self.carte.positionner_objet((tmp[0]+0.5, tmp[1]+0.5))
+					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee, 2)
 
 	def affichage_statique(self):
 		# Affichage bases :
 		for b in self._bases:
-			self.ajouter_element("images/interface/base.png", b._position)
+			if b._vie > b.vie_depart/2:
+				self.ajouter_element("images/interface/bases/base_state1.png", b._position)
+			elif b._vie >b.vie_depart/5 and b._vie <=b.vie_depart/2:
+				self.ajouter_element("images/interface/bases/base_state2.png", b._position)
+			else:
+				self.ajouter_element("images/interface/bases/base_state3.png", b._position)
 			self._joueur._carte[self.carte.objet_dans_case(b._position)] = "base"
 		for pos in self._liste_rochers:
-			self.ajouter_element("images/interface/rock.png", pos)
+			self.ajouter_element("images/interface/rock2.png", pos)
 			self._joueur._carte[self.carte.objet_dans_case(pos)] = "decor"
 		# Affichage place de construction : A COMPLETER !
 		for pc in self._places_construction:
@@ -125,7 +140,7 @@ class Affichage_fenetre:
 				self._joueur._carte[pc] = "place construction" # La case devient une place de construction
 				self.ajouter_element("images/interface/place_construction.png", (pos_x, pos_y))
 		for pos in self._liste_arbre:
-			self.ajouter_element("images/interface/arbre.png", pos)
+			self.ajouter_element("images/interface/arbre2.png", pos)
 			self._joueur._carte[self.carte.objet_dans_case(pos)] = "decor"
 		for T in self.joueur.liste_tours:
 			self.ajouter_element(self._listenoms_tours[T._id_tour], T._position)
@@ -146,3 +161,27 @@ class Affichage_fenetre:
 	def affichage_menu(self):
 		pos_menu = self.carte.positionner_objet((0, 14))
 		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
+
+	def affichage_menu2(self):
+		""" Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
+		# Affichage du temps (Min:Sec)
+		font_temps = pygame.font.Font(None, 36)
+		temps = pygame.time.get_ticks()
+		temps /= 1000
+		secondes = temps%60
+		minutes = temps//60
+		text_temps = font_temps.render(str(minutes)+ " : "+ str(secondes), 1, (255, 255, 255))
+		self._fenetre.blit(text_temps, (20,10))
+
+		# Affichage des vies des bases
+		pos_vie = []
+		for i in range(len(self._bases)):
+			pos_vie.append(self.carte.positionner_objet((self.carte.nb_cases_l-len(self._bases)+i, 0)))
+
+		for i, b in enumerate(self._bases):
+			if b._vie > b.vie_depart/2:
+				self.ajouter_element("images/interface/bases/hp_base.png", pos_vie[i])
+			elif b._vie > b.vie_depart/5 and b._vie <= b.vie_depart/2:
+				self.ajouter_element("images/interface/bases/hp_base2.png", pos_vie[i])
+			else:
+				self.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
