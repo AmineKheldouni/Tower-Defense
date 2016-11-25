@@ -15,8 +15,8 @@ import numpy.random as rd
 import time
 
 class Carte:
-	def __init__(self, hauteur=800, largeur=1000, nb_cases_h = 16, \
-	nb_cases_l = 20):
+	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 14, \
+	nb_cases_l = 25):
 		self._hauteur = hauteur
 		self._largeur = largeur
 		self._nb_cases_h = nb_cases_h

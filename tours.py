@@ -61,15 +61,15 @@ class Projectile():
     '''
     def __init__(self, position_Tour, position_Cible, id_projectile, joueur):
         global DT
+        self._joueur = joueur
         self._position_initiale = position_Tour
         self._position = position_Tour
         self._id = id_projectile
         self._arrivee = position_Cible
-        self._joueur = joueur
         v_x = (position_Cible[0]-position_Tour[0])//DT
         v_y = (position_Cible[1]-position_Tour[1])//DT
         self._vitesse = (v_x,v_y)
-        self._animation = 10 # Nombre d'étapes d'affichage
+        self._animation = 3. # Nombre d'étapes d'affichage
         self._etape = self._animation #Gere l'animation du projectile
     #
     # def bouge(self):
@@ -97,6 +97,7 @@ class Projectile():
         self._position = pos_tmp
         case_self = self._joueur._carte.objet_dans_case(self._position)
         self._etape=self._etape-1
+
     def is_over(self):
         if(self._etape==0):
             return True
@@ -151,16 +152,19 @@ class Tour:
                if distance_soldat < distance_cible:
                    cible = indice_soldat
                    distance_cible = distance_soldat
-        if cible != -1 and distance_cible != 10000000 and self._peut_tirer%4 != 0:
-            armee._liste_soldat[cible].vie = max(0,armee._liste_soldat[cible].vie-self._degat)
-            armee.maj_troupe()
+        if cible != -1 and distance_cible != 10000000 and self._peut_tirer%2 == 0:
+            P = Projectile(self._position, armee._liste_soldat[cible]._position, 0, self._joueur)
+            if self._joueur._carte.objet_dans_case(P._position) != self._joueur._carte.objet_dans_case(P._arrivee):
+                armee._liste_soldat[cible].vie = max(0,armee._liste_soldat[cible].vie-self._degat)
+                armee.maj_troupe()
             self._peut_tirer = False
-            return (True,Projectile(self._position, armee._liste_soldat[cible]._position, 0, self._joueur))
-        elif (self._peut_tirer%4 == 0):
+            return (True, P)
+        elif (self._peut_tirer%2 != 0):
             self._peut_tirer = True
             return (False,0)
         else:
             return (False,0)
+
 
 '''
 Polymorphisme de tours (pour plus tard)
@@ -168,21 +172,6 @@ Polymorphisme de tours (pour plus tard)
 #class Tour_d_Elite(Tour):
     #ajouter attribut/capacité : 2 attaques en simultannées
     #changer la portée par exemple'''
-
-'''
-class Tour:
-	def __init__(self, position, projectile,hp = 10, portee = 400, cout_construction=10, \
-	cout_entretien=2, cout_amelioration = 50, id_tour=1):
-		self._projectile = projectile
-		self._vie = hp
-		self._portee = portee
-		self._cout_construction = cout_construction
-		self._cout_entretien = cout_entretien
-		self._cout_amelioration = cout_amelioration
-		self._id_tour = id_tour
-		self._position = position
-  # A COMPLETER
-'''
 
 """P=Projectile((0,0),(10,10))
 P.bouge()

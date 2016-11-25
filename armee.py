@@ -20,7 +20,7 @@ class Soldat:
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
 		self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
-		self.pas = 1.
+		self.pas = 2.
 		self._voisins = [(0, int(self.pas)), (-int(self.pas),0), (0, -int(self.pas)), (int(self.pas), 0)] # FAIRE UN DICTIONNAIRE
 		self._chemin = []
 		self.liste_voisins = []

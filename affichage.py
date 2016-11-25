@@ -2,7 +2,7 @@
 #encoding: utf8
 
 from joueur import *
-
+from menu import *
 class Affichage_fenetre:
 	def __init__(self, joueur):
 		self.projectile = []
@@ -10,20 +10,22 @@ class Affichage_fenetre:
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
 		self._listenoms_soldats = [[["images/armee/boss/boss_bas.png", "images/armee/boss/boss_bas_pd.png", "images/armee/boss/boss_bas_pg.png"], ["images/armee/boss/boss_gauche.png", "images/armee/boss/boss_gauche_pd.png", "images/armee/boss/boss_gauche_pg.png"], ["images/armee/boss/boss_haut.png", "images/armee/boss/boss_haut_pd.png", "images/armee/boss/boss_haut_pg.png"], ["images/armee/boss/boss_droite.png", "images/armee/boss/boss_droite_pd.png", "images/armee/boss/boss_droite_pg.png"]]]
 		self._joueur = joueur
-		self._fenetre = pygame.display.set_mode((self._joueur._carte._largeur, self._joueur._carte._hauteur))
+		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+150))	# A MODIFIER
 		self._nb_decor = [5, 5] # 10 Rochers, 5 Arbres
 		self._liste_rochers = []
 		self._liste_arbre = []
 		self._bases = []
 		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
 		for x in liste_x:
-			pos_base = self._joueur._carte.positionner_objet((x, 0))
+			pos_base = self.carte.positionner_objet((x, 0))
 			self._bases.append(Base(pos_base, self._joueur))
-		self._places_construction = [(10,10), (15, 10), (3, 2)] # A MODIFIER
+		self._places_construction = [(11,10), (16, 10), (4, 2)] # A MODIFIER
 		self._chemin = []
+
 	@property
 	def carte(self):
 		return self._joueur._carte
+
 	@property
 	def joueur(self):
 		return self._joueur
@@ -31,23 +33,23 @@ class Affichage_fenetre:
 		element = pygame.image.load(nom_image).convert_alpha()
 		if "tour" in nom_image or "arbre" in nom_image:
 			self._fenetre.blit(element, (position[0], position[1]-\
-			self._joueur._carte._hauteur/self._joueur._carte.nb_cases_h))
+			self.carte.hauteur/self.carte.nb_cases_h))
 		else:
 			self._fenetre.blit(element, position)
 
 	def genere_decor(self):
 		for i in range(self._nb_decor[0]):
-			tmp1, tmp2 = np.random.randint(self._joueur._carte.nb_cases_l-1), np.random.randint(self._joueur._carte.nb_cases_h-1)
-			while self._joueur._carte[tmp1, tmp2] != "herbe":
-				tmp1, tmp2 = np.random.randint(self._joueur._carte.nb_cases_l-1), np.random.randint(self._joueur._carte.nb_cases_h-1)
-			pos_x, pos_y = self._joueur._carte.positionner_objet((tmp1,tmp2))
+			tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
+			while self.carte[tmp1, tmp2] != "herbe":
+				tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
+			pos_x, pos_y = self.carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_rochers.append((pos_x, pos_y))
 		for i in range(self._nb_decor[1]):
-			tmp1, tmp2 = np.random.randint(self._joueur._carte.nb_cases_l-1), np.random.randint(self._joueur._carte.nb_cases_h-1)
-			while self._joueur._carte[tmp1, tmp2] != "herbe":
-				tmp1, tmp2 = np.random.randint(self._joueur._carte.nb_cases_l-1), np.random.randint(self._joueur._carte.nb_cases_h-1)
-			pos_x, pos_y = self._joueur._carte.positionner_objet((tmp1,tmp2))
+			tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
+			while self.carte[tmp1, tmp2] != "herbe":
+				tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
+			pos_x, pos_y = self.carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_arbre.append((pos_x, pos_y))
 
@@ -112,20 +114,20 @@ class Affichage_fenetre:
 		# Affichage bases :
 		for b in self._bases:
 			self.ajouter_element("images/interface/base.png", b._position)
-			self._joueur._carte[self._joueur._carte.objet_dans_case(b._position)] = "base"
+			self._joueur._carte[self.carte.objet_dans_case(b._position)] = "base"
 		for pos in self._liste_rochers:
 			self.ajouter_element("images/interface/rock.png", pos)
-			self._joueur._carte[self._joueur._carte.objet_dans_case(pos)] = "decor"
+			self._joueur._carte[self.carte.objet_dans_case(pos)] = "decor"
 		# Affichage place de construction : A COMPLETER !
 		for pc in self._places_construction:
-			if self._joueur._carte[pc] != "tour":
-				pos_x, pos_y = self._joueur._carte.positionner_objet(pc)
+			if self.carte[pc] != "tour":
+				pos_x, pos_y = self.carte.positionner_objet(pc)
 				self._joueur._carte[pc] = "place construction" # La case devient une place de construction
 				self.ajouter_element("images/interface/place_construction.png", (pos_x, pos_y))
 		for pos in self._liste_arbre:
 			self.ajouter_element("images/interface/arbre.png", pos)
-			self._joueur._carte[self._joueur._carte.objet_dans_case(pos)] = "decor"
-		for T in self._joueur._liste_tours:
+			self._joueur._carte[self.carte.objet_dans_case(pos)] = "decor"
+		for T in self.joueur.liste_tours:
 			self.ajouter_element(self._listenoms_tours[T._id_tour], T._position)
 
 	def affichage_armee(self, armee):
@@ -138,4 +140,9 @@ class Affichage_fenetre:
 					self.ajouter_element(self._listenoms_soldats[type_soldat][soldat._direction][anim_soldat], soldat._position)
 	def affichage_projectile(self,projectile):
 		# im_projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
-		self.ajouter_element("images/tours/balle.png",projectile._position)
+		if projectile._position != projectile._arrivee:
+			self.ajouter_element("images/tours/balle.png",projectile._position)
+
+	def affichage_menu(self):
+		pos_menu = self.carte.positionner_objet((0, 14))
+		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)

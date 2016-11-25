@@ -33,6 +33,7 @@ def main():
 	F.affichage_statique()
 	last_time = time.time()
 	last_time_proj = time.time();
+	F.affichage_menu()
 	#Boucle infinie
 	while continuer:
 		pygame.display.flip()
@@ -54,9 +55,10 @@ def main():
 				tableau_projectile[i].bouge()
 				if(tableau_projectile[i].is_over()):
 					del(tableau_projectile[i])
+
 					i=i-1
 				i=i+1
-		if (time.time()-last_time > 0.2):
+		if (time.time()-last_time > 0.1):
 			A.mouvement_troupe(F._bases)
 			last_time = time.time()
 		if (temps % 10 == 0):
