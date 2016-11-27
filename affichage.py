@@ -158,7 +158,7 @@ class Affichage_fenetre:
 		if projectile._position != projectile._arrivee:
 			self.ajouter_element("images/tours/balle.png",projectile._position)
 
-	def affichage_menu(self):
+	def affichage_menu(self,armee):
 		pos_menu = self.carte.positionner_objet((0, 14))
 		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
 		font_menu = pygame.font.Font(None, 36)
@@ -183,14 +183,11 @@ class Affichage_fenetre:
 				if T._position == pos:
                                         text_base=font_menu.render("Base : niveau de vie = "+str(T._vie),1,(255,0,0))
                                         self._fenetre.blit(text_base,(self.carte.largeur//4 + 55, self.carte.hauteur+50))
-                if self.carte[pos_case]=="soldat":
-                        self.ajouter_element("images/interface/bases/base_state1.png", (self.carte.largeur//4,self.carte.hauteur+50))
-                        tmp = self.carte.objet_dans_case(pos)
-			pos = self.carte.positionner_objet(tmp)
-			for T in self._bases:
-				if T._position == pos:
-                                        text_base=font_menu.render("Base :"+str(T._vie),1,(255,255,255))
-                                        self._fenetre.blit(text_base,(self.carte.largeur//4 + 50, self.carte.hauteur+50))
+                for soldat in armee._liste_soldat:
+                        if ((soldat._position[0]>=pos[0]-50) and (soldat._position[0]<=pos[0]+50) and (soldat._ancienne_position[1]>=pos[1]-50) and (soldat._ancienne_position[1]<=pos[1]+50) or ((soldat._ancienne_position[0]>=pos[0]-50) and (soldat._ancienne_position[0]<=pos[0]+50) and (soldat._ancienne_position[1]>=pos[1]-50) and (soldat._ancienne_position[1]<=pos[1]+50)) ):
+                                self.ajouter_element("images/armee/boss/boss_bas.png", (self.carte.largeur//4,self.carte.hauteur+50))
+                                text_base=font_menu.render("soldat:"+str(soldat._vie),1,(255,255,255))
+                                self._fenetre.blit(text_base,(self.carte.largeur//4 + 50, self.carte.hauteur+50))
                         
 
 	def affichage_menu2(self):

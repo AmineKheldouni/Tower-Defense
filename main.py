@@ -40,7 +40,7 @@ def main():
 	F.affichage_statique()
 	last_time = time.time()
 	last_time_proj = time.time()
-	F.affichage_menu()
+	F.affichage_menu(A)
 
 	#Boucle infinie
 	while continuer:
@@ -62,7 +62,7 @@ def main():
 		F.affichage_statique()
 		F.affichage_armee(A)
 		F.affichage_statique()
-		F.affichage_menu()
+		F.affichage_menu(A)
 		F.affichage_menu2()
 		F.affichage_portee()
 		#F._fenetre.blit(fps_label, fps_rect)

@@ -145,6 +145,8 @@ class Armee:
 			if soldat.arriver_base(liste_bases):
 				soldats_arrives.append(i)
 		for i in soldats_arrives:
+                        #assert erreur index out of range
+                        assert(i<len(self._liste_soldat))
 			del self._liste_soldat[i]
 
 
