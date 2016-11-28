@@ -6,16 +6,13 @@ Atttention
 Executer ce fichier créera un nouveau Excel data vide de tout ce qui a été remplit
 sauf si vous enlever la ligne 61 ou ---book.save("data.xls")---
 '''
-
+import xlrd
 from xlwt import Workbook
 
-
-import xlrd
 # ouverture du fichier Excel
 wb = xlrd.open_workbook('data.xls')
 # création
 book = Workbook()
-
 # création de la feuille 1
 
 # Ennemis
@@ -39,8 +36,9 @@ ligne1.write(6,'bowser.jpg')
 # ajustement éventuel de la largeur d'une colonne
 feuil1.col(0).width = 10000
 
-# éventuellement ajout d'une autre feuille 2
+
 feuil2 = book.add_sheet('tourelle')
+# éventuellement ajout d'une autre feuille 2
 feuil2.write(0,0,'id')
 feuil2.write(0,1,'nom')
 feuil2.write(0,2,'pv')
@@ -83,6 +81,17 @@ def extract2(feuille,id_data,donnee):
     assert(False)
     #vous avez demander une donnée qui n'est pas répertoriée
 
-print(extract2("armee",1,"pv"))
+def extract_carte(id_carte,i,j):
+    wb = xlrd.open_workbook('cartes.xls')
+    sh=wb.sheet_by_name(id_carte)
+    return int(sh.cell_value(i,j))
+
+def cree_dico():
+    wb = xlrd.open_workbook('cartes.xls')
+    sh=wb.sheet_by_name('legend')
+    dico_carte={}
+    for i in range(2,int(sh.col_values(1)[1]+2)):
+        dico_carte[i-2] = str(sh.cell_value(i,2))
+    return dico_carte
+
 # création matérielle du fichier résultant
-book.save('data.xls')

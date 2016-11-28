@@ -3,10 +3,10 @@
 
 from affichage import *
 
+dico_carte=cree_dico()
 
 def main():
 	pygame.init()
-
 	#Ouverture de la fenêtre Pygame
 	C = Carte()
 	J = Joueur(C)
@@ -33,7 +33,6 @@ def main():
 	#Chargement et collage du fond
 	F.affichage_terrain()
 	F.formation_chemin()
-	F.affichage_chemin()
 	F.affichage_statique()
 	F.genere_decor()
 	F.affichage_chemin()
@@ -98,8 +97,6 @@ def main():
 				if(stock_attaque[0]):
 					tableau_projectile.append(stock_attaque[1])
 			last_time = time.time()
-
-
 
 if __name__ == '__main__':
     main()

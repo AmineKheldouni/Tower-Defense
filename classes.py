@@ -311,7 +311,6 @@ class Affichage_fenetre:
 				self.ajouter_element(self._liste_soldats[type_soldat][soldat._direction], soldat._position)
 def main():
 	pygame.init()
-
 	#Ouverture de la fenêtre Pygame
 	C = Carte()
 	J = Joueur(C)

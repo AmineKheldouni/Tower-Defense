@@ -4,6 +4,8 @@
 import pygame
 from pygame.locals import *
 
+from excel import *
+
 import functools
 from functools import partial
 import copy
@@ -37,6 +39,7 @@ class Carte:
 	@property
 	def nb_cases_l(self):
 		return self._nb_cases_l
+
 	def __contains__(self, position):
 	    lig, col = position
 	    return (lig >= 0) and (lig < self._nb_cases_l) and (col >= 0) \
@@ -51,7 +54,6 @@ class Carte:
 	    lig, col = position
 	    if position in self:
 	        self._grille[lig][col] = valeur
-
 
 	def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnées de la case de l'objet """
@@ -84,6 +86,7 @@ class Carte:
 
 	def case_utilisateur(self, i, j):
 		self._grille[i, j] = "utilisateur" # La case est un rocher/arbre
+
 
 class Base:
 	def __init__(self, position, joueur, cout_entretien=100,\

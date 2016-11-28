@@ -3,6 +3,10 @@
 
 from joueur import *
 from menu import *
+from excel import *
+dico_carte=cree_dico()
+print(dico_carte)
+
 class Affichage_fenetre:
 	def __init__(self, joueur):
 		self.projectile = []
@@ -107,8 +111,22 @@ class Affichage_fenetre:
 		# Affichage chemin :
 		for position_chemin in self._chemin:
 			pos = self.carte.objet_dans_case(position_chemin)
-			self.ajouter_element("images/interface/route3.png", position_chemin)
+			self.ajouter_element("images/map_tile/route3.png", position_chemin)
 			self._joueur._carte[pos] = "chemin"
+
+	def affichage_carte(self):
+		for j in range(self.carte.nb_cases_l):
+			for i in range(self.carte.nb_cases_h):
+				pos = self.carte.objet_dans_case((i,j))
+				value_case=extract_carte('carte_1',i,j)
+				if(value_case!=0):
+					self.ajouter_element(dico_carte[value_case],(i,j))
+
+
+
+
+
+
 	def affichage_portee(self):
 		pos = pygame.mouse.get_pos()
 		pos_case = self.carte.objet_dans_case(pos)
@@ -131,7 +149,7 @@ class Affichage_fenetre:
 				self.ajouter_element("images/interface/bases/base_state3.png", b._position)
 			self._joueur._carte[self.carte.objet_dans_case(b._position)] = "base"
 		for pos in self._liste_rochers:
-			self.ajouter_element("images/interface/rock2.png", pos)
+			self.ajouter_element("images/map_objects/rock2.png", pos)
 			self._joueur._carte[self.carte.objet_dans_case(pos)] = "decor"
 		# Affichage place de construction : A COMPLETER !
 		for pc in self._places_construction:
@@ -174,7 +192,7 @@ class Affichage_fenetre:
 				if T._position == pos:
                                         text_tour=font_menu.render("Tour : niveau de vie = "+str(T._vie),1,(255,0,0))
                                         self._fenetre.blit(text_tour,(self.carte.largeur//4 + 55, self.carte.hauteur+50))
-                        
+
                 if self.carte[pos_case]=="base":
                         self.ajouter_element("images/interface/bases/base_state1.png", (self.carte.largeur//4,self.carte.hauteur+50))
                         tmp = self.carte.objet_dans_case(pos)
@@ -188,7 +206,7 @@ class Affichage_fenetre:
                                 self.ajouter_element("images/armee/boss/boss_bas.png", (self.carte.largeur//4,self.carte.hauteur+50))
                                 text_base=font_menu.render("soldat:"+str(soldat._vie),1,(255,255,255))
                                 self._fenetre.blit(text_base,(self.carte.largeur//4 + 50, self.carte.hauteur+50))
-                        
+
 
 	def affichage_menu2(self):
 		""" Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
