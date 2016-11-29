@@ -5,7 +5,7 @@ from gestion_fenetre import *
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat:
-	def __init__(self, position, joueur, position_base, rang_soldat=0, vie=10, vitesse=(1,0), degat=3, valeur_soldat=10):
+	def __init__(self, position, joueur, position_base, rang_soldat=0, vie=20, vitesse=(1,0), degat=3, valeur_soldat=10):
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
 		self.pos_init = position_base
@@ -16,11 +16,12 @@ class Soldat:
 		self._position = position
 		self._ancienne_position = self._position
 		self._degat = degat
+		self._is_dead = False
 		self._valeur_soldat = valeur_soldat	# Score du joueur en tuant ce type de soldat
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
 		self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
-		self.pas = 1.
+		self._pas = 1.
 		self._voisins = [(0, int(self.pas)), (-int(self.pas),0), (0, -int(self.pas)), (int(self.pas), 0)] # FAIRE UN DICTIONNAIRE
 		self._chemin = []
 		self.liste_voisins = []
@@ -31,18 +32,24 @@ class Soldat:
 	def vie(self):
 		return self._vie
 
+	@property
 	def vitesse(self):
 	    return self._vitesse
 
+	@property
 	def position(self):
 	    return self._position
 
+	@property
 	def degat(self):
 	    return self._degat
 
+	@property
 	def valeur_soldat(self):
 	    return self._valeur_soldat
-
+	@property
+	def pas(self):
+		return self._pas
 	def miseajourscore(self,joueur):
 	    """
 	    mise à jour du score du joueur en cas d'élimination du soldat

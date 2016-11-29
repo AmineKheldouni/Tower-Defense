@@ -123,11 +123,12 @@ class Affichage_fenetre:
 	def affichage_armee(self, armee):
 		for b in self._bases:
 			for soldat in armee._liste_soldat:
-				if soldat.vie != 0 and soldat._position != b._position:
+				if not soldat._is_dead and soldat._position != b._position:
 					type_soldat = soldat._type_soldat
 					anim_soldat = soldat._animation
 					soldat.arriver_base(self._bases)
 					self.ajouter_element(self._listenoms_soldats[type_soldat][soldat._direction][anim_soldat], soldat._position)
+
 	def affichage_projectile(self,projectile):
 		# im_projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
 		if projectile._position != projectile._arrivee:

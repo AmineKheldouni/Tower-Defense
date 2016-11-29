@@ -33,7 +33,7 @@ class Menu():
 
     def menu_statique(self):
         """ Affiche l'argent et le score du joueur """
-
+        
     def menu_tour(self, event, F):
         """ Affiche l'image, les caractéristiques (vie, dégat) et les boutons"""
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
@@ -79,7 +79,7 @@ class Menu():
             for key in self._dict_boutons.keys():
                 pos = (pos_x,pos_y)
                 if self._dict_boutons[key]==pos:
-                    T.ameliorer
+                    T.ameliorer()
 
     def objet_dans_case(self, objet_position):
         """ Retourne les coordonnées de la case de l'objet """

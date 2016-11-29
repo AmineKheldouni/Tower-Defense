@@ -43,7 +43,7 @@ def main():
 	compteur = 0
 	#Boucle infinie
 	while continuer:
-		compteur += 1
+		compteur += 1 # A modifier pour une vitesse x2
 		#clock.tick(FPS)
 		#time.sleep(0.02)
 
@@ -67,38 +67,42 @@ def main():
 		F.affichage_menu2()
 		F.affichage_portee()
 		#F._fenetre.blit(fps_label, fps_rect)
-		if True:
+		#if True:
 			# if((time.time()-last_time_proj)> 0.05):
 			#last_time_proj=time.time()
 			# Gestion de l'avancée des projectiles
 			#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
-			i =0;
-			while(i<len(tableau_projectile)):
-				F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
-				tableau_projectile[i].bouge()
-				if(tableau_projectile[i].is_over()):
-					del(tableau_projectile[i])
-					i=i-1
-				i=i+1
+		i =0
+		while(i<len(tableau_projectile)):
+			F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
+			tableau_projectile[i].bouge()
+			if(tableau_projectile[i].is_over()):
+				if tableau_projectile[i]._soldat_cible._vie == 0:
+					tableau_projectile[i]._soldat_cible._is_dead = True
+				del(tableau_projectile[i])
+				i=i-1
+			i=i+1
 		pygame.display.flip()
 		if (compteur%2 == 0):
 			A.mouvement_troupe(F._bases, dt)
-			last_time = time.time()
-		temps = pygame.time.get_ticks()
+			for projectile in tableau_projectile:
+				projectile.set_arrivee(projectile._soldat_cible._position)
+			#last_time = time.time()
+		#temps = pygame.time.get_ticks()
 		if (compteur%10 == 0):
 			S = Soldat(pos_source, F._joueur, (C.nb_cases_l//2, 0))
 			S2 = Soldat(pos_source2, F._joueur, (C.nb_cases_l//2, 0))
 			A._liste_soldat.append(S)
 			A._liste_soldat.append(S2)
-		temps = pygame.time.get_ticks()
+		#temps = pygame.time.get_ticks()
 
 		#Gestion de l'attaque des tours
-		if (compteur%6 == 0):
+		if (compteur%5 == 0):
 			for T in F._joueur._liste_tours:
 				stock_attaque = (T.attaque(A, F))
 				if(stock_attaque[0]):
 					tableau_projectile.append(stock_attaque[1])
-			last_time = time.time()
+			#last_time = time.time()
 
 if __name__ == '__main__':
     main()
