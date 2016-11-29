@@ -5,7 +5,6 @@ from joueur import *
 from menu import *
 from excel import *
 dico_carte=cree_dico()
-print(dico_carte)
 
 class Affichage_fenetre:
 	def __init__(self, joueur):
@@ -44,68 +43,39 @@ class Affichage_fenetre:
 	def genere_decor(self):
 		for i in range(self._nb_decor[0]):
 			tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(1, self.carte.nb_cases_h-1)
-			while self.carte[tmp1, tmp2] != "herbe":
+			while self.carte[tmp1, tmp2] != 0:
 				tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
 			pos_x, pos_y = self.carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_rochers.append((pos_x, pos_y))
 		for i in range(self._nb_decor[1]):
 			tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(1, self.carte.nb_cases_h-1)
-			while self.carte[tmp1, tmp2] != "herbe":
+			while self.carte[tmp1, tmp2] != 0:
 				tmp1, tmp2 = np.random.randint(self.carte.nb_cases_l-1), np.random.randint(self.carte.nb_cases_h-1)
 			pos_x, pos_y = self.carte.positionner_objet((tmp1,tmp2))
 			self._joueur._carte[tmp1, tmp2] = "decor" # La case devient un decor
 			self._liste_arbre.append((pos_x, pos_y))
 
 	def formation_chemin(self):
-		for j in range(self.carte.nb_cases_h//2, self.carte.nb_cases_h):
-			pos = (self.carte.nb_cases_l//5, j)
-			pos2 = (self.carte.nb_cases_l*2//5, j)
-			pos3 = (self.carte.nb_cases_l*3//5, j)
-			pos4 = (self.carte.nb_cases_l*4//5, j)
-			pos = self.carte.positionner_objet(pos)
-			pos2 = self.carte.positionner_objet(pos2)
-			pos3 = self.carte.positionner_objet(pos3)
-			pos4 = self.carte.positionner_objet(pos4)
-			self._chemin.append(pos)
-			self._chemin.append(pos2)
-			self._chemin.append(pos3)
-			self._chemin.append(pos4)
-		for i in range(1, self.carte.nb_cases_l-1):
-			pos = (i, self.carte.nb_cases_h//2)
-			pos = self.carte.positionner_objet(pos)
-			self._chemin.append(pos)
-		pos = self.carte.positionner_objet((1, self.carte.nb_cases_h//2-1))
-		self._chemin.append(pos)
-		pos = self.carte.positionner_objet((self.carte.nb_cases_l-2, self.carte.nb_cases_h//2-1))
-		self._chemin.append(pos)
-		for i in range(1, self.carte.nb_cases_l-1):
-			pos = (i, self.carte.nb_cases_h//2-2)
-			pos = self.carte.positionner_objet(pos)
-			self._chemin.append(pos)
-		for j in range(1, self.carte.nb_cases_h//2-3):
-			pos = (self.carte.nb_cases_l//2, j)
-			pos = self.carte.positionner_objet(pos)
-			self._chemin.append(pos)
-
-		liste_x = [self.carte.nb_cases_l//10, 2*self.carte.nb_cases_l//5, 3*self.carte.nb_cases_l//5,  4*self.carte.nb_cases_l//5]
-		for x in liste_x:
-			self._chemin.append(self.carte.positionner_objet((x, self.carte.nb_cases_h//2-3)))
-		y = self.carte.nb_cases_h//2-4
-		for x in range(self.carte.nb_cases_l//10, self.carte.nb_cases_l//10+3):
-			self._chemin.append(self.carte.positionner_objet((x, y)))
-		for x in range(2*self.carte.nb_cases_l//5, 3*self.carte.nb_cases_l//5+1):
-			self._chemin.append(self.carte.positionner_objet((x, y)))
-		for x in range(4*self.carte.nb_cases_l//5-1, 4*self.carte.nb_cases_l//5+1):
-			self._chemin.append(self.carte.positionner_objet((x, y)))
-
-		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
-		for x in liste_x:
-			for j in range(0, self.carte.nb_cases_h//2-3):
-				self._chemin.append(self.carte.positionner_objet((x, j)))
+		for j in range(self.carte.nb_cases_l):
+			for i in range(self.carte.nb_cases_h):
+				#value_case=self.carte._grille[i][j]
+				value_case=extract_carte(self.carte.id_carte,i+1,j+1)
+				if(value_case==1)or((value_case)==2):
+					pos= self.carte.positionner_objet((j,i))
+					self._chemin.append(pos)
 
 	def affichage_terrain(self):
 		self.ajouter_element("images/interface/background2.jpg", (0, 0))
+
+	def affichage_carte(self):
+		for j in range(self.carte.nb_cases_l):
+			for i in range(self.carte.nb_cases_h):
+				#value_case=self.carte._grille[i][j]
+				value_case=extract_carte(self.carte.id_carte,i+1,j+1)
+				pos = self.carte.positionner_objet((j,i))
+				if(value_case!=0):
+					self.ajouter_element(dico_carte[value_case],pos)
 
 	def affichage_chemin(self):
 		# Affichage chemin :
@@ -113,19 +83,6 @@ class Affichage_fenetre:
 			pos = self.carte.objet_dans_case(position_chemin)
 			self.ajouter_element("images/map_tile/route3.png", position_chemin)
 			self._joueur._carte[pos] = "chemin"
-
-	def affichage_carte(self):
-		for j in range(self.carte.nb_cases_l):
-			for i in range(self.carte.nb_cases_h):
-				pos = self.carte.objet_dans_case((i,j))
-				value_case=extract_carte('carte_1',i,j)
-				if(value_case!=0):
-					self.ajouter_element(dico_carte[value_case],(i,j))
-
-
-
-
-
 
 	def affichage_portee(self):
 		pos = pygame.mouse.get_pos()

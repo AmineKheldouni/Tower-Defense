@@ -18,18 +18,23 @@ import time
 
 class Carte:
 	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 14, \
-	nb_cases_l = 25):
-		self._hauteur = hauteur
-		self._largeur = largeur
-		self._nb_cases_h = nb_cases_h
-		self._nb_cases_l = nb_cases_l
-		self._grille = [["herbe" for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)] # 5 = Case libre (verdure)
+	nb_cases_l = 25,id_carte="carte_1"):
+		self._id_carte=id_carte
+		self._nb_cases_h = extract_carte(id_carte,0,1)
+		self._nb_cases_l = extract_carte(id_carte,1,0)
+		print(self.nb_cases_h)
+		self._hauteur = self._nb_cases_h*50
+		self._largeur = self._nb_cases_l*50
+		self._grille = [[extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)] # 5 = Case libre (verdure)
 	@property
 	def carte_couts(self):
 		return self._carte_couts
 	@property
 	def largeur(self):
 		return self._largeur
+	@property
+	def id_carte(self):
+		return self._id_carte
 	@property
 	def hauteur(self):
 		return self._hauteur

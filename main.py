@@ -57,11 +57,12 @@ def main():
 		#F._fenetre.fill((0, 0, 0))
 
 		F.affichage_terrain()
-		F.affichage_chemin()
+		F.affichage_carte()
 		F.affichage_statique()
 		F.affichage_armee(A)
 		F.affichage_statique()
 		F.affichage_menu(A)
+
 		F.affichage_menu2()
 		F.affichage_portee()
 		#F._fenetre.blit(fps_label, fps_rect)

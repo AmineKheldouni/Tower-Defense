@@ -9,8 +9,10 @@ sauf si vous enlever la ligne 61 ou ---book.save("data.xls")---
 import xlrd
 from xlwt import Workbook
 
+
+excel_carte = xlrd.open_workbook('cartes.xls')
 # ouverture du fichier Excel
-wb = xlrd.open_workbook('data.xls')
+excel_data = xlrd.open_workbook('data.xls')
 # création
 book = Workbook()
 # création de la feuille 1
@@ -82,9 +84,8 @@ def extract2(feuille,id_data,donnee):
     #vous avez demander une donnée qui n'est pas répertoriée
 
 def extract_carte(id_carte,i,j):
-    wb = xlrd.open_workbook('cartes.xls')
-    sh=wb.sheet_by_name(id_carte)
-    return int(sh.cell_value(i,j))
+    sh=excel_carte.sheet_by_name(id_carte)
+    return int (sh.cell_value(i,j))
 
 def cree_dico():
     wb = xlrd.open_workbook('cartes.xls')
