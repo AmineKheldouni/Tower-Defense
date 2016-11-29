@@ -40,10 +40,11 @@ def main():
 	last_time = time.time()
 	last_time_proj = time.time()
 	F.affichage_menu(A)
-
+	compteur = 0
 	#Boucle infinie
 	while continuer:
-		clock.tick(FPS)
+		compteur += 1
+		#clock.tick(FPS)
 		#time.sleep(0.02)
 
 		for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
@@ -68,7 +69,7 @@ def main():
 		#F._fenetre.blit(fps_label, fps_rect)
 		if True:
 			# if((time.time()-last_time_proj)> 0.05):
-			last_time_proj=time.time()
+			#last_time_proj=time.time()
 			# Gestion de l'avancée des projectiles
 			#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
 			i =0;
@@ -80,11 +81,11 @@ def main():
 					i=i-1
 				i=i+1
 		pygame.display.flip()
-		if (time.time()-last_time > 0.1):
+		if (compteur%2 == 0):
 			A.mouvement_troupe(F._bases, dt)
 			last_time = time.time()
 		temps = pygame.time.get_ticks()
-		if (temps % 10 == 0):
+		if (compteur%10 == 0):
 			S = Soldat(pos_source, F._joueur, (C.nb_cases_l//2, 0))
 			S2 = Soldat(pos_source2, F._joueur, (C.nb_cases_l//2, 0))
 			A._liste_soldat.append(S)
@@ -92,7 +93,7 @@ def main():
 		temps = pygame.time.get_ticks()
 
 		#Gestion de l'attaque des tours
-		if (temps % 4 == 0):
+		if (compteur%6 == 0):
 			for T in F._joueur._liste_tours:
 				stock_attaque = (T.attaque(A, F))
 				if(stock_attaque[0]):

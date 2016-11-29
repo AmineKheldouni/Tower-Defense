@@ -69,7 +69,7 @@ class Projectile():
         v_x = (position_Cible[0]-position_Tour[0])//DT
         v_y = (position_Cible[1]-position_Tour[1])//DT
         self._vitesse = (v_x,v_y)
-        self._animation = 3. # Nombre d'étapes d'affichage
+        self._animation = 4. # Nombre d'étapes d'affichage
         self._etape = self._animation #Gere l'animation du projectile
     #
     # def bouge(self):
@@ -100,6 +100,7 @@ class Projectile():
 
     def is_over(self):
         if(self._etape==0):
+            #Changer l'affichage du soldat ...
             return True
         else:
             return False
