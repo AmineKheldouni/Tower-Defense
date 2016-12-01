@@ -60,7 +60,6 @@ class Projectile():
     Mieux si variables globales.
     '''
     def __init__(self, position_Tour, position_Cible, id_projectile, joueur, soldat_cible):
-        global DT
         self._joueur = joueur
         self._position_initiale = position_Tour
         self._position_initiale = self._joueur.carte.objet_dans_case(self._position_initiale)
@@ -71,10 +70,10 @@ class Projectile():
         self._arrivee = position_Cible
         self._arrivee = self._joueur.carte.objet_dans_case(self._arrivee)
         self._arrivee = self._joueur.carte.positionner_objet((self._arrivee[0]+0.5, self._arrivee[1]+0.5))
-        v_x = (position_Cible[0]-position_Tour[0])//DT
-        v_y = (position_Cible[1]-position_Tour[1])//DT
-        self._vitesse = (v_x,v_y)
-        self._animation = 6. # Nombre d'étapes d'affichage
+        v_x = (position_Cible[0]-position_Tour[0])/5
+        v_y = (position_Cible[1]-position_Tour[1])/5
+        self._vitesse = (v_x, v_y)
+        self._animation = 5. # Nombre d'étapes d'affichage
         self._etape = self._animation #Gere l'animation du projectile
     #
     # def bouge(self):
@@ -113,7 +112,7 @@ class Projectile():
         else:
             return False
 class Tour:
-    def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=10,
+    def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=50,
               cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1):
 
         #projectile en argument ne sert à rien

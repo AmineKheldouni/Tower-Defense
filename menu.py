@@ -30,10 +30,77 @@ class Menu():
         self._joueur = joueur
         self._dict_infos=None
         self._dict_boutons=None
+    @property
+    def carte(self):
+        return self._joueur._carte
 
-    def menu_statique(self):
+
+	def affichage_menu_haut(self, F):
+		""" Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
+		# Affichage du temps (Min:Sec)
+		font_temps = pygame.font.Font(None, 36)
+		temps = pygame.time.get_ticks()
+		temps /= 1000
+		secondes = temps%60
+		minutes = temps//60
+		text_temps = font_temps.render(str(minutes)+ " : "+ str(secondes), 1, (255, 255, 255))
+		F.blit(text_temps, (20,10))
+		# Affichage des vies des bases
+		pos_vie = []
+		for i in range(len(self._bases)):
+			pos_vie.append(self.carte.positionner_objet((self.carte.nb_cases_l-len(self._bases)+i, 0)))
+
+		for i, b in enumerate(self._bases):
+			if b._vie > b.vie_depart/2:
+				self.ajouter_element("images/interface/bases/hp_base.png", pos_vie[i])
+			elif b._vie > b.vie_depart/5 and b._vie <= b.vie_depart/2:
+				self.ajouter_element("images/interface/bases/hp_base2.png", pos_vie[i])
+			else:
+				self.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
+
+    def menu_statique(self, F):
         """ Affiche l'argent et le score du joueur """
-        
+        # Argent :
+        pos_image = (0, self.carte.hauteur+self._hauteur//5)
+        image_or = pygame.image.load("images/interface/or1.png").convert_alpha()
+        F._fenetre.blit(image_or, pos_image)
+        font_or = pygame.font.Font(None, 50)
+        or_joueur = str(self._joueur.argent)
+        texte_or = font_or.render(or_joueur, 1, (255, 255, 0))
+        F._fenetre.blit(texte_or, (60, pos_image[1]+5))
+
+        # Score :
+        pos_image = (0, self.carte.hauteur+3*self._hauteur//5)
+        image_score = pygame.image.load("images/interface/etoile.png").convert_alpha()
+        F._fenetre.blit(image_score, pos_image)
+        font_score = pygame.font.Font(None, 50)
+        score_joueur = str(self._joueur.score)
+        texte_score = font_score.render(score_joueur, 1, (0, 0, 255))
+        F._fenetre.blit(texte_score, (60, pos_image[1]+5))
+
+    def affichage_menu_haut(self, Affichage):
+    	""" Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
+    	# Affichage du temps (Min:Sec)
+    	font_temps = pygame.font.Font(None, 36)
+    	temps = pygame.time.get_ticks()
+    	temps /= 1000
+    	secondes = temps%60
+    	minutes = temps//60
+    	text_temps = font_temps.render(str(minutes)+ " : "+ str(secondes), 1, (255, 255, 255))
+    	Affichage._fenetre.blit(text_temps, (20,10))
+    	# Affichage des vies des bases
+    	pos_vie = []
+    	for i in range(len(Affichage._bases)):
+    		pos_vie.append(Affichage.carte.positionner_objet((Affichage.carte.nb_cases_l-len(Affichage._bases)+i, 0)))
+
+    	for i, b in enumerate(Affichage._bases):
+    		if b._vie > b.vie_depart/2:
+    			Affichage.ajouter_element("images/interface/bases/hp_base.png", pos_vie[i])
+    		elif b._vie > b.vie_depart/5 and b._vie <= b.vie_depart/2:
+    			Affichage.ajouter_element("images/interface/bases/hp_base2.png", pos_vie[i])
+    		else:
+    			Affichage.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
+
     def menu_tour(self, event, F):
         """ Affiche l'image, les caractéristiques (vie, dégat) et les boutons"""
         if event.type == MOUSEBUTTONDOWN and event.button == 1:

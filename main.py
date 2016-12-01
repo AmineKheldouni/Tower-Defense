@@ -39,7 +39,7 @@ def main():
 	F.affichage_statique()
 	last_time = time.time()
 	last_time_proj = time.time()
-	F.affichage_menu(A)
+	#F.affichage_menu(A)
 	compteur = 0
 	#Boucle infinie
 	while continuer:
@@ -52,6 +52,12 @@ def main():
 			F.affichage_statique()
 			if event.type == QUIT:     #Si un de ces événements est de type QUIT
 				continuer = 0      #On arrête la boucle
+			if event.type == KEYDOWN and event.key == K_ESCAPE:
+				pygame.display.toggle_fullscreen()
+		tkey = pygame.key.get_pressed()
+
+		if tkey[K_LALT] and tkey[K_F4]:
+			continuer = 0
 		#dt = clock.tick() / 1000
 		dt=1
 		# Vider la fenêtre
@@ -62,9 +68,9 @@ def main():
 		F.affichage_statique()
 		F.affichage_armee(A)
 		F.affichage_statique()
-		F.affichage_menu(A)
+		#F.affichage_menu(A)
 
-		F.affichage_menu2()
+		F.gestion_menu()
 		F.affichage_portee()
 		#F._fenetre.blit(fps_label, fps_rect)
 		#if True:
@@ -89,7 +95,10 @@ def main():
 				projectile.set_arrivee(projectile._soldat_cible._position)
 			#last_time = time.time()
 		#temps = pygame.time.get_ticks()
-		if (compteur%10 == 0):
+		if (compteur%2 == 0):
+			if (compteur>5):
+				F._joueur.gain(compteur//5)
+		if (compteur%10 == 0) and [F._bases[i]._vie for i in range(len(F._bases))] != [0]*len(F._bases):
 			S = Soldat(pos_source, F._joueur, (C.nb_cases_l//2, 0))
 			S2 = Soldat(pos_source2, F._joueur, (C.nb_cases_l//2, 0))
 			A._liste_soldat.append(S)

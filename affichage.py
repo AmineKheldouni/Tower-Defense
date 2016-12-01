@@ -4,6 +4,7 @@
 from joueur import *
 from menu import *
 from excel import *
+from menu import *
 dico_carte=cree_dico()
 
 class Affichage_fenetre:
@@ -13,7 +14,9 @@ class Affichage_fenetre:
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
 		self._listenoms_soldats = [[["images/armee/boss/boss_bas.png", "images/armee/boss/boss_bas_pd.png", "images/armee/boss/boss_bas_pg.png"], ["images/armee/boss/boss_gauche.png", "images/armee/boss/boss_gauche_pd.png", "images/armee/boss/boss_gauche_pg.png"], ["images/armee/boss/boss_haut.png", "images/armee/boss/boss_haut_pd.png", "images/armee/boss/boss_haut_pg.png"], ["images/armee/boss/boss_droite.png", "images/armee/boss/boss_droite_pd.png", "images/armee/boss/boss_droite_pg.png"]]]
 		self._joueur = joueur
-		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+150))	# A MODIFIER
+		self._menu = Menu(self._joueur)
+		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu._hauteur),pygame.FULLSCREEN)	# A MODIFIER
+		pygame.display.set_caption("Tower Defense")
 		self._nb_decor = [5, 5] # 10 Rochers, 5 Arbres
 		self._liste_rochers = []
 		self._liste_arbre = []
@@ -133,8 +136,14 @@ class Affichage_fenetre:
 		# im_projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
 		if projectile._position != projectile._arrivee:
 			self.ajouter_element("images/tours/balle.png",projectile._position)
+	def gestion_menu(self):
+		""" Nouvelle gestion du Menu avec la classe Menu """
+		pos_menu = self.carte.positionner_objet((0, 14))
+		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
+		self._menu.affichage_menu_haut(self)
+		self._menu.menu_statique(self)
 
-	def affichage_menu(self,armee):
+	def affichage_menu(self, armee):
 		pos_menu = self.carte.positionner_objet((0, 14))
 		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
 		font_menu = pygame.font.Font(None, 36)
@@ -164,28 +173,3 @@ class Affichage_fenetre:
                                 self.ajouter_element("images/armee/boss/boss_bas.png", (self.carte.largeur//4,self.carte.hauteur+50))
                                 text_base=font_menu.render("soldat:"+str(soldat._vie),1,(255,255,255))
                                 self._fenetre.blit(text_base,(self.carte.largeur//4 + 50, self.carte.hauteur+50))
-
-
-	def affichage_menu2(self):
-		""" Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
-		# Affichage du temps (Min:Sec)
-		font_temps = pygame.font.Font(None, 36)
-		temps = pygame.time.get_ticks()
-		temps /= 1000
-		secondes = temps%60
-		minutes = temps//60
-		text_temps = font_temps.render(str(minutes)+ " : "+ str(secondes), 1, (255, 255, 255))
-		self._fenetre.blit(text_temps, (20,10))
-
-		# Affichage des vies des bases
-		pos_vie = []
-		for i in range(len(self._bases)):
-			pos_vie.append(self.carte.positionner_objet((self.carte.nb_cases_l-len(self._bases)+i, 0)))
-
-		for i, b in enumerate(self._bases):
-			if b._vie > b.vie_depart/2:
-				self.ajouter_element("images/interface/bases/hp_base.png", pos_vie[i])
-			elif b._vie > b.vie_depart/5 and b._vie <= b.vie_depart/2:
-				self.ajouter_element("images/interface/bases/hp_base2.png", pos_vie[i])
-			else:
-				self.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])

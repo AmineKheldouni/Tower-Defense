@@ -5,7 +5,7 @@ from gestion_fenetre import *
 from tours import *
 
 class Joueur:
-	def __init__(self, carte, argent = 1000, score = 0):
+	def __init__(self, carte, argent = 100, score = 0):
 		self._argent = argent
 		self._score = score
 		self._carte = carte
@@ -16,6 +16,13 @@ class Joueur:
 	@property
 	def liste_tours(self):
 		return self._liste_tours
+	@property
+	def argent(self):
+		return self._argent
+	@property
+	def score(self):
+		return self._score
+
 	def gestion_tour(self, event):
 		if event.type == MOUSEBUTTONDOWN and event.button == 1:
 			pos_x, pos_y = self.carte.objet_dans_case(event.pos)
@@ -34,3 +41,6 @@ class Joueur:
 						self._carte[pos_x, pos_y-1] = "tour"
 				else:
 					print ("Vous n'avez pas suffisamment d'argent.")
+
+	def gain(self, difficulte):
+		self._argent += self._score//difficulte

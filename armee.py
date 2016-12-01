@@ -50,12 +50,13 @@ class Soldat:
 	@property
 	def pas(self):
 		return self._pas
+
 	def miseajourscore(self,joueur):
 	    """
 	    mise à jour du score du joueur en cas d'élimination du soldat
 	    """
 	    if (self.vie == 0):
-	        joueur._score+=self.valeur_soldat
+	        joueur._score += self.valeur_soldat
 
 	def deplacement_soldat(self, dt):
 	    tmp_x = self._vitesse[0]*dt + self._position[0]
@@ -160,6 +161,7 @@ class Armee:
 	def maj_troupe(self):
 		liste_morts = []
 		for i in range(len(self._liste_soldat)):
+			self._liste_soldat[i].miseajourscore(self._joueur)
 			if self._liste_soldat[i].vie == 0:
 				liste_morts.append(i)
 		for idx in liste_morts:
