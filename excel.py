@@ -58,7 +58,7 @@ feuil3.write(0,3,'vitesse')
 feuil3.write(0,4,'vitesse')
 #projectile donne l'ID du projectile
 
-book.save("data.xls")
+#book.save("data.xls")
 '''
 Lourd, il faut ouvrir tout le temps le doc c'est peut-être lent
 data_python peut être global
