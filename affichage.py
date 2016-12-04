@@ -15,7 +15,7 @@ class Affichage_fenetre:
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
 		self._joueur = joueur
 		self._menu = Menu(self._joueur)
-		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu._hauteur),pygame.FULLSCREEN)	# A MODIFIER
+		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu._hauteur))	# A MODIFIER
 		pygame.display.set_caption("Tower Defense")
 		self._nb_decor = [5, 5] # 10 Rochers, 5 Arbres
 		self._liste_rochers = []

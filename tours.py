@@ -132,10 +132,6 @@ class Tour:
 
 	# A COMPLETER
 
-    def vieillit(self):
-        #à appeler si le joueur n'a plus d'argent pour l'entretenir
-        self._portee /= 2
-
     def ameliore(self):
         #à appeler si le joueur demande une amélioration et a l'argent nécessaire
         #pour le faire
@@ -175,17 +171,7 @@ class Tour:
             return (False,0)
 
 
-'''
-Polymorphisme de tours (pour plus tard)
-#class Tour_de_Base(Tour):
-#class Tour_d_Elite(Tour):
-    #ajouter attribut/capacité : 2 attaques en simultannées
-    #changer la portée par exemple'''
-
-"""P=Projectile((0,0),(10,10))
-P.bouge()
-
-T=Tour((3,3), P)
-T.vieillit()
-T.ameliore()
-"""
+def TourFeu(Tour):
+    def __init(self):
+        super(TourFeu, self).__init__()
+        Tour._portee = 75
