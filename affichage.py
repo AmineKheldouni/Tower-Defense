@@ -5,14 +5,14 @@ from joueur import *
 from menu import *
 from excel import *
 from menu import *
-dico_carte=cree_dico()
+dico_carte=cree_dico('legend')
+dico_carte_object=cree_dico('legend2')
 
 class Affichage_fenetre:
 	def __init__(self, joueur):
 		self.projectile = []
 		self._listenoms_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
-		self._listenoms_soldats = [[["images/armee/boss/boss_bas.png", "images/armee/boss/boss_bas_pd.png", "images/armee/boss/boss_bas_pg.png"], ["images/armee/boss/boss_gauche.png", "images/armee/boss/boss_gauche_pd.png", "images/armee/boss/boss_gauche_pg.png"], ["images/armee/boss/boss_haut.png", "images/armee/boss/boss_haut_pd.png", "images/armee/boss/boss_haut_pg.png"], ["images/armee/boss/boss_droite.png", "images/armee/boss/boss_droite_pd.png", "images/armee/boss/boss_droite_pg.png"]]]
 		self._joueur = joueur
 		self._menu = Menu(self._joueur)
 		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu._hauteur),pygame.FULLSCREEN)	# A MODIFIER
@@ -76,9 +76,12 @@ class Affichage_fenetre:
 			for i in range(self.carte.nb_cases_h):
 				#value_case=self.carte._grille[i][j]
 				value_case=extract_carte(self.carte.id_carte,i+1,j+1)
+				value_case_object=extract_carte(self.carte.id_carte+"_objets",i+1,j+1)
 				pos = self.carte.positionner_objet((j,i))
 				if(value_case!=0):
 					self.ajouter_element(dico_carte[value_case],pos)
+				if(value_case_object!=0):
+					self.ajouter_element(dico_carte_object[value_case_object],pos)
 
 	def affichage_chemin(self):
 		# Affichage chemin :
@@ -123,6 +126,9 @@ class Affichage_fenetre:
 		for T in self.joueur.liste_tours:
 			self.ajouter_element(self._listenoms_tours[T._id_tour], T._position)
 
+	def affiche_soldat(self,soldat):
+		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",soldat._position)
+
 	def affichage_armee(self, armee):
 		for b in self._bases:
 			for soldat in armee._liste_soldat:
@@ -130,7 +136,9 @@ class Affichage_fenetre:
 					type_soldat = soldat._type_soldat
 					anim_soldat = soldat._animation
 					soldat.arriver_base(self._bases)
-					self.ajouter_element(self._listenoms_soldats[type_soldat][soldat._direction][anim_soldat], soldat._position)
+					self.affiche_soldat(soldat)
+
+
 
 	def affichage_projectile(self,projectile):
 		# im_projectile = pygame.image.load("images/tours/balle.png").convert_alpha()

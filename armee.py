@@ -5,19 +5,22 @@ from gestion_fenetre import *
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat:
-	def __init__(self, position, joueur, position_base, rang_soldat=0, vie=20, vitesse=(1,0), degat=3, valeur_soldat=10):
+	def __init__(self, position, joueur, position_base, id_soldat=1, vie=20, vitesse=(1,0), degat=3, valeur_soldat=10):
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
+
+		self._type_soldat = extract("armee",id_soldat,0)
+		self._vie = extract("armee",id_soldat,2)
+		self._vitesse = extract("armee",id_soldat,4)
+		self._degat = extract("armee",id_soldat,5)
+		self._valeur_soldat = extract("armee",id_soldat,6)	# Score du joueur en tuant ce type de soldat
+		self._graphic = extract_string("armee",id_soldat,7)
+
 		self.pos_init = position_base
-		self._type_soldat = rang_soldat
-		self._vie = vie
-		self._vitesse = vitesse
 		self._joueur = joueur
 		self._position = position
 		self._ancienne_position = self._position
-		self._degat = degat
 		self._is_dead = False
-		self._valeur_soldat = valeur_soldat	# Score du joueur en tuant ce type de soldat
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
 		self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
@@ -133,6 +136,10 @@ class Soldat:
 			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
 				self.deplacement_soldat(dt)
 
+	def dir_to_graph(self):
+		dir_vect=["_bas","_gauche","_haut","_droite"]
+		dir_anim=["","_pd","_pg"]
+		return dir_vect[self._direction]+dir_anim[self._animation]
 
 class Armee:
 	def __init__(self, tableau_soldat, joueur):

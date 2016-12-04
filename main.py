@@ -3,8 +3,6 @@
 
 from affichage import *
 
-dico_carte=cree_dico()
-
 def main():
 	pygame.init()
 	#Ouverture de la fenêtre Pygame
@@ -61,14 +59,13 @@ def main():
 		#dt = clock.tick() / 1000
 		dt=1
 		# Vider la fenêtre
-		#F._fenetre.fill((0, 0, 0))
 
 		F.affichage_terrain()
 		F.affichage_carte()
 		F.affichage_statique()
 		F.affichage_armee(A)
 		F.affichage_statique()
-		#F.affichage_menu(A)
+		F.affichage_menu(A)
 
 		F.gestion_menu()
 		F.affichage_portee()

@@ -22,10 +22,10 @@ class Carte:
 		self._id_carte=id_carte
 		self._nb_cases_h = extract_carte(id_carte,0,1)
 		self._nb_cases_l = extract_carte(id_carte,1,0)
-		print(self.nb_cases_h)
 		self._hauteur = self._nb_cases_h*50
 		self._largeur = self._nb_cases_l*50
-		self._grille = [[extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)] # 5 = Case libre (verdure)
+		self._grille = [[extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
+		self._objets = [[extract_carte(id_carte+"_objets",i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)] # 5 = Case libre (verdure)
 	@property
 	def carte_couts(self):
 		return self._carte_couts
