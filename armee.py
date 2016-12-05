@@ -5,7 +5,7 @@ from gestion_fenetre import *
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat:
-	def __init__(self, position, joueur, position_base, id_soldat=1, vie=20, vitesse=(1,0), degat=3, valeur_soldat=10):
+	def __init__(self, position, joueur, id_soldat=2):
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
 
@@ -16,14 +16,14 @@ class Soldat:
 		self._valeur_soldat = extract("armee",id_soldat,6)	# Score du joueur en tuant ce type de soldat
 		self._graphic = extract_string("armee",id_soldat,7)
 
-		self.pos_init = position_base
+		self.pos_init = position
 		self._joueur = joueur
 		self._position = position
 		self._ancienne_position = self._position
 		self._is_dead = False
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
-		self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
+		# self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
 		self._pas = 1.
 		self._voisins = [(0, int(self.pas)), (-int(self.pas),0), (0, -int(self.pas)), (int(self.pas), 0)] # FAIRE UN DICTIONNAIRE
 		self._chemin = []

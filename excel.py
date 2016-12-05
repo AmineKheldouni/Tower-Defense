@@ -44,12 +44,12 @@ def extract_carte(id_carte,i,j):
     sh=excel_carte.sheet_by_name(id_carte)
     return int (sh.cell_value(i,j))
 
-def cree_dico(legend):
+def cree_dico(legend,colonne1,colonne2):
     wb = xlrd.open_workbook('cartes.xls')
     sh=wb.sheet_by_name(legend)
     dico_carte={}
     for i in range(2,int(sh.col_values(1)[1]+2)):
-        dico_carte[sh.cell_value(i,1)] = str(sh.cell_value(i,2))
+        dico_carte[sh.cell_value(i,colonne1)] = str(sh.cell_value(i,colonne2))
     return dico_carte
 
 # création matérielle du fichier résultant

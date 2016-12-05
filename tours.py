@@ -4,7 +4,7 @@
 #Code pas encore entièrement révisé pour intégration aux autres codes
 
 from armee import*
-
+from objets_interraction import *
 import pygame
 from pygame.locals import *
 
@@ -13,7 +13,6 @@ from functools import partial
 import copy
 import sys
 import numpy as np
-
 import math
 
 
@@ -111,16 +110,14 @@ class Projectile():
             return True
         else:
             return False
-class Tour:
+class Tour(Objet_Interraction):
     def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=50,
               cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1):
-
+        Objet_Interraction.__init__(self,position,0,0)
         #projectile en argument ne sert à rien
         self._cout_construction = cout_construction
         self._id_tour = id_tour
-        self._position = position
         self._cout_entretien = cout_entretien
-        #self._projectile = None
         self._vie = hp
         self._portee = portee
         self._degat = degat
@@ -131,6 +128,10 @@ class Tour:
         #du prochain niveau de tour, pour passer id_tour=2
 
 	# A COMPLETER
+
+    def vieillit(self):
+        #à appeler si le joueur n'a plus d'argent pour l'entretenir
+        self._portee /= 2
 
     def ameliore(self):
         #à appeler si le joueur demande une amélioration et a l'argent nécessaire
@@ -171,7 +172,17 @@ class Tour:
             return (False,0)
 
 
-def TourFeu(Tour):
-    def __init(self):
-        super(TourFeu, self).__init__()
-        Tour._portee = 75
+'''
+Polymorphisme de tours (pour plus tard)
+#class Tour_de_Base(Tour):
+#class Tour_d_Elite(Tour):
+    #ajouter attribut/capacité : 2 attaques en simultannées
+    #changer la portée par exemple'''
+
+"""P=Projectile((0,0),(10,10))
+P.bouge()
+
+T=Tour((3,3), P)
+T.vieillit()
+T.ameliore()
+"""

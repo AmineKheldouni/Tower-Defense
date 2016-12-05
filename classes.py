@@ -279,11 +279,11 @@ class Affichage_fenetre:
 	def genere_decor(self):
 		for i in range(self._nb_decor[0]):
 			tmp1, tmp2 = np.random.randint(self._carte._nb_cases_l-1), np.random.randint(self._carte._nb_cases_h-1)
-			while self._carte[tmp1, tmp2] != 5:
+			while (self._carte[tmp1, tmp2] != 0):
 				tmp1, tmp2 = np.random.randint(self._carte._nb_cases_l-1), np.random.randint(self._carte._nb_cases_h-1)
 			pos_x = tmp1 * self._carte._largeur/self._carte._nb_cases_l
 			pos_y = tmp2 * self._carte._hauteur/self._carte._nb_cases_h
-			self._carte[tmp1, tmp2] = 1 # La case devient un decor
+			self._carte_object[tmp1, tmp2] = 1 # La case devient un decor
 			self._liste_rochers.append((pos_x, pos_y))
 		for i in range(self._nb_decor[1]):
 			tmp1, tmp2 = np.random.randint(self._carte._nb_cases_l-1), np.random.randint(self._carte._nb_cases_h-1)
