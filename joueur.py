@@ -5,7 +5,7 @@ from gestion_fenetre import *
 from tours import *
 
 class Joueur:
-	def __init__(self, carte, argent = 100, score = 0):
+	def __init__(self, carte, argent = 1000, score = 0):
 		self._argent = argent
 		self._score = score
 		self._carte = carte
@@ -29,7 +29,7 @@ class Joueur:
 			if self.carte[pos_x, pos_y] == "tour":
 				# PROPOSER AMELIORATION OU REPARATION
 				print ("Amélioration ? Réparation ?")
-			elif self.carte[pos_x, pos_y] == "place construction":
+			elif self.carte._objets[pos_x][pos_y]._id_excel == 102:
 				pos_pix = pos_x*self.carte._largeur/self.carte._nb_cases_l\
 				, pos_y*self.carte._hauteur/self.carte._nb_cases_h
 				T = Tour(pos_pix, self)

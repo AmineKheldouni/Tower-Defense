@@ -6,6 +6,7 @@ from pygame.locals import *
 
 from excel import *
 from objets_interraction import *
+from utils import *
 
 import functools
 from functools import partial
@@ -19,7 +20,7 @@ import time
 
 
 
-# Pour faire un No_Objet : (self,position,graphic,arg,id_exel)
+# Pour faire un No_Objet : (self,position,graphic,arg,id_excel)
 class No_Objet(Objet_Interraction):
 	"""docstring for No_Objet."""
 	def __init__(self, position):
@@ -27,22 +28,22 @@ class No_Objet(Objet_Interraction):
 
 class Element_decor(Objet_Interraction):
 	"""docstring for Element_decor."""
-	def __init__(self,position,id_exel=0):
-		super(Element_decor,self).__init__(position,id_exel,0)
+	def __init__(self,position,id_excel=0):
+		super(Element_decor,self).__init__(position,id_excel,0)
 
 class Emplacement(Objet_Interraction):
 	"""endroit où une tour est constructible"""
-	def __init__(self,position,id_exel=102):
-		super(Emplacement,self).__init__(position,id_exel,0)
+	def __init__(self,position,id_excel=102):
+		super(Emplacement,self).__init__(position,id_excel,0)
 
 class Source(Objet_Interraction):
-	def __init__(self, position,id_exel=101):
-		super(Source,self).__init__(position,id_exel,0)
+	def __init__(self, position,id_excel=101):
+		super(Source,self).__init__(position,id_excel,0)
 
 class Base(Objet_Interraction):
 	def __init__(self, position, cout_entretien=100,\
-	 cout_amelioration=20, hp = 100,id_exel=103):
-	 	super(Base,self).__init__(position,id_exel,0)
+	 cout_amelioration=20, hp = 100,id_excel=103):
+	 	super(Base,self).__init__(position,id_excel,0)
 	 	self.vie_depart = hp
 		self._vie = hp
 		self._cout_entretien = cout_entretien
@@ -69,15 +70,16 @@ class Base(Objet_Interraction):
 
 
 class Carte:
-	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 14, \
+	def __init__(self, hauteur=600, largeur=800, nb_cases_h = 25, \
 	nb_cases_l = 25,id_carte="carte_1"):
 		self._id_carte=id_carte
 		self._nb_cases_h = extract_carte(id_carte,0,1)
 		self._nb_cases_l = extract_carte(id_carte,1,0)
-		self._hauteur = self._nb_cases_h*50
-		self._largeur = self._nb_cases_l*50
+		self._hauteur = 640
+		self._largeur = 1024
 		self._grille = [[extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
-		self._objets = [[extract_carte(id_carte+"_objets",i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)] # 5 = Case libre (verdure)
+		self._objets = [[extract_carte(id_carte+"_objets",i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
+		self.liste_sources = []
 		dico_nom_id=cree_dico('legend2',1,0)
 		for j in range(0,self.nb_cases_l):
 			for i in range(0,self._nb_cases_h):
@@ -87,15 +89,14 @@ class Carte:
 					self._objets[j][i] = Emplacement((i,j))
 				elif(dico_nom_id[ob]=="source"):
 					self._objets[j][i] = Source((i,j))
+					self.liste_sources.append((j, i))
 				elif(dico_nom_id[ob]=="base"):
 						self._objets[j][i] = Base((i,j))
 				elif(ob>=1000):
 					self._objets[j][i]= Element_decor((i,j),ob)
 				elif(ob==0):
 					self._objets[j][i]= No_Objet((i,j))
-	@property
-	def carte_couts(self):
-		return self._carte_couts
+
 	@property
 	def largeur(self):
 		return self._largeur
@@ -130,6 +131,15 @@ class Carte:
 	    if position in self:
 	        self._grille[lig][col] = valeur
 
+	def genere_decor(self,tab_objet):
+		for j in range(len(tab_objet)):
+			for i in range(tab_objet[j]):
+				tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(1, self.nb_cases_h-1)
+				while self[tmp1, tmp2] !=0:
+					tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(self.nb_cases_h-1)
+				pos_x, pos_y = self.positionner_objet((tmp1,tmp2))
+				self._objets[tmp1][tmp2] = Element_decor((tmp1,tmp2),1000+j+1)
+
 	def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnées de la case de l'objet """
 		pas_l = int(self.largeur/self.nb_cases_l)
@@ -140,35 +150,6 @@ class Carte:
 		a = int(pos_case[0]*self.largeur/self.nb_cases_l)
 		b = int(pos_case[1]*self.hauteur/self.nb_cases_h)
 		return (a, b)
-
-	def case_construction(self, i, j):
-		self._liste_construction.append((i, j))
-		self._grille[i, j] = "place construction"
-
-	def case_chemin(self, i, j):
-		self._liste_chemin.append((i, j))
-		self._grille[i, j] = "chemin" # La case est un chemin
-
-	def case_tour(self, i, j):
-		self._grille[i, j] = "tour" # La case est une tour
-
-	def case_decor(self, i, j):
-		self._liste_decor.append((i, j))
-		self._grille[i, j] = "decor" # La case est un rocher/arbre
-	def case_base(self, i, j):
-		self._liste_bases.append((i, j))
-		self._grille[i, j] = "base" # La case est un rocher/arbre
-
-	def case_utilisateur(self, i, j):
-		self._grille[i, j] = "utilisateur" # La case est un rocher/arbre
-	def genere_decor(self,tab_objet):
-		for j in range(len(tab_objet)):
-			for i in range(tab_objet[j]):
-				tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(1, self.nb_cases_h-1)
-				while self[tmp1, tmp2] !=0:
-					tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(self.nb_cases_h-1)
-				pos_x, pos_y = self.positionner_objet((tmp1,tmp2))
-				self._objets[tmp1][tmp2] = Element_decor((tmp1,tmp2),1000+j+1)
 
 	def case_objet(self,i,j):
 		return self._objets[i][j]
