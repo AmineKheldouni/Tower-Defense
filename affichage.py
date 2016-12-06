@@ -49,7 +49,7 @@ class Affichage_fenetre:
 		if "balle" in nom_image:
 			element = pygame.transform.smoothscale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
 
-		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
+		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image or "Aquadragon" in nom_image:
 			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
 			self._fenetre.blit(element, (position[0], position[1]-\
 			self.carte.hauteur/self.carte.nb_cases_h))

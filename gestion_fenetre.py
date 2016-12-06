@@ -75,8 +75,8 @@ class Carte:
 		self._id_carte=id_carte
 		self._nb_cases_h = extract_carte(id_carte,0,1)
 		self._nb_cases_l = extract_carte(id_carte,1,0)
-		self._hauteur = 640
-		self._largeur = 1024
+		self._hauteur = 625#640
+		self._largeur = 1250#1024
 		self._grille = [[extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		self._objets = [[extract_carte(id_carte+"_objets",i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		self.liste_sources = []
