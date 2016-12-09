@@ -112,11 +112,12 @@ class Projectile():
             return False
 class Tour(Objet_Interraction):
     def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=50,
-              cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1):
+              cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1, id_excel=111):
         Objet_Interraction.__init__(self,position,0,0)
         #projectile en argument ne sert à rien
         self._cout_construction = cout_construction
         self._id_tour = id_tour
+        self.id_excel = id_excel
         self._cout_entretien = cout_entretien
         self._vie = hp
         self._portee = portee

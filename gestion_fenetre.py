@@ -58,14 +58,36 @@ class Base(Objet_Interraction):
 		if self.vie == 0:
 			return True
 		return False
-
+		
 	def ameliorer(self):
 		if self._joueur.argent >= self._cout_entretien:
 			self._vie += 1
 			self._joueur.argent -= self._cout_entretien
-# = liste_entretien_base[id_entretien+1] => Creer une liste de couts
-#d'entretiens sur un Excel, pour augmenter le cout
 			self._cout_entretien += 1
+
+
+class Case(object):
+	def __init__(self, position, type_objet, type_case, dimensions):
+		self._position = position
+		self._type_objet = type_objet
+		self._type_case = type_case
+		self.dimensions = dimensions # dimensions = [largeur/nb_largeur, longueur/nb_longueur]
+	@property
+	def position(self):
+		return self._position
+	@property
+	def type_objet(self):
+		return self._type_objet
+	@property
+	def type_case(self):
+		return self._type_case
+	@property
+	def __setitem__(self, objet_id):
+		self._type_objet = objet_id
+	@property
+	def __getitem__(self):
+		return self.type_objet
+
 
 
 
