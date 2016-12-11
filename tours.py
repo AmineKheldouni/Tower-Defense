@@ -15,49 +15,10 @@ import sys
 import numpy as np
 import math
 
-
-'''Il y a 2 échelles de temps : dt = entre deux affichages du jeu
-et DT = N*dt (ou N à fixer) entre deux affichages du jeu où le joueur peut agir
-Mieux si variables globales.'''
-
 dt = 1
 DT = dt*5
 
-'''
-Pour Yo :
-1/ DANS L'AFFICHAGE APPELER bouge(PROJECTILE) tous les dt entre 0 et DT
-et ne laisser au joueur l'opportunité de jouer qu'aux multiples de DT
-pour toutes les tours. Attention si le projectile n'existe pas !!!
-2/ AJOUTER LA FONCTIONNALITE AMELIORER et associer le signal à AMELIORE
-3/ APPELER "viellit" aux multiples de DT si le joueur ne peut payer l'entretien
-
-du type :
-    t=0
-    affiche(jeu)
-    while notEndgame (armee eliminee ou base detruite) :
-        t+=dt
-        if t%DT = 0 :
-            on donne la possibilité au joueur de construire/améliorer
-            et AFFICHER JEU à chaque opération puis ATTENDRE
-
-         sinon il fait que regarder pendant dt :
-            attaque(tour)
-            bouge(projectile) pour toutes les tours où projectile existe
-            vieillit(tour) si peut plus payer
-            AFFICHER LE JEU pendant dt
-'''
-
 class Projectile():
-    '''
-    Yo considère le mouvement de Projectile pour un jeu tout par tour (ie le
-    joueur ne fait rien pendant DT et regarde le projectile atteindre sa cible)
-    (dt est le temps entre deux affichages du jeu où on donne la possibilité
-    au joueur d'agir ; il y a des affichages du jeu pendant dt mais le joueur ne peut
-    rien faire)
-    Il y a donc deux échelles de temps : dt = entre deux affichages du jeu
-    et DT = N*dt (ou N à fixer) entre deux affichages du jeu où le joueur peut jouer
-    Mieux si variables globales.
-    '''
     def __init__(self, position_Tour, position_Cible, id_projectile, joueur, soldat_cible):
         self._joueur = joueur
         self._position_initiale = position_Tour
@@ -74,24 +35,7 @@ class Projectile():
         self._vitesse = (v_x, v_y)
         self._animation = 5. # Nombre d'étapes d'affichage
         self._etape = self._animation #Gere l'animation du projectile
-    #
-    # def bouge(self):
-    #     global dt
-    #     '''A appeler à chaque pas de temps dt entre t0 et t0 + DT'''
-    #     x=self._position[0]+dt*self._vitesse[0]
-    #     y=self._position[1]+dt*self._vitesse[1]
-    #     self._position = (x, y)
 
-    # def affichage(self, F):
-    #     projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
-    #     for k in range(self._animation):
-    #         F._fenetre.blit(projectile, self._position)
-    #         pas_x, pas_y = (self._arrivee[0]-self._position_initiale[0])/self._animation, \
-    #          (self._arrivee[1]-self._position_initiale[1])/self._animation
-    #         pos_tmp = self._position_initiale[0]+k*pas_x, \
-    #         self._position_initiale[1]+k*pas_y
-    #         self._position = pos_tmp
-    #         case_projectile = self._joueur._carte.objet_dans_case(self._position)
     def bouge(self):
         pas_x, pas_y = (self._arrivee[0]-self._position_initiale[0])/self._animation, \
         (self._arrivee[1]-self._position_initiale[1]) / self._animation
@@ -105,8 +49,6 @@ class Projectile():
 
     def is_over(self):
         if(self._etape==1):
-            #case_projectile = self._joueur.carte.objet_dans_case(self._position)
-            #self._soldat_cible.is_dead = True
             return True
         else:
             return False
@@ -114,7 +56,6 @@ class Tour(Objet_Interraction):
     def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=50,
               cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1, id_excel=111):
         Objet_Interraction.__init__(self,position,0,0)
-        #projectile en argument ne sert à rien
         self._cout_construction = cout_construction
         self._id_tour = id_tour
         self.id_excel = id_excel
@@ -173,17 +114,7 @@ class Tour(Objet_Interraction):
             return (False,0)
 
 
-'''
-Polymorphisme de tours (pour plus tard)
-#class Tour_de_Base(Tour):
-#class Tour_d_Elite(Tour):
-    #ajouter attribut/capacité : 2 attaques en simultannées
-    #changer la portée par exemple'''
-
-"""P=Projectile((0,0),(10,10))
-P.bouge()
-
-T=Tour((3,3), P)
-T.vieillit()
-T.ameliore()
-"""
+def TourFeu(Tour):
+    def __init(self):
+        super(TourFeu, self).__init__()
+        Tour._portee = 75

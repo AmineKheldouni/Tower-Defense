@@ -19,13 +19,11 @@ import time
 
 
 class Case(object):
-	def __init__(self, position, type_objet="", type_case=0, id_objet=0, constructible=0, dimensions=0):
+	def __init__(self, position, type_objet="", tapis=0):
 		self._position = position
-		self._type_objet = type_objet
-		self._type_case = type_case
-		self._id_objet=id_objet;
-		self._constructible=constructible
-		self.dimensions = dimensions # dimensions = [largeur/nb_largeur, longueur/nb_longueur]
+		self._type_objet = type_objet # String de legend2
+		self._tapis = tapis	# Int de legend1
+
 	@property
 	def position(self):
 		return self._position
@@ -33,8 +31,8 @@ class Case(object):
 	def type_objet(self):
 		return self._type_objet
 	@property
-	def type_case(self):
-		return self._type_case
+	def tapis(self):
+		return self._tapis
 	@property
 	def __setitem__(self, objet_id):
 		self._type_objet = objet_id
@@ -43,11 +41,14 @@ class Case(object):
 		return self.type_objet
 
 
+class Emplacement(Case):
+	def __init__(self, position, tapis, id_excel):
+		super(Emplacement,self).__init__(position, "place_construction", tapis)
 # Pour faire un No_Objet : (self,position,graphic,arg,id_exel)
 class Element_decor(Case):
 	"""docstring for Element_decor."""
-	def __init__(self,position,type_case,id_exel):
-		super(Element_decor,self).__init__(position,"element_decor", type_case,id_exel)
+	def __init__(self, position, tapis, id_excel):
+		super(Element_decor,self).__init__(position,id_excel, tapis)
 
 # class Source(Case):
 # 	def __init__(self, position,id_exel=101):
@@ -80,7 +81,7 @@ class Base(Case):
 			self._cout_entretien += 1
 
 class Chemin(Case):
-		def __init__(self,position,type_case,id_exel):
+		def __init__(self,position,tapis,id_exel):
 			super(Element_decor,self).__init__(position,"element_decor", 1,1)
 
 
@@ -122,6 +123,9 @@ class Carte:
 	@property
 	def nb_cases_l(self):
 		return self._nb_cases_l
+	@property
+	def cases(self):
+		return self._cases
 
 	def __contains__(self, position):
 	    lig, col = position
@@ -149,26 +153,6 @@ class Carte:
 		b = int(pos_case[1]*self.hauteur/self.nb_cases_h)
 		return (a, b)
 
-	def case_construction(self, i, j):
-		self._liste_construction.append((i, j))
-		self._grille[i, j] = "place construction"
-
-	def case_chemin(self, i, j):
-		self._liste_chemin.append((i, j))
-		self._grille[i, j] = "chemin" # La case est un chemin
-
-	def case_tour(self, i, j):
-		self._grille[i, j] = "tour" # La case est une tour
-
-	def case_decor(self, i, j):
-		self._liste_decor.append((i, j))
-		self._grille[i, j] = "decor" # La case est un rocher/arbre
-	def case_base(self, i, j):
-		self._liste_bases.append((i, j))
-		self._grille[i, j] = "base" # La case est un rocher/arbre
-
-	def case_utilisateur(self, i, j):
-		self._grille[i, j] = "utilisateur" # La case est un rocher/arbre
 	def genere_decor(self,tab_objet):
 		for j in range(len(tab_objet)):
 			for i in range(tab_objet[j]):
@@ -179,3 +163,6 @@ class Carte:
 				self._cases[tmp1][tmp2] = Element_decor((tmp1,tmp2),extract_carte(self._id_carte+"_objets",i+1,j+1),1000+j+1)
 	def case_objet(self,i,j):
 		return self._objets[i][j]
+
+	def get_case(self, pos):
+		return self.cases[pos].type_objet

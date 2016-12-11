@@ -109,7 +109,7 @@ class Menu():
         """ Affiche l'image, les caractéristiques (vie, dégat) et les boutons"""
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             pos_x, pos_y = self._joueur.carte.objet_dans_case(event.pos)
-            if self.carte[pos_x, pos_y] == "Tour":
+            if self.carte.get_case((pos_x, pos_y)) == "Tour":
                 self._type_objet="Tour"
                 pos_image = (500, self._joueur.carte.hauteur+self._hauteur/2) # image
                 pos_vie=  (600, self._joueur.carte.hauteur+150/6)            #attributs

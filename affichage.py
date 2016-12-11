@@ -11,6 +11,7 @@ class Affichage_fenetre:
 	def __init__(self, joueur):
 		self.dico_carte=cree_dico('legend',1,2)
 		self.dico_carte_object=cree_dico('legend2',1,2)
+		print(self.dico_carte_object)
 		self.projectile = []
 		self._listenoms_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
@@ -47,7 +48,7 @@ class Affichage_fenetre:
 			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
 
 		if "balle" in nom_image:
-			element = pygame.transform.smoothscale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
+			element = pygame.transform.scale(element, (2, 2))
 
 		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image or "Aquadragon" in nom_image:
 			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
@@ -71,16 +72,17 @@ class Affichage_fenetre:
 	def affichage_carte(self,carte):
 		for j in range(carte.nb_cases_l):
 			for i in range(carte.nb_cases_h):
-				value_case=carte._cases[j][i].type_case
+				value_case=carte._cases[j][i].tapis
 				pos = carte.positionner_objet((j,i))
 				if(value_case!=0):
 					self.ajouter_element(self.dico_carte[value_case],pos)
+
 	def affiche_carte_objet(self,carte):
 		for j in range(carte.nb_cases_l):
 			for i in range(carte.nb_cases_h):
 				pos = carte.positionner_objet((j,i))
-				if((carte._cases[j][i])._id_objet !=0 ):
-					graphic = self.dico_carte_object[(carte._cases[j][i])._id_objet]
+				if((carte._cases[j][i])._type_objet !=0 ):
+					graphic = self.dico_carte_object[(carte._cases[j][i])._type_objet]
 					self.ajouter_element(graphic,pos)
 
 	def affichage_chemin(self):

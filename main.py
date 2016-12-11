@@ -102,7 +102,7 @@ def main():
 				#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
 			i =0
 			while(i<len(tableau_projectile)):
-				F.ajouter_element("images/tours/balle4.png",tableau_projectile[i]._position)
+				F.ajouter_element("images/tours/balle2.png",tableau_projectile[i]._position)
 				tableau_projectile[i].bouge()
 				if(tableau_projectile[i].is_over()):
 					if tableau_projectile[i]._soldat_cible._vie == 0:
