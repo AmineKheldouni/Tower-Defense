@@ -24,7 +24,12 @@ class Affichage_fenetre:
 		for x in liste_x:
 			pos_base = self.carte.positionner_objet((x, 0))
 			self._bases.append(Base(pos_base, self._joueur))
-		self._places_construction = [(11,10), (16, 10), (4, 2)] # A MODIFIER
+		self._places_construction = []
+		for i in range(self.carte.nb_cases_l):
+			for j in range(self.carte.nb_cases_h):
+				if extract_carte(self._joueur.carte._id_carte+"_objets", i+1, j+1) == 102:
+					self._places_construction.append((i, j))
+
 		self._chemin = []
 
 	@property
@@ -34,9 +39,18 @@ class Affichage_fenetre:
 	@property
 	def joueur(self):
 		return self._joueur
+
 	def ajouter_element(self, nom_image, position):
 		element = pygame.image.load(nom_image).convert_alpha()
-		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
+		if not "background" in nom_image and not "GameOver" in nom_image \
+		and not "menu_bas" in nom_image and not "balle" in nom_image:
+			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
+
+		if "balle" in nom_image:
+			element = pygame.transform.smoothscale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
+
+		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image or "Aquadragon" in nom_image:
+			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
 			self._fenetre.blit(element, (position[0], position[1]-\
 			self.carte.hauteur/self.carte.nb_cases_h))
 		else:
@@ -97,12 +111,7 @@ class Affichage_fenetre:
 			else:
 				self.ajouter_element("images/interface/bases/base_state3.png", b.position)
 			self._joueur._carte[self.carte.objet_dans_case(b._position)] = "base"
-		# Affichage place de construction : A COMPLETER !
-		for pc in self._places_construction:
-			if self.carte[pc] != "tour":
-				pos_x, pos_y = self.carte.positionner_objet(pc)
-				self._joueur._carte[pc] = "place construction" # La case devient une place de construction
-				self.ajouter_element("images/interface/place_construction.png", (pos_x, pos_y))
+
 		for T in self.joueur.liste_tours:
 			self.ajouter_element(self._listenoms_tours[T._id_tour], T._position)
 
@@ -118,14 +127,14 @@ class Affichage_fenetre:
 					soldat.arriver_base(self._bases)
 					self.affiche_soldat(soldat)
 
-	def affichage_projectile(self,projectile):
+	def affichage_projectile(self, projectile):
 		# im_projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
 		if projectile._position != projectile._arrivee:
 			self.ajouter_element("images/tours/balle.png",projectile._position)
+
 	def gestion_menu(self):
-		""" Nouvelle gestion du Menu a
-		vec la classe Menu """
-		pos_menu = self.carte.positionner_objet((0, 14))
+		""" Nouvelle gestion du Menu avec la classe Menu """
+		pos_menu = self.carte.positionner_objet((0, self.carte.nb_cases_h))
 		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
 		self._menu.affichage_menu_haut(self)
 		self._menu.menu_statique(self)

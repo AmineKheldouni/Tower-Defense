@@ -85,13 +85,14 @@ class Chemin(Case):
 
 
 class Carte:
-	def __init__(self, hauteur=400, largeur=1250, nb_cases_h = 8, \
+	def __init__(self, hauteur=625, largeur=1250, nb_cases_h = 25, \
 	nb_cases_l = 25,id_carte="carte_1"):
 		self._id_carte=id_carte
 		self._nb_cases_h = extract_carte(id_carte,0,1)
 		self._nb_cases_l = extract_carte(id_carte,1,0)
-		self._hauteur = self._nb_cases_h*50
-		self._largeur = self._nb_cases_l*50
+		self._hauteur = hauteur
+		self._largeur = largeur
+		self.liste_sources = []
 		self._cases =  [[ Case( (i,j), extract_carte(id_carte+"_objets",i+1,j+1),(extract_carte(id_carte,i+1,j+1))) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		self._grille = [[ extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		dico_nom_id=cree_dico('legend2',1,0)
@@ -100,6 +101,7 @@ class Carte:
 				ob = extract_carte(id_carte+"_objets",i+1,j+1)
 				if(dico_nom_id[ob]=="source"):
 					self._cases[j][i] = Element_decor((i,j),extract_carte(id_carte,i+1,j+1),ob)
+					self.liste_sources.append((j, i))
 				elif dico_nom_id[ob]=="base":
 					self._cases[j][i] = Element_decor((i,j),extract_carte(id_carte,i+1,j+1),ob)
 	@property
