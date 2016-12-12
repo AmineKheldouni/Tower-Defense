@@ -26,10 +26,10 @@ class Joueur:
 	def gestion_tour(self, event):
 		if event.type == MOUSEBUTTONDOWN and event.button == 1:
 			pos_x, pos_y = self.carte.objet_dans_case(event.pos)
-			if self.carte.get_case((pos_x,pos_y)) == "tour":
+			if self.carte.get_type_case((pos_x,pos_y)) == "tour":
 				# PROPOSER AMELIORATION OU REPARATION
 				print ("Amélioration ? Réparation ?")
-			elif self.carte.get_case((pos_x,pos_y)) == "place_construction":
+			elif self.carte.get_type_case((pos_x,pos_y)) == "place_construction":
 				pos_pix = pos_x*self.carte._largeur/self.carte._nb_cases_l\
 				, pos_y*self.carte._hauteur/self.carte._nb_cases_h
 				T = Tour(pos_pix, self)

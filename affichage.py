@@ -70,7 +70,7 @@ class Affichage_fenetre:
 	def affichage_portee(self):
 		pos = pygame.mouse.get_pos()
 		pos_case = self.carte.objet_dans_case(pos)
-		if self.carte.get_case(pos_case) == "tour" :
+		if self.carte.get_type_case(pos_case) == "tour" :
 			tmp = self.carte.objet_dans_case(pos)
 			pos = self.carte.positionner_objet(tmp)
 			for T in self._joueur.liste_tours:

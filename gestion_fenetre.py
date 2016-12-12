@@ -79,6 +79,7 @@ class Base(Case):
 		return self._vie>0
 	def dommage(self,degat):
 		self._vie -= degat
+		self._vie = max(0,self._vie)
 		print(self._vie)
 	def actualisation(self):
 			if self._vie > self.vie_depart/2:
@@ -153,10 +154,10 @@ class Carte:
 	    return (lig >= 0) and (lig < self._nb_cases_l) and (col >= 0) \
 		and (col < self._nb_cases_h)
 
-	# def __getitem__(self, position):
-	# 	lig, col = position
-	# 	if position in self:
-	# 		return self._grille[lig][col]
+	def __getitem__(self, position):
+		lig, col = position
+		if position in self:
+			return self._cases[lig][col]
 
 	def __setitem__(self, position, valeur):
 	    lig, col = position
@@ -185,10 +186,8 @@ class Carte:
 	def case_objet(self,i,j):
 		return self._objets[i][j]
 
-	def get_case(self, pos):
-		if      (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
-			return False
-		return self._cases[pos[0]][pos[1]]._type_objet
+	def get_type_case(self, pos):
+		return self[pos]._type_objet
 
 	def est_case_chemin(self,pos):
 		if      (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):

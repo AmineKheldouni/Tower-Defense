@@ -71,7 +71,7 @@ class Soldat:
 
 	def arriver_base(self):
 		pos_case = self._joueur._carte.objet_dans_case(self._position)
-		if self._joueur.carte.get_case(pos_case) == "base":
+		if self._joueur.carte.get_type_case(pos_case) == "base":
 			self._joueur.carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
 			self._est_mort = True
 			return True
