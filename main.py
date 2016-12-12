@@ -51,13 +51,11 @@ def main():
 			  	#~ disparition
 				for i in range(0,255,4):
 					F._fenetre.fill((0,0,0))
-			        pygame.time.wait(33)
 			        pygame.display.flip()
 				#~ apparition
 				for i in range(255,0,-4):
 				    F.ajouter_element("images/interface/GameOver2.png",(0,0))
 				    F._fenetre.fill((i,i,i),special_flags=BLEND_RGB_SUB)
-				    pygame.time.wait(33)
 				    pygame.display.flip()
 			else:
 				for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
@@ -74,6 +72,7 @@ def main():
 			#time.sleep(0.02)
 			for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 				F._joueur.gestion_tour(event)
+				F.gestion_menu(event)
 				if event.type == QUIT:     #Si un de ces événements est de type QUIT
 					continuer = 0      #On arrête la boucle
 				if event.type == KEYDOWN and event.key == K_ESCAPE:
@@ -90,9 +89,9 @@ def main():
 			F.affichage_carte(C)
 			F.affichage_armee(A)
 			F.affiche_carte_objet(C)
-			F.affichage_statique()
+			#F.affichage_statique()
 			#F.affichage_menu(A)
-			F.gestion_menu()
+			#F.gestion_menu()
 			F.affichage_portee()
 			#F._fenetre.blit(fps_label, fps_rect)
 			#if True:
@@ -102,7 +101,7 @@ def main():
 				#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
 			i =0
 			while(i<len(tableau_projectile)):
-				F.ajouter_element("images/tours/balle2.png",tableau_projectile[i]._position)
+				F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
 				tableau_projectile[i].bouge()
 				if(tableau_projectile[i].is_over()):
 					if tableau_projectile[i]._soldat_cible._vie == 0:

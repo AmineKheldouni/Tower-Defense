@@ -43,21 +43,21 @@ class Case(object):
 
 class Emplacement(Case):
 	def __init__(self, position, tapis, id_excel):
-		super(Emplacement,self).__init__(position, "place_construction", tapis)
-# Pour faire un No_Objet : (self,position,graphic,arg,id_exel)
+		super(Emplacement,self).__init__(position, id_excel, tapis)
+# Pour faire un No_Objet : (self,position,graphic,arg,id_excel)
 class Element_decor(Case):
 	"""docstring for Element_decor."""
 	def __init__(self, position, tapis, id_excel):
 		super(Element_decor,self).__init__(position,id_excel, tapis)
 
 # class Source(Case):
-# 	def __init__(self, position,id_exel=101):
-# 		super(Source,self).__init__(position,id_exel,0)
+# 	def __init__(self, position,id_excel=101):
+# 		super(Source,self).__init__(position,id_excel,0)
 
 class Base(Case):
 	def __init__(self, position, cout_entretien=100,\
-	 cout_amelioration=20, hp = 100,id_exel=103):
-	 	super(Base,self).__init__(position,id_exel,0)
+	 cout_amelioration=20, hp = 100,id_excel=103):
+	 	super(Base,self).__init__(position,id_excel,0)
 	 	self.vie_depart = hp
 		self._vie = hp
 		self._cout_entretien = cout_entretien
@@ -81,12 +81,12 @@ class Base(Case):
 			self._cout_entretien += 1
 
 class Chemin(Case):
-		def __init__(self,position,tapis,id_exel):
+		def __init__(self,position,tapis,id_excel):
 			super(Element_decor,self).__init__(position,"element_decor", 1,1)
 
 
 class Carte:
-	def __init__(self, hauteur=625, largeur=1250, nb_cases_h = 25, \
+	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 25, \
 	nb_cases_l = 25,id_carte="carte_1"):
 		self._id_carte=id_carte
 		self._nb_cases_h = extract_carte(id_carte,0,1)
@@ -105,6 +105,8 @@ class Carte:
 					self.liste_sources.append((j, i))
 				elif dico_nom_id[ob]=="base":
 					self._cases[j][i] = Element_decor((i,j),extract_carte(id_carte,i+1,j+1),ob)
+				elif dico_nom_id[ob]=="place_construction":
+					self._cases[j][i] = Emplacement((i,j),extract_carte(id_carte,i+1,j+1),ob)
 	@property
 	def carte_couts(self):
 		return self._carte_couts

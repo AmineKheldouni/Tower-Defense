@@ -48,7 +48,7 @@ class Affichage_fenetre:
 			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
 
 		if "balle" in nom_image:
-			element = pygame.transform.scale(element, (2, 2))
+			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.largeur/self.carte.nb_cases_l))
 
 		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image or "Aquadragon" in nom_image:
 			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
@@ -81,9 +81,9 @@ class Affichage_fenetre:
 		for j in range(carte.nb_cases_l):
 			for i in range(carte.nb_cases_h):
 				pos = carte.positionner_objet((j,i))
-				if((carte._cases[j][i])._type_objet !=0 ):
-					graphic = self.dico_carte_object[(carte._cases[j][i])._type_objet]
-					self.ajouter_element(graphic,pos)
+				if((carte._cases[j][i])._type_objet != 0.0 ):
+					graphic = self.dico_carte_object[(carte.cases[j][i]).type_objet]
+					self.ajouter_element(graphic, pos)
 
 	def affichage_chemin(self):
 		# Affichage chemin :
@@ -134,12 +134,16 @@ class Affichage_fenetre:
 		if projectile._position != projectile._arrivee:
 			self.ajouter_element("images/tours/balle.png",projectile._position)
 
-	def gestion_menu(self):
+	def gestion_menu(self, event=None):
 		""" Nouvelle gestion du Menu avec la classe Menu """
 		pos_menu = self.carte.positionner_objet((0, self.carte.nb_cases_h))
 		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
 		self._menu.affichage_menu_haut(self)
 		self._menu.menu_statique(self)
+		self._menu.maj_menu(event)
+		if self._menu._type_objet == 5:
+			self._menu.menu_tour(event, self._fenetre)
+
 
 	def affichage_menu(self, armee):
 		pos_menu = self.carte.positionner_objet((0, 14))

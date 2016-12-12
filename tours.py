@@ -52,9 +52,10 @@ class Projectile():
             return True
         else:
             return False
+
 class Tour(Objet_Interraction):
     def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=50,
-              cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1, id_excel=111):
+              cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1, id_excel=5):
         Objet_Interraction.__init__(self,position,0,0)
         self._cout_construction = cout_construction
         self._id_tour = id_tour
@@ -70,7 +71,9 @@ class Tour(Objet_Interraction):
         #du prochain niveau de tour, pour passer id_tour=2
 
 	# A COMPLETER
-
+    @property
+    def position(self):
+        return self._position
     def vieillit(self):
         #à appeler si le joueur n'a plus d'argent pour l'entretenir
         self._portee /= 2

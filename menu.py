@@ -21,13 +21,13 @@ import time
 
 class Menu():
     def __init__(self, joueur):
+        self._joueur = joueur
         self._hauteur = 150
-        self._largeur = 1250
+        self._largeur = self._joueur.carte.largeur
         self._nb_cases_h = 3
         self._nb_cases_l = 25
         self._type_objet = None
-        self._index_objet = None #repérer l'objetdans les attributs de joueur
-        self._joueur = joueur
+        self._index_objet = None #reperer l'objetdans les attributs de joueur
         self._dict_infos=None
         self._dict_boutons=None
 
@@ -98,27 +98,28 @@ class Menu():
     			Affichage.ajouter_element("images/interface/bases/hp_base2.png", pos_vie[i])
     		else:
     			Affichage.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
-
-    def menu_bas_interactif(self):
-        self.menu_tour()
-        self.menu_place_construction()
-        #self.menu_base()
-
-
-    def menu_tour(self, event, F):
-        """ Affiche l'image, les caractéristiques (vie, dégat) et les boutons"""
+    def maj_menu(self, event):
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             pos_x, pos_y = self._joueur.carte.objet_dans_case(event.pos)
-            if self.carte.get_case((pos_x, pos_y)) == "Tour":
-                self._type_objet="Tour"
-                pos_image = (500, self._joueur.carte.hauteur+self._hauteur/2) # image
-                pos_vie=  (600, self._joueur.carte.hauteur+150/6)            #attributs
-                pos_degat= (600, self._joueur.carte.hauteur+150/6*2)
-                pos_portee= (600, self._joueur.carte.hauteur+150/6*3)
-                pos_cout_amelioration= (600, self._joueur.carte.hauteur+150/6*4)
-                pos_cout_entretien= (600, self._joueur.carte.hauteur+150/6*5)
-                pos_bouton_ameliorer=(800, self._joueur.carte.hauteur+150/3)
-                pos_bouton_entretenir=(800, self._joueur.carte.hauteur+150/3*2)       # boutton
+            if self.carte.cases[pos_x][pos_y].type_objet == 5:
+                self._type_objet = 5
+            if self.carte.cases[pos_x][pos_y].type_objet == 102:
+                self._type_objet = 102
+
+    def menu_tour(self, event, F):
+        """ Affiche l'image, les caracteristiques (vie, degat) et les boutons"""
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:
+            pos_x, pos_y = self._joueur.carte.objet_dans_case(event.pos)
+            if self.carte.cases[pos_x][pos_y].type_objet == 5:
+                self._type_objet= 5
+                pos_image = (1*self.carte.largeur/7, self._joueur.carte.hauteur+self._hauteur/3) # image
+                pos_vie=  (3*self.carte.largeur/7, self._joueur.carte.hauteur+150/6)            #attributs
+                pos_degat= (3*self.carte.largeur/7, self._joueur.carte.hauteur+150/6*2)
+                pos_portee= (3*self.carte.largeur/7, self._joueur.carte.hauteur+150/6*3)
+                pos_cout_amelioration= (3*self.carte.largeur/7, self._joueur.carte.hauteur+150/6*4)
+                pos_cout_entretien= (3*self.carte.largeur/7, self._joueur.carte.hauteur+150/6*5)
+                pos_bouton_ameliorer=(5*self.carte.largeur/7, self._joueur.carte.hauteur+150/3)
+                pos_bouton_entretenir=(5*self.carte.largeur/7, self._joueur.carte.hauteur+150/3*2)       # boutton
                 for i in range(len(self._joueur.liste_tours)):
                     self._index_objet = i
                     tour=self._joueur.liste_tours[i]
@@ -127,25 +128,25 @@ class Menu():
                     if (case_tour==(pos_x, pos_y)):
                         self._dict_infos = {
                                         "vie : ":(pos_vie,tour._vie),
-                                        "dégats : ":(pos_degat,tour._degat),
-                                        "portée : ":(pos_portee,tour._portee),
-                                        "couts d'amélioration : ":(pos_cout_amelioration,tour._cout_amelioration),
+                                        "degats : ":(pos_degat,tour._degat),
+                                        "portee : ":(pos_portee,tour._portee),
+                                        "couts d'amelioration : ":(pos_cout_amelioration,tour._cout_amelioration),
                                         "couts d'entretien : ":(pos_cout_entretien,tour._cout_entretien)}
-                        self._dict_boutons = {"ameliorer":("/images/interface/ameliorer.png",pos_bouton_ameliorer),
-                                           "entretenir":("/images/interface/entretenir.png",pos_bouton_entretenir)
+                        self._dict_boutons = {"ameliorer":("images/interface/amelioration.png",pos_bouton_ameliorer),
+                                           "entretenir":("images/interface/reparation.png",pos_bouton_entretenir)
                                            }
-                        image_tour = pygame.image.load("images/tours/tour"+str(T._id_tour)+".png").convert_alpha()
+                        image_tour = pygame.image.load("images/tours/tour"+".png").convert_alpha()
                         F.blit(image_tour, pos_image)
                         for d in self._dict_infos.keys():
                             font_donnee = pygame.font.Font(None, 20)
-                    	    text_donnee = font_donnee.render(d+" "+str(_dict_infos[d][1]), 1, (255, 255, 255))
-                            self._fenetre.blit(text_donnee, dict_infos[d[0]])
+                    	    text_donnee = font_donnee.render(d+" "+str(self._dict_infos[d][1]), 1, (255, 255, 255))
+                            F.blit(text_donnee, self._dict_infos[d][0])
                         for b in self._dict_boutons.keys():
                             image = pygame.image.load(self._dict_boutons[b][0]).convert_alpha()
-                            F.blit(self._dict_boutons[b][0], self._dict_boutons[b][1])
+                            F.blit(image, self._dict_boutons[b][1])
 
-            if (((event.type == MOUSEBUTTONDOWN) and (event.button == 1)) and (self._type_objet=="Tour")):
-                pos_x, pos_y = self.bouton_dans_case(event.pos)
+            if (((event.type == MOUSEBUTTONDOWN) and (event.button == 1)) and (self._type_objet==5)):
+                pos_x, pos_y = self.carte.objet_dans_case(event.pos)
                 pos = (pos_x,pos_y)
                 for b in self._dict_boutons.keys():
                     if ((pos[0]>=self._dict_boutons[b][1][0])and(pos[0]<=self._dict_boutons[b][1][0]+50)):
@@ -156,35 +157,35 @@ class Menu():
                                     self._argent -= objet._cout_amelioration
                                     self._joueur.liste_tours[self._index_objet].ameliore()
                             """else :
-                                self._fenetre.blit("Argent non suffisant",self._dict_boutons[b][1][0])
+                                F.blit("Argent non suffisant",self._dict_boutons[b][1][0])
                             if (self._dict_boutons[b][0]=="entretenir"):
                                objet=self._joueur.liste_tours[self._index_objet]
                                 if objet._cout_entretien<=self._joueur._argent:
                                     self._argent -= objet._cout_entretien
-                                    self._joueur.liste_tours[self._index_objet].entretient()  #créer une telle méthode (score, points de vie...)
+                                    self._joueur.liste_tours[self._index_objet].entretient()  #creer une telle methode (score, points de vie...)
                                 else :
-                                    self._fenetre.blit("Argent non suffisant",self._dict_boutons[b][1][0])"""
+                                    F.blit("Argent non suffisant",self._dict_boutons[b][1][0])"""
 
     def menu_place_construction(self, event, F):
-        """ Affiche l'image, les caractéristiques (vie, dégat) et les boutons"""
+        """ Affiche l'image, les caracteristiques (vie, degat) et les boutons"""
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             pos_x, pos_y = self.carte.objet_dans_case(event.pos)
-            if self.carte[pos_x, pos_y] == "place construction":
+            if self.carte.cases[pos_x][pos_y].type_objet == 102:
                 self._type_objet="place"
-                pos_image = (500, self._joueur.carte.hauteur+self._hauteur/2) # image
-                pos_vie=  (600, self._joueur.carte.hauteur+150/6)            #attributs
-                pos_degat= (600, self._joueur.carte.hauteur+150/6*2)
-                pos_portee= (600, self._joueur.carte.hauteur+150/6*3)
-                pos_cout_amelioration= (600, self._joueur.carte.hauteur+150/6*4)
-                pos_cout_entretien= (600, self._joueur.carte.hauteur+150/6*5)
-                pos_bouton_ameliorer=(800, self._joueur.carte.hauteur+150/3)
-                pos_bouton_entretenir=(800, self._joueur.carte.hauteur+150/3*2)       # boutton
-                #Créer une tout virtuelle pour avoir les infos avant
+                pos_image = (2*self.carte.largeur/6, self._joueur.carte.hauteur+self._hauteur/2) # image
+                pos_vie=  (3*self.carte.largeur/6, self._joueur.carte.hauteur+150/6)            #attributs
+                pos_degat= (3*self.carte.largeur/6, self._joueur.carte.hauteur+150/6*2)
+                pos_portee= (3*self.carte.largeur/6, self._joueur.carte.hauteur+150/6*3)
+                pos_cout_amelioration= (3*self.carte.largeur/6, self._joueur.carte.hauteur+150/6*4)
+                pos_cout_entretien= (3*self.carte.largeur/6, self._joueur.carte.hauteur+150/6*5)
+                pos_bouton_ameliorer=(5*self.carte.largeur/6, self._joueur.carte.hauteur+150/3)
+                pos_bouton_entretenir=(5*self.carte.largeur/6, self._joueur.carte.hauteur+150/3*2)       # boutton
+                #Creer une tout virtuelle pour avoir les infos avant
                 self._dict_infos = {
                                 "vie : ":(pos_vie,tour._vie),
-                                "dégats : ":(pos_degat,tour._degat),
-                                "portée : ":(pos_portee,tour._portee),
-                                "couts d'amélioration : ":(pos_cout_amelioration,tour._cout_amelioration),
+                                "degats : ":(pos_degat,tour._degat),
+                                "portee : ":(pos_portee,tour._portee),
+                                "couts d'amelioration : ":(pos_cout_amelioration,tour._cout_amelioration),
                                 "couts d'entretien : ":(pos_cout_entretien,tour._cout_entretien)}
                 self._dict_boutons = {"construire":("/images/interface/ameliorer.png",pos_bouton_ameliorer)}
 
@@ -194,13 +195,13 @@ class Menu():
                 for d in self._dict_infos.keys():
                     font_donnee = pygame.font.Font(None, 20)
             	    text_donnee = font_donnee.render(d, 1, (255, 255, 255))
-                    self._fenetre.blit(text_donnee, dict_infos[d])
+                    F.blit(text_donnee, self._dict_infos[d])
                 for b in self._dict_boutons.keys():
                     image = pygame.image.load(self._dict_boutons[b][0]).convert_alpha()
                     F.blit(self._dict_boutons[b][0], self._dict_boutons[b][1])
 
-        if event.type == MOUSEBUTTONDOWN and event.button == 1 and type_objet=="Tour":
-            pos_x, pos_y = self.bouton_dans_case(event.pos)
+        if event.type == MOUSEBUTTONDOWN and event.button == 1 and type_objet==5:
+            pos_x, pos_y = self.carte.objet_dans_case(event.pos)
             pos = (pos_x,pos_y)
             for b in self._dict_boutons.keys():
                 if ((pos[0]>=self._dict_boutons[b][1][0])and(pos[0]<=self._dict_boutons[b][1][0]+2000)):
@@ -211,14 +212,14 @@ class Menu():
                                 self._argent -= objet._cout_amelioration
                                 self._joueur.liste_tours[self._index_objet].ameliore()
                             else :
-                                self._fenetre.blit("Argent non suffisant",self._dict_boutons[b][1][0])
+                                F.blit("Argent non suffisant",self._dict_boutons[b][1][0])
                         if (self._dict_boutons[b][0]=="entretenir"):
                             objet=self._joueur.liste_tours[self._index_objet]
                             if objet._cout_entretien<=self._joueur._argent:
                                 self._argent -= objet._cout_entretien
-                                self._joueur.liste_tours[self._index_objet].entretient()  #créer une telle méthode (score, points de vie...)
+                                self._joueur.liste_tours[self._index_objet].entretient()  #creer une telle methode (score, points de vie...)
                             else :
-                                self._fenetre.blit("Argent non suffisant",self._dict_boutons[b][1][0])
+                                F.blit("Argent non suffisant",self._dict_boutons[b][1][0])
 '''
                                 #utiliser ce qui suit
         		if clique_sur_bouton(construire): #avec objet dans case propre à menu
@@ -226,9 +227,9 @@ class Menu():
     		if T._cout_construction <= self._argent:
     			self._liste_tours.append(T)
     			self._argent -= T._cout_construction
-    			self._carte[pos_x, pos_y] = "tour"
+    			self._carte[pos_x, pos_y] = 5
     			if pos_y>0:
-    				self._carte[pos_x, pos_y-1] = "tour"
+    				self._carte[pos_x, pos_y-1] = 5
     		else:
     			print ("Vous n'avez pas suffisamment d'argent.")
                 self.menu=None
@@ -236,7 +237,7 @@ class Menu():
 '''
     u avec bouton_dans_case
     def bouton_dans_case(self, clic_position):
-        """ Retourne les coordonnées de la case de l'objet """
+        """ Retourne les coordonnees de la case de l'objet """
         pas_l = int(self.largeur/self.nb_cases_l)
         pas_h = int(self.hauteur/self.nb_cases_h)
         return (clic_position[0]//pas_l, clic_position[1]//pas_h)
@@ -251,7 +252,7 @@ class Menu():
             pos_x, pos_y = self.carte.objet_dans_case(event.pos)
             self._menu=enu("Tour",_liste_tours[i] tq _liste_tours[i].pos=pos_x, pos_y, pos_x,posy)
     		# PROPOSER AMELIORATION OU REPARATION
-            print ("Amélioration ? Réparation ?")
+            print ("Amelioration ? Reparation ?")
     	elif self.carte[pos_x, pos_y] == "place construction":
     		pos_pix = pos_x*self.carte._largeur/self.carte._nb_cases_l\
     		, pos_y*self.carte._hauteur/self.carte._nb_cases_h
