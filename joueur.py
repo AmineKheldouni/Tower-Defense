@@ -26,7 +26,7 @@ class Joueur:
 	def gestion_tour(self, event):
 		if event.type == MOUSEBUTTONDOWN and event.button == 1:
 			pos_x, pos_y = self.carte.objet_dans_case(event.pos)
-			if self.carte.cases[pos_x][pos_y].type_objet == "tour":
+			if self.carte.get_case((pos_x,pos_y)) == "tour":
 				# PROPOSER AMELIORATION OU REPARATION
 				print ("Amélioration ? Réparation ?")
 			elif self.carte.get_case((pos_x,pos_y)) == "place_construction":
@@ -36,7 +36,7 @@ class Joueur:
 				if T._cout_construction <= self._argent:
 					self._liste_tours.append(T)
 					self._argent -= T._cout_construction
-					self.carte._cases[pos_x][pos_y]._type_objet = T
+					self.carte._cases[pos_x][pos_y] = T
 				else:
 					print ("Vous n'avez pas suffisamment d'argent.")
 

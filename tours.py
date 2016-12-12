@@ -56,7 +56,7 @@ class Projectile():
 class Tour(Case):
     def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=50,
               cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1, id_excel=5):
-        Case.__init__(self,position,"tour",0,5,0)
+        super(Tour,self).__init__(position, "tour", 0,id_excel,0)
         self._cout_construction = cout_construction
         self._id_tour = id_tour
         self.id_excel = id_excel

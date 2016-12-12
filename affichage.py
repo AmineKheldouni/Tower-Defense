@@ -11,24 +11,17 @@ class Affichage_fenetre:
 	def __init__(self, joueur):
 		self.dico_carte=cree_dico('legend',1,2)
 		self.dico_carte_object=cree_dico('legend2',1,2)
-		self.projectile = []
 		self._listenoms_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
 		self._joueur = joueur
 		self._menu = Menu(self._joueur)
 		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu._hauteur))	# A MODIFIER
 		pygame.display.set_caption("Tower Defense")
-		self._nb_decor = [5, 5] # 10 Rochers, 5 Arbres
 		self._bases = []
 		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
 		for x in liste_x:
 			pos_base = self.carte.positionner_objet((x, 0))
 			self._bases.append(Base(pos_base, self._joueur))
-		self._places_construction = []
-		for i in range(self.carte.nb_cases_l):
-			for j in range(self.carte.nb_cases_h):
-				if extract_carte(self._joueur.carte._id_carte+"_objets", i+1, j+1) == 102:
-					self._places_construction.append((i, j))
 
 	@property
 	def carte(self):
@@ -116,7 +109,7 @@ class Affichage_fenetre:
 		if self._menu._type_objet == 5:
 			self._menu.menu_tour(event, self._fenetre)
 
-
+#NOn utilisé
 	def affichage_menu(self, armee):
 		pos_menu = self.carte.positionner_objet((0, 14))
 		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)

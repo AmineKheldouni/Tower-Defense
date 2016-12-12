@@ -45,6 +45,7 @@ class Case(object):
 		return self.type_objet
 	def actualisation(self):
 		None
+	#Dis si l'armée peut marcher dessus
 	def est_chemin(self):
 		return self._est_chemin
 
@@ -56,10 +57,6 @@ class Element_decor(Case):
 	"""docstring for Element_decor."""
 	def __init__(self, position, tapis, id_excel):
 		super(Element_decor,self).__init__(position,"element_decor",tapis,id_excel)
-
-# class Source(Case):
-# 	def __init__(self, position,id_excel=101):
-# 		super(Source,self).__init__(position,id_excel,0)
 
 class Base(Case):
 	def __init__(self, position, tapis=0,id_excel=103):

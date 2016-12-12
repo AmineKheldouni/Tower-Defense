@@ -5,7 +5,7 @@ from gestion_fenetre import *
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat:
-	def __init__(self, position, joueur, id_soldat=1):
+	def __init__(self, position, joueur, id_soldat=2):
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
 
@@ -113,8 +113,6 @@ class Soldat:
 			self._ancienne_position = self._position
 			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
 				self.deplacement_soldat(dt)
-
-
 
 	def maj_direction2(self, dt):
 		pos_case = self._joueur._carte.objet_dans_case(self._position)
