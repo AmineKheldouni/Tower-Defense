@@ -75,14 +75,15 @@ class Base(Case):
 		if self.vie == 0:
 			return True
 		return False
-	def is_attackable():
+	def is_attackable(self):
 		return self._vie>0
-	def degat(degat):
+	def dommage(self,degat):
 		self._vie -= degat
+		print(self._vie)
 	def actualisation(self):
 			if self._vie > self.vie_depart/2:
 				self.set_id(103)
-			elif b._vie >b.vie_depart/5 and b._vie <=b.vie_depart/2:
+			elif self._vie >self.vie_depart/5 and self._vie <=self.vie_depart/2:
 				self.set_id(104)
 			else:
 				self.set_id(105)
@@ -98,6 +99,10 @@ class Base(Case):
 class Carte:
 	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 25, \
 	nb_cases_l = 25,id_carte="carte_1"):
+		self._liste_tours =[]
+		self._liste_souces=[]
+		self._pos_bases =[]
+
 		self._id_carte=id_carte
 		self._nb_cases_h = extract_carte(id_carte,0,1)
 		self._nb_cases_l = extract_carte(id_carte,1,0)
@@ -105,7 +110,7 @@ class Carte:
 		self._largeur = largeur
 		self.liste_sources = []
 		self._cases =  [[ Case( (i,j), extract_carte(id_carte+"_objets",i+1,j+1),(extract_carte(id_carte,i+1,j+1))) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
-		self._grille = [[ extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
+		# self._grille = [[ extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		dico_nom_id=cree_dico('legend2',1,0)
 		dico_name_to_id_graph=cree_dico('legend2',1,2)
 		for j in range(0,self.nb_cases_l):
@@ -116,6 +121,7 @@ class Carte:
 					self.liste_sources.append((j, i))
 				elif dico_nom_id[ob]=="base":
 					self._cases[j][i] = Base((i,j),extract_carte(id_carte,i+1,j+1),ob)
+					self._pos_bases.append((j,i))
 				elif dico_nom_id[ob]=="place_construction":
 					self._cases[j][i]= Emplacement((i,j),extract_carte(id_carte,i+1,j+1),ob)
 				if(extract_carte(id_carte,i+1,j+1)==1):
@@ -147,10 +153,10 @@ class Carte:
 	    return (lig >= 0) and (lig < self._nb_cases_l) and (col >= 0) \
 		and (col < self._nb_cases_h)
 
-	def __getitem__(self, position):
-		lig, col = position
-		if position in self:
-			return self._grille[lig][col]
+	# def __getitem__(self, position):
+	# 	lig, col = position
+	# 	if position in self:
+	# 		return self._grille[lig][col]
 
 	def __setitem__(self, position, valeur):
 	    lig, col = position
@@ -172,7 +178,7 @@ class Carte:
 		for j in range(len(tab_objet)):
 			for i in range(tab_objet[j]):
 				tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(1, self.nb_cases_h-1)
-				while self[tmp1, tmp2] !=0:
+				while self._cases[tmp1][tmp2].tapis!=0:
 					tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(self.nb_cases_h-1)
 				pos_x, pos_y = self.positionner_objet((tmp1,tmp2))
 				self._cases[tmp1][tmp2] = Element_decor((tmp1,tmp2),extract_carte(self._id_carte+"_objets",i+1,j+1),1000+j+1)
@@ -180,6 +186,8 @@ class Carte:
 		return self._objets[i][j]
 
 	def get_case(self, pos):
+		if      (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
+			return False
 		return self._cases[pos[0]][pos[1]]._type_objet
 
 	def est_case_chemin(self,pos):

@@ -68,15 +68,13 @@ class Soldat:
 	    self._animation += 1
 	    if self._animation == 3:
 			self._animation = 0
-	def arriver_base(self, liste_bases):
+
+	def arriver_base(self):
 		pos_case = self._joueur._carte.objet_dans_case(self._position)
-		if self._joueur._carte[pos_case] == "base":
-			for base in liste_bases:
-				case_base = self._joueur._carte.objet_dans_case(base._position)
-				if case_base == pos_case:
-					base._vie = max(0, base._vie-self._vie)
-					self._est_mort = True
-					return True
+		if self._joueur.carte.get_case(pos_case) == "base":
+			self._joueur.carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
+			self._est_mort = True
+			return True
 		return False
 
 	def maj_direction(self, dt):
@@ -149,13 +147,13 @@ class Armee:
 	def joueur(self):
 		return self._joueur
 
-	def mouvement_troupe(self, liste_bases, dt):
+	def mouvement_troupe(self, dt):
 		assert(self._taille_effectif != 0)
 		soldats_arrives = []
 		for i in range(len(self._liste_soldat)):
 			soldat = self._liste_soldat[i]
 			soldat.maj_direction(dt)
-			if soldat.arriver_base(liste_bases):
+			if soldat.arriver_base():
 				soldats_arrives.append(i)
 		for i in soldats_arrives:
                         #assert erreur index out of range

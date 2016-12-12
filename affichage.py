@@ -70,7 +70,7 @@ class Affichage_fenetre:
 	def affichage_portee(self):
 		pos = pygame.mouse.get_pos()
 		pos_case = self.carte.objet_dans_case(pos)
-		if self.carte[pos_case] == "tour" :
+		if self.carte.get_case(pos_case) == "tour" :
 			tmp = self.carte.objet_dans_case(pos)
 			pos = self.carte.positionner_objet(tmp)
 			for T in self._joueur.liste_tours:
@@ -86,13 +86,11 @@ class Affichage_fenetre:
 		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",soldat._position)
 
 	def affichage_armee(self, armee):
-		for b in self._bases:
-			for soldat in armee._liste_soldat:
-				if not soldat._is_dead and soldat._position != b._position:
-					type_soldat = soldat._type_soldat
-					anim_soldat = soldat._animation
-					soldat.arriver_base(self._bases)
-					self.affiche_soldat(soldat)
+		for soldat in armee._liste_soldat:
+			if not soldat._is_dead:
+				type_soldat = soldat._type_soldat
+				anim_soldat = soldat._animation
+				self.affiche_soldat(soldat)
 
 	def affichage_projectile(self, projectile):
 		# im_projectile = pygame.image.load("images/tours/balle.png").convert_alpha()

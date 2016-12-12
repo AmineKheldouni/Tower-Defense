@@ -3,9 +3,9 @@
 
 from affichage import *
 
-def is_over(liste_bases):
-	for x in liste_bases:
-		if x._vie > 0:
+def is_over(carte):
+	for pos in carte._pos_bases:
+		if carte._cases[pos[0]][pos[1]]._vie > 0:
 			return False
 	return True
 
@@ -43,7 +43,7 @@ def main():
 	gameover_bool = False
 	#Boucle infinie
 	while continuer:
-		if is_over(F._bases):
+		if is_over(C):
 			if not gameover_bool:
 				gameover_bool = True
 			  	#~ disparition
@@ -112,14 +112,14 @@ def main():
 				i=i+1
 			pygame.display.flip()
 			if (compteur%2 == 0):
-				A.mouvement_troupe(F._bases, dt)
+				A.mouvement_troupe(dt)
 				for projectile in tableau_projectile:
 					projectile.set_arrivee(projectile._soldat_cible._position)
 				#last_time = time.time()
 			#temps = pygame.time.get_ticks()
 			if (compteur%2 == 0 and compteur > 10):
 				F._joueur.gain(compteur//5)
-			if (compteur%3 == 0) and [F._bases[i]._vie for i in range(len(F._bases))] != [0]*len(F._bases):
+			if (compteur%3 == 0) and [F._bases[i]._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
 				p = rd.randint(0, len(C.liste_sources))
 				pos_source = C.positionner_objet(C.liste_sources[p])
 				pos_source2 = C.positionner_objet((C.liste_sources[p][0],C.liste_sources[p][1]-1))
