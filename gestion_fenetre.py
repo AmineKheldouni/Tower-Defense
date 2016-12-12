@@ -23,7 +23,7 @@ class Case(object):
 		self._type_objet = type_objet # String de legend2
 		self._tapis = tapis	# Int de legend1
 		self._id_graphic = id_graphic
-		self._is_chemin = is_chemin
+		self._est_chemin = is_chemin
 	@property
 	def position(self):
 		return self._position
@@ -45,8 +45,8 @@ class Case(object):
 		return self.type_objet
 	def actualisation(self):
 		None
-	def est_chemin():
-		return False
+	def est_chemin(self):
+		return self._est_chemin
 
 class Emplacement(Case):
 	def __init__(self, position, tapis, id_excel):
@@ -122,7 +122,7 @@ class Carte:
 				elif dico_nom_id[ob]=="place_construction":
 					self._cases[j][i]= Emplacement((i,j),extract_carte(id_carte,i+1,j+1),ob)
 				if(extract_carte(id_carte,i+1,j+1)==1):
-					self._cases[j][i].est_chemin=1;
+					self._cases[j][i]._est_chemin=1;
 	@property
 	def carte_couts(self):
 		return self._carte_couts
@@ -185,8 +185,11 @@ class Carte:
 	def get_case(self, pos):
 		return self._cases[pos[0]][pos[1]]._type_objet
 
-	def is_case_chemin(self,pos):
-		return self._cases[pos[0]][pos[1]].is_chemin
+	def est_case_chemin(self,pos):
+		if      (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
+			return False
+		else:
+			return self._cases[pos[0]][pos[1]].est_chemin()
 
 	def actualise(self):
 		for i in range(self._nb_cases_l):

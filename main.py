@@ -36,8 +36,6 @@ def main():
 	#pygame.time.set_timer()
 	#Chargement et collage du fond
 	F.affichage_terrain()
-	F.formation_chemin()
-	F.affichage_chemin()
 	last_time = time.time()
 	last_time_proj = time.time()
 	#F.affichage_menu(A)

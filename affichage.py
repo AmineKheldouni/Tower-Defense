@@ -29,7 +29,6 @@ class Affichage_fenetre:
 			for j in range(self.carte.nb_cases_h):
 				if extract_carte(self._joueur.carte._id_carte+"_objets", i+1, j+1) == 102:
 					self._places_construction.append((i, j))
-		self._chemin = []
 
 	@property
 	def carte(self):
@@ -55,15 +54,6 @@ class Affichage_fenetre:
 		else:
 			self._fenetre.blit(element, position)
 
-
-	def formation_chemin(self):
-		for j in range(self.carte.nb_cases_l):
-			for i in range(self.carte.nb_cases_h):
-				value_case=extract_carte(self.carte.id_carte,i+1,j+1)
-				if(value_case==1)or((value_case)==2):
-					pos= self.carte.positionner_objet((j,i))
-					self._chemin.append(pos)
-
 	def affichage_terrain(self):
 		self.ajouter_element("images/interface/background2.jpg", (0, 0))
 
@@ -83,13 +73,6 @@ class Affichage_fenetre:
 					graphic = self.dico_carte_object[(carte._cases[j][i])._id_graphic]
 					if(graphic !="None"):
 						self.ajouter_element(graphic,pos)
-
-	def affichage_chemin(self):
-		# Affichage chemin :
-		for position_chemin in self._chemin:
-			pos = self.carte.objet_dans_case(position_chemin)
-			self.ajouter_element("images/map_tile/route3.png", position_chemin)
-			self._joueur._carte[pos] = "chemin"
 
 	def affichage_portee(self):
 		pos = pygame.mouse.get_pos()

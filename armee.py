@@ -8,6 +8,7 @@ class Soldat:
 	def __init__(self, position, joueur, id_soldat=1):
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
+
 		self._type_soldat = extract("armee",id_soldat,0)
 		self._vie = extract("armee",id_soldat,2)
 		self._vitesse = extract("armee",id_soldat,4)
@@ -87,7 +88,7 @@ class Soldat:
 		for voisin in self._voisins:
 			tmp_a, tmp_b = int(pos_case[0]+voisin[0]/self.pas), int(pos_case[1]+voisin[1]/self.pas)
 			case_voisin = (tmp_a, tmp_b)
-			if (self._joueur._carte[case_voisin] == "chemin" or self._joueur._carte[case_voisin] == "base") and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
+			if (self._joueur._carte.est_case_chemin(case_voisin)) and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
 		for i in range(len(self.liste_voisins)):
@@ -113,6 +114,8 @@ class Soldat:
 			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
 				self.deplacement_soldat(dt)
 
+
+
 	def maj_direction2(self, dt):
 		pos_case = self._joueur._carte.objet_dans_case(self._position)
 		choix_voisin = None
@@ -121,7 +124,7 @@ class Soldat:
 		for voisin in self._voisins:
 			tmp_a, tmp_b = int(pos_case[0]+voisin[0]/self.pas), int(pos_case[1]+voisin[1]/self.pas)
 			case_voisin = (tmp_a, tmp_b)
-			if (self._joueur._carte[case_voisin] == "chemin" or self._joueur._carte[case_voisin] == "base") and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
+			if (self._joueur._carte.est_chemin(case_voisin)) and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
 			else:

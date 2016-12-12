@@ -36,7 +36,7 @@ class Joueur:
 				if T._cout_construction <= self._argent:
 					self._liste_tours.append(T)
 					self._argent -= T._cout_construction
-					self.carte._cases[pos_x][pos_y] = T
+					self.carte._cases[pos_x][pos_y]._type_objet = T
 				else:
 					print ("Vous n'avez pas suffisamment d'argent.")
 
