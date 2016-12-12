@@ -8,7 +8,6 @@ class Soldat:
 	def __init__(self, position, joueur, id_soldat=1):
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
-
 		self._type_soldat = extract("armee",id_soldat,0)
 		self._vie = extract("armee",id_soldat,2)
 		self._vitesse = extract("armee",id_soldat,4)
@@ -113,8 +112,6 @@ class Soldat:
 			self._ancienne_position = self._position
 			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
 				self.deplacement_soldat(dt)
-
-
 
 	def maj_direction2(self, dt):
 		pos_case = self._joueur._carte.objet_dans_case(self._position)

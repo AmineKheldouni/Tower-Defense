@@ -11,7 +11,6 @@ class Affichage_fenetre:
 	def __init__(self, joueur):
 		self.dico_carte=cree_dico('legend',1,2)
 		self.dico_carte_object=cree_dico('legend2',1,2)
-		print(self.dico_carte_object)
 		self.projectile = []
 		self._listenoms_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
@@ -30,7 +29,6 @@ class Affichage_fenetre:
 			for j in range(self.carte.nb_cases_h):
 				if extract_carte(self._joueur.carte._id_carte+"_objets", i+1, j+1) == 102:
 					self._places_construction.append((i, j))
-
 		self._chemin = []
 
 	@property
@@ -81,9 +79,10 @@ class Affichage_fenetre:
 		for j in range(carte.nb_cases_l):
 			for i in range(carte.nb_cases_h):
 				pos = carte.positionner_objet((j,i))
-				if((carte._cases[j][i])._type_objet != 0.0 ):
-					graphic = self.dico_carte_object[(carte.cases[j][i]).type_objet]
-					self.ajouter_element(graphic, pos)
+				if((carte._cases[j][i])._id_graphic !=0 ):
+					graphic = self.dico_carte_object[(carte._cases[j][i])._id_graphic]
+					if(graphic !="None"):
+						self.ajouter_element(graphic,pos)
 
 	def affichage_chemin(self):
 		# Affichage chemin :
@@ -104,16 +103,6 @@ class Affichage_fenetre:
 					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee, 2)
 
 	def affichage_statique(self):
-		# Affichage bases :
-		for b in self._bases:
-			if b._vie > b.vie_depart/2:
-				self.ajouter_element("images/interface/bases/base_state1.png", b.position)
-			elif b._vie >b.vie_depart/5 and b._vie <=b.vie_depart/2:
-				self.ajouter_element("images/interface/bases/base_state2.png", b.position)
-			else:
-				self.ajouter_element("images/interface/bases/base_state3.png", b.position)
-			self._joueur._carte[self.carte.objet_dans_case(b._position)] = "base"
-
 		for T in self.joueur.liste_tours:
 			self.ajouter_element(self._listenoms_tours[T._id_tour], T._position)
 

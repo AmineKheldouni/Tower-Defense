@@ -84,7 +84,7 @@ def main():
 			#dt = clock.tick() / 1000
 			dt=1
 			# Vider la fenêtre
-
+			#Graphic
 			F.affichage_terrain()
 			F.affichage_carte(C)
 			F.affichage_armee(A)
@@ -100,6 +100,9 @@ def main():
 				# Gestion de l'avancée des projectiles
 				#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
 			i =0
+			# Gestion des objets de la carte
+			C.actualise()
+			#
 			while(i<len(tableau_projectile)):
 				F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
 				tableau_projectile[i].bouge()

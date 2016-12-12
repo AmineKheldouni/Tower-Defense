@@ -17,13 +17,13 @@ import copy
 import numpy.random as rd
 import time
 
-
 class Case(object):
-	def __init__(self, position, type_objet="", tapis=0):
+	def __init__(self, position, type_objet="",tapis=0, id_graphic=0, is_chemin=0):
 		self._position = position
 		self._type_objet = type_objet # String de legend2
 		self._tapis = tapis	# Int de legend1
-
+		self._id_graphic = id_graphic
+		self._is_chemin = is_chemin
 	@property
 	def position(self):
 		return self._position
@@ -36,32 +36,38 @@ class Case(object):
 	@property
 	def __setitem__(self, objet_id):
 		self._type_objet = objet_id
+	def set_id(self,new_id):
+		self._id_graphic = new_id
+	def est_attackable(self):
+		return False
 	@property
 	def __getitem__(self):
 		return self.type_objet
-
+	def actualisation(self):
+		None
+	def est_chemin():
+		return False
 
 class Emplacement(Case):
 	def __init__(self, position, tapis, id_excel):
-		super(Emplacement,self).__init__(position, id_excel, tapis)
-# Pour faire un No_Objet : (self,position,graphic,arg,id_excel)
+		super(Emplacement,self).__init__(position, "place_construction", tapis,id_excel)
+# Pour faire un No_Objet : (self,position,graphic,arg,id_exel)
 class Element_decor(Case):
 	"""docstring for Element_decor."""
 	def __init__(self, position, tapis, id_excel):
-		super(Element_decor,self).__init__(position,id_excel, tapis)
+		super(Element_decor,self).__init__(position,"element_decor",tapis,id_excel)
 
 # class Source(Case):
 # 	def __init__(self, position,id_excel=101):
 # 		super(Source,self).__init__(position,id_excel,0)
 
 class Base(Case):
-	def __init__(self, position, cout_entretien=100,\
-	 cout_amelioration=20, hp = 100,id_excel=103):
-	 	super(Base,self).__init__(position,id_excel,0)
-	 	self.vie_depart = hp
-		self._vie = hp
-		self._cout_entretien = cout_entretien
-		self._cout_amelioration = cout_amelioration
+	def __init__(self, position, tapis=0,id_excel=103):
+	 	super(Base,self).__init__(position,"base",tapis,id_excel,0)
+	 	self.vie_depart = 100
+		self._vie = self.vie_depart
+		self._cout_entretien = 100
+		self._cout_amelioration = 20
 	@property
 	def vie(self):
 		return self._vie
@@ -72,6 +78,18 @@ class Base(Case):
 		if self.vie == 0:
 			return True
 		return False
+	def is_attackable():
+		return self._vie>0
+	def degat(degat):
+		self._vie -= degat
+	def actualisation(self):
+			if self._vie > self.vie_depart/2:
+				self.set_id(103)
+			elif b._vie >b.vie_depart/5 and b._vie <=b.vie_depart/2:
+				self.set_id(104)
+			else:
+				self.set_id(105)
+
 	def ameliorer(self):
 		if self._joueur.argent >= self._cout_entretien:
 			self._vie += 1
@@ -79,11 +97,6 @@ class Base(Case):
 # = liste_entretien_base[id_entretien+1] => Creer une liste de couts
 #d'entretiens sur un Excel, pour augmenter le cout
 			self._cout_entretien += 1
-
-class Chemin(Case):
-		def __init__(self,position,tapis,id_excel):
-			super(Element_decor,self).__init__(position,"element_decor", 1,1)
-
 
 class Carte:
 	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 25, \
@@ -97,6 +110,7 @@ class Carte:
 		self._cases =  [[ Case( (i,j), extract_carte(id_carte+"_objets",i+1,j+1),(extract_carte(id_carte,i+1,j+1))) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		self._grille = [[ extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		dico_nom_id=cree_dico('legend2',1,0)
+		dico_name_to_id_graph=cree_dico('legend2',1,2)
 		for j in range(0,self.nb_cases_l):
 			for i in range(0,self._nb_cases_h):
 				ob = extract_carte(id_carte+"_objets",i+1,j+1)
@@ -104,9 +118,11 @@ class Carte:
 					self._cases[j][i] = Element_decor((i,j),extract_carte(id_carte,i+1,j+1),ob)
 					self.liste_sources.append((j, i))
 				elif dico_nom_id[ob]=="base":
-					self._cases[j][i] = Element_decor((i,j),extract_carte(id_carte,i+1,j+1),ob)
+					self._cases[j][i] = Base((i,j),extract_carte(id_carte,i+1,j+1),ob)
 				elif dico_nom_id[ob]=="place_construction":
-					self._cases[j][i] = Emplacement((i,j),extract_carte(id_carte,i+1,j+1),ob)
+					self._cases[j][i]= Emplacement((i,j),extract_carte(id_carte,i+1,j+1),ob)
+				if(extract_carte(id_carte,i+1,j+1)==1):
+					self._cases[j][i].est_chemin=1;
 	@property
 	def carte_couts(self):
 		return self._carte_couts
@@ -167,4 +183,12 @@ class Carte:
 		return self._objets[i][j]
 
 	def get_case(self, pos):
-		return self.cases[pos].type_objet
+		return self._cases[pos[0]][pos[1]]._type_objet
+
+	def is_case_chemin(self,pos):
+		return self._cases[pos[0]][pos[1]].is_chemin
+
+	def actualise(self):
+		for i in range(self._nb_cases_l):
+			for j in range(self._nb_cases_h):
+				self._cases[i][j].actualisation();
