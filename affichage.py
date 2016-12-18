@@ -11,12 +11,13 @@ class Affichage_fenetre:
 	def __init__(self, joueur):
 		self.dico_carte=cree_dico('legend',1,2)
 		self.dico_carte_object=cree_dico('legend2',1,2)
-		self._listenoms_tours = ["images/tours/tour1.png", "images/tours/tour2.png"]
+		self._listenoms_tours = ["images/tours/tour0.png", "images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
 		self._joueur = joueur
 		self._menu = Menu(self._joueur)
-		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu._hauteur))	# A MODIFIER
+		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu.hauteur))	# A MODIFIER
 		pygame.display.set_caption("Tower Defense")
+		print(self.dico_carte_object)
 		self._bases = []
 		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
 		for x in liste_x:
@@ -64,13 +65,14 @@ class Affichage_fenetre:
 				pos = carte.positionner_objet((j,i))
 				if((carte._cases[j][i])._id_graphic !=0 ):
 					graphic = self.dico_carte_object[(carte._cases[j][i])._id_graphic]
+
 					if(graphic !="None"):
-						self.ajouter_element(graphic,pos)
+						self.ajouter_element(graphic, pos)
 
 	def affichage_portee(self):
 		pos = pygame.mouse.get_pos()
 		pos_case = self.carte.objet_dans_case(pos)
-		if self.carte.get_type_case(pos_case) == "tour" :
+		if pos_case in self._joueur.carte and self.carte.get_type_case(pos_case) == "tour" :
 			tmp = self.carte.objet_dans_case(pos)
 			pos = self.carte.positionner_objet(tmp)
 			for T in self._joueur.liste_tours:
@@ -104,37 +106,7 @@ class Affichage_fenetre:
 		self._menu.affichage_menu_haut(self)
 		self._menu.menu_statique(self)
 		self._menu.maj_menu(event)
-		if self._menu._type_objet == 5:
-			self._menu.menu_tour(event, self._fenetre)
-
-#NOn utilisé
-	def affichage_menu(self, armee):
-		pos_menu = self.carte.positionner_objet((0, 14))
-		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
-		font_menu = pygame.font.Font(None, 36)
-		text_menu=font_menu.render("Menu d'Objet",1,(255,255,255))
-		self._fenetre.blit(text_menu,(0,self.carte.hauteur))
-		pos = pygame.mouse.get_pos()
-		pos_case = self.carte.objet_dans_case(pos)
-		if self.carte[pos_case] == "tour" :
-                        self.ajouter_element("images/tours/tour2.png", (self.carte.largeur//4,self.carte.hauteur+50))
-                        tmp = self.carte.objet_dans_case(pos)
-			pos = self.carte.positionner_objet(tmp)
-			for T in self._joueur.liste_tours:
-				if T._position == pos:
-                                        text_tour=font_menu.render("Tour : niveau de vie = "+str(T._vie),1,(255,0,0))
-                                        self._fenetre.blit(text_tour,(self.carte.largeur//4 + 55, self.carte.hauteur+50))
-
-                if self.carte[pos_case]=="base":
-                        self.ajouter_element("images/interface/bases/base_state1.png", (self.carte.largeur//4,self.carte.hauteur+50))
-                        tmp = self.carte.objet_dans_case(pos)
-			pos = self.carte.positionner_objet(tmp)
-			for T in self._bases:
-				if T._position == pos:
-                                        text_base=font_menu.render("Base : niveau de vie = "+str(T._vie),1,(255,0,0))
-                                        self._fenetre.blit(text_base,(self.carte.largeur//4 + 55, self.carte.hauteur+50))
-                for soldat in armee._liste_soldat:
-                        if ((soldat._position[0]>=pos[0]-50) and (soldat._position[0]<=pos[0]+50) and (soldat._ancienne_position[1]>=pos[1]-50) and (soldat._ancienne_position[1]<=pos[1]+50) or ((soldat._ancienne_position[0]>=pos[0]-50) and (soldat._ancienne_position[0]<=pos[0]+50) and (soldat._ancienne_position[1]>=pos[1]-50) and (soldat._ancienne_position[1]<=pos[1]+50)) ):
-                                self.ajouter_element("images/armee/boss/boss_bas.png", (self.carte.largeur//4,self.carte.hauteur+50))
-                                text_base=font_menu.render("soldat:"+str(soldat._vie),1,(255,255,255))
-                                self._fenetre.blit(text_base,(self.carte.largeur//4 + 50, self.carte.hauteur+50))
+		self._menu.image(self)
+		self._menu.caracteristiques(self)
+		self._menu.boutons(self)
+		self._menu.interaction(event)

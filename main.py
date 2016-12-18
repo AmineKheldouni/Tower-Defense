@@ -69,7 +69,7 @@ def main():
 			#clock.tick(FPS)
 			#time.sleep(0.02)
 			for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
-				F._joueur.gestion_tour(event)
+				#F._joueur.gestion_tour(event)
 				F.gestion_menu(event)
 				if event.type == QUIT:     #Si un de ces événements est de type QUIT
 					continuer = 0      #On arrête la boucle
@@ -119,7 +119,7 @@ def main():
 			#temps = pygame.time.get_ticks()
 			if (compteur%2 == 0 and compteur > 10):
 				F._joueur.gain(compteur//5)
-			if (compteur%3 == 0) and [F._bases[i]._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
+			if (compteur%20 == 0) and [F._bases[i]._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
 				p = rd.randint(0, len(C.liste_sources))
 				pos_source = C.positionner_objet(C.liste_sources[p])
 				pos_source2 = C.positionner_objet((C.liste_sources[p][0],C.liste_sources[p][1]-1))

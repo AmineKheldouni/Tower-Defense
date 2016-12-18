@@ -54,18 +54,21 @@ class Projectile():
             return False
 
 class Tour(Case):
-    def __init__(self, position, joueur, projectile=None, hp = 10, portee = 150, cout_construction=50,
-              cout_entretien=2, cout_amelioration = 50, degat = 10, id_tour=1, id_excel=5):
+    def __init__(self, position, joueur, id_tour=2, \
+    projectile=None, hp = 10, portee = 100, cout_construction=50, \
+    cout_entretien=10, cout_amelioration = 50, degat = 10, id_excel=50):
         super(Tour,self).__init__(position, "tour", 0,id_excel,0)
         self._cout_construction = cout_construction
         self._id_tour = id_tour
         self.id_excel = id_excel
         self._cout_entretien = cout_entretien
+        self.vie_initiale = hp
         self._vie = hp
         self._portee = portee
         self._degat = degat
         self._joueur = joueur
-        self._munitions = 200 # A MODIFIER
+        self._munitions_max = 100
+        self._munitions = 50 # A MODIFIER
         self._cout_amelioration = cout_amelioration
         self._peut_tirer = 0
         #du prochain niveau de tour, pour passer id_tour=2
@@ -74,20 +77,41 @@ class Tour(Case):
     @property
     def position(self):
         return self._position
+    @property
+    def degat(self):
+        return self._degat
+    @property
+    def cout_amelioration(self):
+        return self._cout_amelioration
+    @property
+    def munitions_max(self):
+        return self._munitions_max
+    @property
+    def cout_entretien(self):
+        return self._cout_entretien
+
+    @property
+    def munitions(self):
+        return self._munitions
+
+    @property
+    def portee(self):
+        return self._portee
+
     def vieillit(self):
         #à appeler si le joueur n'a plus d'argent pour l'entretenir
-        self._portee /= 2
+        self._vie -= 2*self.vie//9
 
     def ameliore(self):
-        #à appeler si le joueur demande une amélioration et a l'argent nécessaire
-        #pour le faire
-        #Les améliorations peuvent porter sur 3 choses : VIE/PORTEE/DEGAT
-        #paramètres d'amélioration à modifier peut-être avec une IA
-        self._id_tour += 1
-        self._vie *= 2
-        self._portee *= 2
-        self._degat *= 2
+        # A MODIFIER ET ADAPTER PAR RAPPORT A LEXCEL
+        self._vie += 100
+        self._portee += self._joueur.carte.nb_cases_h
+        self._degat *= 4
         self._cout_amelioration *= 2
+        self._cout_entretien *= 2
+        self._munitions_max *= 2
+    def repare(self):
+        self._munitions = self.munitions_max
 
     def attaque(self, armee, F):
         '''_liste_soldat est le tableau des personnages de Armee'''
@@ -96,21 +120,21 @@ class Tour(Case):
         distance_cible = 10000000
         for indice_soldat, soldat in enumerate(armee._liste_soldat):
             pos_case = self._joueur._carte.objet_dans_case(soldat._position)
-            pos_milieu = pos_case[0]+0.5, pos_case[1]+0.5
-            milieu_soldat = self._joueur._carte.positionner_objet(pos_milieu)
-            distance_soldat = m.sqrt((milieu_soldat[0]-self._position[0])**2 + (milieu_soldat[1]-self._position[1])**2)
-            if distance_soldat < self._portee :
+            pos_tour = self._joueur.carte.objet_dans_case(self.position)
+            distance_soldat = abs(pos_tour[0]-pos_case[0])+abs(pos_tour[1]-pos_case[1])
+            if distance_soldat < self._portee/self._joueur.carte.nb_cases_l :
                if distance_soldat < distance_cible:
                    cible = indice_soldat
                    distance_cible = distance_soldat
-        if cible != -1 and distance_cible != 10000000 and self._peut_tirer%2 == 0:
+        if cible != -1 and distance_cible != 10000000 and self.munitions > 0 and self._peut_tirer%2 == 0:
             P = Projectile(self._position, armee._liste_soldat[cible]._position, 0, self._joueur, armee._liste_soldat[cible])
             #if self._joueur._carte.objet_dans_case(P._position) != self._joueur._carte.objet_dans_case(P._arrivee): A QUOI SERT CETTE CONDITION ?
             armee._liste_soldat[cible].vie = max(0,armee._liste_soldat[cible].vie-self._degat)
             armee.maj_troupe()
-            self._peut_tirer = False
+            self._peut_tirer = 0
+            self._munitions -= 1
             return (True, P)
-        elif (self._peut_tirer%2 != 0):
+        elif (self._peut_tirer%2!=0):
             self._peut_tirer = True
             return (False,0)
         else:
@@ -120,4 +144,11 @@ class Tour(Case):
 def TourFeu(Tour):
     def __init(self):
         super(TourFeu, self).__init__()
-        Tour._portee = 75
+        self.id_excel = 51
+        Tour._portee = 100
+
+def TourGlace(Tour):
+    def __init(self):
+        super(TourGlace, self).__init__()
+        self.id_excel = 52
+        Tour._portee = 200

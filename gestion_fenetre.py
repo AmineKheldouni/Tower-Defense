@@ -80,7 +80,6 @@ class Base(Case):
 	def dommage(self,degat):
 		self._vie -= degat
 		self._vie = max(0,self._vie)
-		print(self._vie)
 	def actualisation(self):
 			if self._vie > self.vie_depart/2:
 				self.set_id(103)
