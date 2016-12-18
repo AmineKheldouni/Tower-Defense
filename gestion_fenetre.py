@@ -156,12 +156,12 @@ class Carte:
 	def __getitem__(self, position):
 		lig, col = position
 		if position in self:
-			return self._cases[lig][col]
+			return self.cases[lig][col]
 
 	def __setitem__(self, position, valeur):
 	    lig, col = position
 	    if position in self:
-	        self._grille[lig][col] = valeur
+	        self._cases[lig][col] = valeur
 
 	def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnées de la case de l'objet """

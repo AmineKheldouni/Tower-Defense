@@ -18,7 +18,37 @@ import numpy.random as rd
 import time
 
 #Les fonctions de l'affichage du menu doivent être dans Menu !!! et non dans Affichage
+class MenuJeu:
+    def __init__(self):
+        self._fenetre = pygame.display.set_mode((640, 360))
+        image_menu = pygame.image.load("images/Menu/Menu_TD.jpg").convert_alpha()
+        self._fenetre.blit(image_menu, (0, 0))
+        self._etat = 0
 
+    def maj_menu(self, event=None):
+        if event != None and event.type == MOUSEBUTTONDOWN and event.button == 1:
+            pos_x, pos_y = event.pos
+            if (pos_x >= 266 and pos_y>= 194 and pos_x < 394 and pos_y < 218):
+                self._etat = "Jouer"
+            elif (pos_x >= 288 and pos_y>= 240 and pos_x < 371 and pos_y < 261):
+                self._etat = "Options"
+            elif (pos_x >= 303 and pos_y>= 292 and pos_x < 352 and pos_y < 310):
+                self._etat = "Quit"
+    def maj_image(self):
+        pos_x, pos_y = pygame.mouse.get_pos()
+        if (pos_x >= 266 and pos_y>= 194 and pos_x < 394 and pos_y < 218):
+            image_menu =pygame.image.load("images/Menu/Menu_TD_NewGame.jpg").convert_alpha()
+            self._fenetre.fill((0,0,0))
+            self._fenetre.blit(image_menu, (0,0))
+        elif (pos_x >= 288 and pos_y>= 240 and pos_x < 371 and pos_y < 261):
+            image_menu =pygame.image.load("images/Menu/Menu_TD_Options.jpg").convert_alpha()
+            self._fenetre.fill((0,0,0))
+            self._fenetre.blit(image_menu, (0,0))
+        elif (pos_x >= 303 and pos_y>= 292 and pos_x < 352 and pos_y < 310):
+                image_menu =pygame.image.load("images/Menu/Menu_TD_Quit.jpg").convert_alpha()
+                self._fenetre.fill((0,0,0))
+                self._fenetre.blit(image_menu, (0,0))
+        pygame.display.flip()
 class Menu(object):
     def __init__(self, joueur):
         self._etat = None
@@ -49,6 +79,7 @@ class Menu(object):
     def affichage_menu_haut(self, Vue):
         """ Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
         # Affichage du temps (Min:Sec)
+        print("AFFICHE HAUT")
         font_temps = pygame.font.Font(None, 36)
         temps = pygame.time.get_ticks()
         temps /= 1000
