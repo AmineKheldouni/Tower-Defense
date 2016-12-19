@@ -108,3 +108,4 @@ class Affichage_fenetre:
 		self._menu.caracteristiques(self)
 		self._menu.boutons(self)
 		self._menu.interaction(event)
+		self._menu.maj_menu(event)

@@ -5,7 +5,7 @@ from gestion_fenetre import *
 from tours import *
 
 class Joueur:
-	def __init__(self, carte, argent = 500, score = 0):
+	def __init__(self, carte, argent = 1000, score = 0):
 		self._argent = argent
 		self._score = score
 		self._carte = carte
@@ -51,7 +51,7 @@ class Joueur:
 			T.repare()
 
 	def construire_tour(self, id_tour, pos):
-		T = Tour(pos, self, id_tour)
+		T = Tour(self.carte.positionner_objet(pos), self, id_tour)
 		assert(self.carte.get_type_case(pos) == "place_construction")
 		if T._cout_construction <= self._argent:
 			self._liste_tours.append(T)

@@ -49,6 +49,7 @@ class MenuJeu:
                 self._fenetre.fill((0,0,0))
                 self._fenetre.blit(image_menu, (0,0))
         pygame.display.flip()
+
 class Menu(object):
     def __init__(self, joueur):
         self._etat = None
@@ -79,7 +80,6 @@ class Menu(object):
     def affichage_menu_haut(self, Vue):
         """ Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
         # Affichage du temps (Min:Sec)
-        print("AFFICHE HAUT")
         font_temps = pygame.font.Font(None, 36)
         temps = pygame.time.get_ticks()
         temps /= 1000

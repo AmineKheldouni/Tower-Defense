@@ -103,6 +103,7 @@ class Tour(Case):
 
     def ameliore(self):
         # A MODIFIER ET ADAPTER PAR RAPPORT A LEXCEL
+        print("Ameliration de la tour")
         self._vie += 100
         self._portee += self._joueur.carte.nb_cases_h
         self._degat *= 4
@@ -110,6 +111,7 @@ class Tour(Case):
         self._cout_entretien *= 2
         self._munitions_max *= 2
     def repare(self):
+        print("Reparation de la tour")
         self._munitions = self.munitions_max
 
     def attaque(self, armee, F):

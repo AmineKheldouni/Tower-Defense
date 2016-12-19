@@ -95,6 +95,7 @@ def main():
 						continuer = 0      #On arrête la boucle
 					if event.type == KEYDOWN and event.key == K_ESCAPE:
 						pygame.display.toggle_fullscreen()
+
 				tkey = pygame.key.get_pressed()
 
 				if tkey[K_LALT] and tkey[K_F4]:
