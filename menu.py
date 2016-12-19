@@ -138,7 +138,6 @@ class Menu(object):
     	pos_vie = []
     	for i in range(len(Affichage._bases)):
     		pos_vie.append(Affichage.carte.positionner_objet((Affichage.carte.nb_cases_l-len(Affichage._bases)+i, 0)))
-
     	for i, b in enumerate(Affichage._bases):
     		if b._vie > b.vie_depart/2:
     			Affichage.ajouter_element("images/interface/bases/hp_base.png", pos_vie[i])
@@ -206,7 +205,7 @@ class Menu(object):
             self._dict_boutons = {
                                "ameliorer":("images/interface/amelioration.png",pos_bouton_ameliorer),
                                "entretenir":("images/interface/reparation.png",pos_bouton_entretenir)
-                               }
+                                 }
             if self._dict_boutons != None :
                 for b in self._dict_boutons.keys():
                     image = pygame.image.load(self._dict_boutons[b][0]).convert_alpha()
@@ -250,8 +249,6 @@ class Menu(object):
                                 if b == "tour"+str(i):
                                     if self._joueur.construire_tour(i, self._dernier_click) :
                                         self._etat = "tour"
-
-
 
 
     def menu_place_construction(self, event, F):

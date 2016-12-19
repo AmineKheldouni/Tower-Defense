@@ -54,23 +54,22 @@ class Projectile():
             return False
 
 class Tour(Case):
-    def __init__(self, position, joueur, id_tour=2, \
-    projectile=None, hp = 10, portee = 100, cout_construction=50, \
-    cout_entretien=10, cout_amelioration = 50, degat = 10, id_excel=50):
-        super(Tour,self).__init__(position, "tour", 0,id_excel,0)
-        self._cout_construction = cout_construction
+    def __init__(self, position, joueur, id_tour):
         self._id_tour = id_tour
-        self.id_excel = id_excel
-        self._cout_entretien = cout_entretien
-        self.vie_initiale = hp
-        self._vie = hp
-        self._portee = portee
-        self._degat = degat
+        self._cout_construction = extract("tourelle",id_tour+1,3)
+        self._cout_entretien    = extract("tourelle",id_tour+1,4)
+        self._cout_amelioration = extract("tourelle",id_tour+1,5)
+        self._portee            = extract("tourelle",id_tour+1,6)
+        self._degat             = extract("tourelle",id_tour+1,7)
+        self.vie_initiale       = extract("tourelle",id_tour+1,9)
+        self._munitions_max     = extract("tourelle",id_tour+1,10)
+        self._id_excel          = extract("tourelle",id_tour+1,11)
+
         self._joueur = joueur
-        self._munitions_max = 100
+        self._vie = self.vie_initiale
         self._munitions = 50 # A MODIFIER
-        self._cout_amelioration = cout_amelioration
         self._peut_tirer = 0
+        super(Tour,self).__init__(position, "tour", 0,self._id_excel,0)
         #du prochain niveau de tour, pour passer id_tour=2
 
 	# A COMPLETER

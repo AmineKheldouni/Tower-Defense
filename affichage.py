@@ -17,7 +17,6 @@ class Affichage_fenetre:
 		self._menu = Menu(self._joueur)
 		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu.hauteur), pygame.RESIZABLE)	# A MODIFIER
 		pygame.display.set_caption("Tower Defense")
-		print(self.dico_carte_object)
 		self._bases = []
 		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
 		for x in liste_x:
@@ -65,7 +64,6 @@ class Affichage_fenetre:
 				pos = carte.positionner_objet((j,i))
 				if((carte._cases[j][i])._id_graphic !=0 ):
 					graphic = self.dico_carte_object[(carte._cases[j][i])._id_graphic]
-
 					if(graphic !="None"):
 						self.ajouter_element(graphic, pos)
 
@@ -80,9 +78,9 @@ class Affichage_fenetre:
 					pos = self.carte.positionner_objet((tmp[0]+0.5, tmp[1]+0.5))
 					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee, 2)
 
-	def affichage_statique(self):
-		for T in self.joueur.liste_tours:
-			self.ajouter_element(self._listenoms_tours[T._id_tour], T._position)
+	# def affichage_statique(self):
+	# 	for T in self.joueur.liste_tours:
+	# 		self.ajouter_element(self._listenoms_tours[T._id_graphic], T._position)
 
 	def affiche_soldat(self,soldat):
 		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",soldat._position)
