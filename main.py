@@ -40,10 +40,9 @@ def main():
 		pos_source2 = C.positionner_objet(pos_source2)
 		pos_source3 = (C.nb_cases_l//5, C.nb_cases_h-3)
 		pos_source3 = C.positionner_objet(pos_source3)
-		S = Soldat(pos_source, F._joueur)
-		S2 = Soldat(pos_source2, F._joueur)
-		S3 = Soldat(pos_source3, F._joueur)
-		print(pos_source)
+		S = Soldat(C.objet_dans_case(pos_source), F._joueur)
+		S2 = Soldat(C.objet_dans_case(pos_source2), F._joueur)
+		S3 = Soldat(C.objet_dans_case(pos_source3), F._joueur)
 		C.initialiser_carte([0,10,0,20])
 		A = Armee([S, S2, S3], F._joueur)
 		tableau_projectile =[] # Tableau des projectiles
@@ -133,7 +132,7 @@ def main():
 				if (compteur%2 == 0):
 					A.mouvement_troupe(dt)
 					for projectile in tableau_projectile:
-						projectile.set_arrivee(projectile._soldat_cible._position)
+						projectile.set_arrivee(C.positionner_objet(projectile._soldat_cible._position))
 					#last_time = time.time()
 				#temps = pygame.time.get_ticks()
 				if (compteur%2 == 0 and compteur > 10):
@@ -142,8 +141,8 @@ def main():
 					p = rd.randint(0, len(C.liste_sources))
 					pos_source = C.positionner_objet(C.liste_sources[p])
 					pos_source2 = C.positionner_objet((C.liste_sources[p][0],C.liste_sources[p][1]-1))
-					S = Soldat(pos_source, F._joueur)
-					S2 = Soldat(pos_source2, F._joueur)
+					S = Soldat(C.objet_dans_case(pos_source), F._joueur)
+					S2 = Soldat(C.objet_dans_case(pos_source2), F._joueur)
 					A._liste_soldat.append(S)
 					A._liste_soldat.append(S2)
 				#temps = pygame.time.get_ticks()

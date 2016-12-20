@@ -75,7 +75,8 @@ class Affichage_fenetre:
 					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee, 2)
 
 	def affiche_soldat(self,soldat):
-		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",soldat._position)
+		pos_carte = self._joueur.carte.positionner_objet(soldat._position)
+		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",pos_carte)
 
 	def affichage_armee(self, armee):
 		for soldat in armee._liste_soldat:

@@ -120,7 +120,7 @@ class Tour(Case):
         cible = -1  #indice du soldat de _liste_soldat qui est choisi pour cibles
         distance_cible = 10000000
         for indice_soldat, soldat in enumerate(armee._liste_soldat):
-            pos_case = self._joueur._carte.objet_dans_case(soldat._position)
+            pos_case = soldat._position
             pos_tour = self._joueur.carte.objet_dans_case(self.position)
             distance_soldat = abs(pos_tour[0]-pos_case[0])+abs(pos_tour[1]-pos_case[1])
             if distance_soldat < self._portee/self._joueur.carte.nb_cases_l :
@@ -128,7 +128,7 @@ class Tour(Case):
                    cible = indice_soldat
                    distance_cible = distance_soldat
         if cible != -1 and distance_cible != 10000000 and self.munitions > 0 and self._peut_tirer%2 == 0:
-            P = Projectile(self._position, armee._liste_soldat[cible]._position, 0, self._joueur, armee._liste_soldat[cible])
+            P = Projectile(self._position, self._joueur.carte.positionner_objet(armee._liste_soldat[cible]._position), 0, self._joueur, armee._liste_soldat[cible])
             #if self._joueur._carte.objet_dans_case(P._position) != self._joueur._carte.objet_dans_case(P._arrivee): A QUOI SERT CETTE CONDITION ?
             armee._liste_soldat[cible].vie = max(0,armee._liste_soldat[cible].vie-self._degat)
             armee.maj_troupe()

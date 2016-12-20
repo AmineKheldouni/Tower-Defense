@@ -16,16 +16,16 @@ class Soldat:
 		self._valeur_soldat = extract("armee",id_soldat,6)	# Score du joueur en tuant ce type de soldat
 		self._graphic       = extract_string("armee",id_soldat,7)
 
+
+		self._position = position;
 		self._pos_init = position
 		self._joueur = joueur
-		self._position = position
 		self._ancienne_position = self._position
 		self._is_dead = False
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
-		# self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
-		self._pas = 1.
-		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)] # FAIRE UN DICTIONNAIRE (b,g,h,d) aussi
+		self._pas = 100 #valeur d'une case
+		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
 		self.liste_voisins = []
 		self.liste_vitesses = []
 		self._est_mort = False
@@ -69,7 +69,7 @@ class Soldat:
 			self._animation = 0
 
 	def arriver_base(self):
-		pos_case = self._joueur._carte.objet_dans_case(self._position)
+		pos_case = self._position
 		if self._joueur.carte.get_type_case(pos_case) == "base":
 			self._joueur.carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
 			self._est_mort = True
@@ -78,7 +78,7 @@ class Soldat:
 
 	def maj_direction(self, dt):
 		# A MODIFIER
-		pos_case = self._joueur._carte.objet_dans_case(self._position)
+		pos_case = self._position;
 		choix_voisin = None
 		self.liste_voisins = []
 		self.liste_vitesses = []
@@ -113,21 +113,21 @@ class Soldat:
 
 	def maj_direction2(self, dt):
 		# A MODIFIER
-		pos_case = self._joueur._carte.objet_dans_case(self._position)
+		pos_case = self._position
 		choix_voisin = None
 		self.liste_voisins = []
 		self.liste_vitesses = []
 		for voisin in self._voisins:
 			tmp_a, tmp_b = int(pos_case[0]+voisin[0]), int(pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			if (self._joueur._carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
+			if (self._joueur._carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != (self._ancienne_position) :
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
 		for i in range(len(self.liste_voisins)):
 			for j in range(len(self.liste_voisins)):
 				choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
 				if len(self.liste_voisins) == 2:
-					pos_case = self._joueur._carte.objet_dans_case(self._position)
+					pos_case = self._position
 					if self.liste_voisins[0][1] > self.liste_voisins[1][1]:
 						choix_voisin = self.liste_voisins[1], self.liste_vitesses[1]
 					if self.liste_voisins[0][1] < self.liste_voisins[1][1]:
@@ -143,7 +143,7 @@ class Soldat:
 			self._direction = self._voisins.index(choix_voisin[1])
 			self._vitesse = choix_voisin[1]
 			self._ancienne_position = self._position
-			self._position =self._joueur._carte.positionner_objet(choix_voisin[0])
+			self._position= choix_voisin[0]
 			self.anime()
 			# # while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
 			# self.deplacement_soldat(dt)
