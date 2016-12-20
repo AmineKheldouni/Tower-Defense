@@ -61,6 +61,10 @@ class Element_decor(Case):
 	def __init__(self, position, tapis, id_excel):
 		super(Element_decor,self).__init__(position,"element_decor",tapis,id_excel)
 
+class Source(Case):
+	"""docstring for Element_decor."""
+	def __init__(self, position, tapis, id_excel):
+		super(Source,self).__init__(position,"source",tapis,id_excel)
 class Base(Case):
 	def __init__(self, position, tapis=0,id_excel=103):
 	 	super(Base,self).__init__(position,"base",tapis,id_excel,0)
@@ -68,6 +72,7 @@ class Base(Case):
 		self._vie = self.vie_depart
 		self._cout_entretien = 100
 		self._cout_amelioration = 20
+		self._est_mort = False
 	@property
 	def vie(self):
 		return self._vie
@@ -84,13 +89,21 @@ class Base(Case):
 		self._vie -= degat
 		self._vie = max(0,self._vie)
 	def actualisation(self):
+		if(not self._est_mort):
 			if self._vie > self.vie_depart/2:
 				self.set_id(103)
 			elif self._vie >self.vie_depart/5 and self._vie <=self.vie_depart/2:
 				self.set_id(104)
 			else:
 				self.set_id(105)
-				
+			if(self._vie==0):
+				self._est_mort=True
+				return True
+			else:
+				return False
+		else:
+			return False
+
 	def ameliorer(self):
 		if self._joueur.argent >= self._cout_entretien:
 			self._vie += 1
@@ -120,7 +133,7 @@ class Carte:
 			for i in range(0,self._nb_cases_h):
 				ob = extract_carte(id_carte+"_objets",i+1,j+1)
 				if(dico_nom_id[ob]=="source"):
-					self._cases[j][i] = Element_decor((i,j),extract_carte(id_carte,i+1,j+1),ob)
+					self._cases[j][i] = Source((i,j),extract_carte(id_carte,i+1,j+1),ob)
 					self.liste_sources.append((j, i))
 				elif dico_nom_id[ob]=="base":
 					self._cases[j][i] = Base((i,j),extract_carte(id_carte,i+1,j+1),ob)
@@ -209,6 +222,41 @@ class Carte:
 			return self._cases[pos[0]][pos[1]].est_chemin(soldat_direction)
 
 	def actualise(self):
+		for pos in self._pos_bases:
+			a=self._cases[pos[0]][pos[1]].actualisation()
+			if(a):
+				self.base_est_morte(pos)
 		for i in range(self._nb_cases_l):
 			for j in range(self._nb_cases_h):
 				self._cases[i][j].actualisation();
+
+	def base_est_morte(self, pos):
+		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
+		dico_dir_vers_entier = { (0,1) : -3 , (0,-1) : -1 , (1,0) : -4 , (1,0) : -2}
+		old_pos =(-50,-50) #non accessible en 0
+		pos_act = pos
+		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
+		liste_voisins =[];
+		while len(liste_voisins)<=1:
+			liste_voisins =[]
+			for voisin in voisins:
+				tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
+				case_voisin = (tmp_a, tmp_b)
+				if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
+					liste_voisins.append(case_voisin)
+			assert(len(liste_voisins)>0)
+			if(len(liste_voisins)==1):
+				old_pos = pos_act
+				pos_act=liste_voisins[0]
+		#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
+		direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
+		self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
+		self._cases[old_pos[0]][old_pos[1]]._tapis=0
+
+	def initialiser_carte(self, vec_decor=[]):
+		self.genere_decor(vec_decor)
+		for i in range(self._nb_cases_l):
+			for j in range(self._nb_cases_h):
+				if(self._cases[i][j]._type_objet=="source"):
+
+					self.base_est_morte((i,j))

@@ -32,7 +32,6 @@ def main():
 	if En_jeu == "Jouer":
 		#Ouverture de la fenêtre Pygame
 		C = Carte()
-		C.genere_decor([0,10,0,20])
 		J = Joueur(C)
 		F = Affichage_fenetre(J)
 		pos_source = (C.nb_cases_l//5, C.nb_cases_h-1)
@@ -44,6 +43,8 @@ def main():
 		S = Soldat(pos_source, F._joueur)
 		S2 = Soldat(pos_source2, F._joueur)
 		S3 = Soldat(pos_source3, F._joueur)
+		print(pos_source)
+		C.initialiser_carte([0,10,0,20])
 		A = Armee([S, S2, S3], F._joueur)
 		tableau_projectile =[] # Tableau des projectiles
 		continuer = 1
