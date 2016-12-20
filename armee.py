@@ -23,7 +23,8 @@ class Soldat:
 		self._is_dead = False
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
-		self._pas = 100 #valeur d'une case
+		self._pas = 0 #position dans la case
+		self._value_case = 100 #valeur d'une case
 		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
 		self.liste_voisins = []
 		self.liste_vitesses = []
@@ -59,13 +60,12 @@ class Soldat:
 	    if (self.vie == 0):
 	        joueur._score += self.valeur_soldat
 
-	def deplacement_soldat(self, dt):
-	    tmp_x = self._vitesse[0]*dt + self._position[0]
-	    tmp_y = self._vitesse[1]*dt + self._position[1]
-	    self._position = tmp_x, tmp_y
-	    self._animation += 1
-	    if self._animation == 3:
-			self._animation = 0
+	def deplacement_soldat(self):
+		self._pas = self._pas + self._vitesse
+		self.anime()
+		if(self._pas >= self._value_case):
+			self._pas-=self._value_case
+			self.maj_direction2()
 
 	def arriver_base(self):
 		pos_case = self._position
@@ -105,12 +105,11 @@ class Soldat:
 						choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
 		if choix_voisin != None:
 			self._direction = self._voisins.index(choix_voisin[1])
-			self._vitesse = choix_voisin[1]
 			self._ancienne_position = self._position
 			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
 				self.deplacement_soldat(dt)
 
-	def maj_direction2(self, dt):
+	def maj_direction2(self):
 		# A MODIFIER
 		pos_case = self._position
 		choix_voisin = None
@@ -140,17 +139,14 @@ class Soldat:
 						choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
 		if choix_voisin != None:
 			self._direction = self._voisins.index(choix_voisin[1])
-			self._vitesse = choix_voisin[1]
 			self._ancienne_position = self._position
 			self._position= choix_voisin[0]
-			self.anime()
-			# # while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
-			# self.deplacement_soldat(dt)
 
 	def dir_to_graph(self):
 		dir_vect=["_bas","_gauche","_haut","_droite"]
 		dir_anim=["","_pd","_pg"]
 		return dir_vect[self._direction]+dir_anim[self._animation]
+
 	def anime(self):
 		self._animation += 1
 		if self._animation == 3:
@@ -172,7 +168,7 @@ class Armee:
 		soldats_arrives = []
 		for i in range(len(self._liste_soldat)):
 			soldat = self._liste_soldat[i]
-			soldat.maj_direction2(dt)
+			soldat.deplacement_soldat()
 			if soldat.arriver_base():
 				soldats_arrives.append(i)
 		for i in soldats_arrives:

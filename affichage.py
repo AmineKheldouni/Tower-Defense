@@ -15,9 +15,9 @@ class Affichage_fenetre:
 		self._joueur = joueur
 		self._menu = Menu(self._joueur)
 		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu.hauteur), pygame.RESIZABLE)	# A MODIFIER
+		self._scale_l = self.carte.largeur/self.carte.nb_cases_l
+		self._scale_h = self.carte.hauteur/self.carte.nb_cases_h
 		pygame.display.set_caption("Tower Defense")
-		self._bases = []
-		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
 
 	@property
 	def carte(self):
@@ -33,7 +33,7 @@ class Affichage_fenetre:
 		and not "menu_bas" in nom_image and not "balle" in nom_image and \
 		not "arbre" in nom_image and not "tour" in nom_image and not \
 		"base_state1" in nom_image:
-			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
+			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
 
 
 		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image or "Aquadragon" in nom_image:
@@ -75,8 +75,11 @@ class Affichage_fenetre:
 					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee, 2)
 
 	def affiche_soldat(self,soldat):
+		dir_voisin = soldat._voisins[soldat._direction]
 		pos_carte = self._joueur.carte.positionner_objet(soldat._position)
-		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",pos_carte)
+		pos_x=pos_carte[0] + dir_voisin[0]*(soldat._pas*self._scale_l)/100
+		pos_y=pos_carte[1] + dir_voisin[1]*(soldat._pas*self._scale_h)/100
+		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",(pos_x,pos_y))
 
 	def affichage_armee(self, armee):
 		for soldat in armee._liste_soldat:
