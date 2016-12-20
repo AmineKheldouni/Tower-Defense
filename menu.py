@@ -76,29 +76,6 @@ class Menu(object):
         self.hauteur/self.nb_cases_h)
 		return (a, b)
 
-
-    def affichage_menu_haut(self, Vue):
-        """ Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
-        # Affichage du temps (Min:Sec)
-        font_temps = pygame.font.Font(None, 36)
-        temps = pygame.time.get_ticks()
-        temps /= 1000
-        secondes = temps%60
-        minutes = temps//60
-        text_temps = font_temps.render(str(minutes)+ " : "+ str(secondes), 1, (255, 255, 255))
-        Vue._fenetre.blit(text_temps, (20,10))
-        # Affichage des vies des bases
-        pos_vie = []
-        for i in range(len(Vue._bases)):
-                pos_vie.append(self._joueur.carte.positionner_objet((self.nb_cases_l-len(self._bases)+i, 0)))
-        for i, b in enumerate(self._bases):
-        	if b._vie > b.vie_depart/2:
-                       Vue.ajouter_element("images/interface/bases/hp_base.png", pos_vie[i])
-        	elif b._vie > b.vie_depart/5 and b._vie <= b.vie_depart/2:
-                       Vue.ajouter_element("images/interface/bases/hp_base2.png", pos_vie[i])
-        	else:
-                       Vue.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
-
     def menu_statique(self, Vue):
         """ Affiche l'argent et le score du joueur """
         # Argent :
@@ -146,7 +123,7 @@ class Menu(object):
     		else:
     			Affichage.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
 
-    def maj_menu(self, event):
+    def maj_menu(self, event, Vue=None):
         if event !=None and event.type == MOUSEBUTTONDOWN and event.button==1:
             pos_x, pos_y = self._joueur.carte.objet_dans_case(event.pos)
             if (pos_x,pos_y) in self._joueur.carte and self._joueur.carte.get_type_case((pos_x,pos_y)) == "tour":
@@ -159,20 +136,37 @@ class Menu(object):
             elif (pos_x, pos_y) in self._joueur.carte and self._joueur.carte.get_type_case((pos_x, pos_y)) == "place_construction":
                 self._etat = "place_construction"
                 self._dernier_click = (pos_x, pos_y)
+            elif (pos_x, pos_y) in self._joueur.carte and self._joueur.carte.get_type_case((pos_x, pos_y)) == "base":
+                for i in range(len(Vue._bases)):
+                    if (pos_x,pos_y) == self._joueur.carte.objet_dans_case(self._joueur.carte[(pos_x,pos_y)]._position):
+                        self._index_objet = i
+                self._etat = "base"
+                self._dernier_click = (pos_x, pos_y)
             elif (pos_x,pos_y) in self._joueur.carte:
                 self._etat = 0
                 self._dict_infos = None
                 self._dict_boutons = None
 
     def image(self, Vue):
+        pos_image = self.positionner_objet((8,0))
         if self._etat == "tour" and self._index_objet!=None:
             # Le menu affiche l'image d'une tour
-            pos_image = self.positionner_objet((8,0))
             image_tour = pygame.image.load("images/tours/tour"+str\
             (self._joueur.liste_tours[self._index_objet]._id_tour)+".png").convert_alpha()
             image_tour = pygame.transform.scale(image_tour, \
             (3*self.largeur/self.nb_cases_l, self.hauteur))
             Vue._fenetre.blit(image_tour, pos_image)
+        if self._etat == "base" and self._index_objet!=None:
+            name_image = "images/interface/bases/base_state1.png"
+            b = self._joueur.carte[self._dernier_click]
+            if b.vie > b.vie_depart/5 and b._vie <= b.vie_depart/2:
+                name_image = "images/interface/bases/base_state2.png"
+            elif b.vie <= b.vie_depart/5:
+                name_image = "images/interface/bases/base_state3.png"
+            image_base = pygame.image.load(name_image).convert_alpha()
+            image_base = pygame.transform.scale(image_base, \
+            (3*self.largeur/self.nb_cases_l, self.hauteur))
+            Vue._fenetre.blit(image_base, pos_image)
 
     def caracteristiques(self, Vue):
         if self._etat == "tour" and self._index_objet!=None:

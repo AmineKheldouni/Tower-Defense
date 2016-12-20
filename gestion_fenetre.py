@@ -61,7 +61,7 @@ class Element_decor(Case):
 class Base(Case):
 	def __init__(self, position, tapis=0,id_excel=103):
 	 	super(Base,self).__init__(position,"base",tapis,id_excel,0)
-	 	self.vie_depart = 100
+	 	self.vie_depart = 20
 		self._vie = self.vie_depart
 		self._cout_entretien = 100
 		self._cout_amelioration = 20

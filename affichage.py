@@ -11,7 +11,6 @@ class Affichage_fenetre:
 	def __init__(self, joueur):
 		self.dico_carte=cree_dico('legend',1,2)
 		self.dico_carte_object=cree_dico('legend2',1,2)
-		self._listenoms_tours = ["images/tours/tour0.png", "images/tours/tour1.png", "images/tours/tour2.png"]
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
 		self._joueur = joueur
 		self._menu = Menu(self._joueur)
@@ -34,16 +33,18 @@ class Affichage_fenetre:
 	def ajouter_element(self, nom_image, position):
 		element = pygame.image.load(nom_image).convert_alpha()
 		if not "background" in nom_image and not "GameOver" in nom_image \
-		and not "menu_bas" in nom_image and not "balle" in nom_image:
+		and not "menu_bas" in nom_image and not "balle" in nom_image and \
+		not "arbre" in nom_image and not "tour" in nom_image and not \
+		"base_state1" in nom_image:
 			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
 
-		if "balle" in nom_image:
-			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.largeur/self.carte.nb_cases_l))
+		#if "balle" in nom_image:
+			#element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.largeur/self.carte.nb_cases_l))
 
 		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image or "Aquadragon" in nom_image:
-			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
+			#element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
 			self._fenetre.blit(element, (position[0], position[1]-\
-			self.carte.hauteur/self.carte.nb_cases_h))
+			2.35*self.carte.hauteur/self.carte.nb_cases_h))
 		else:
 			self._fenetre.blit(element, position)
 
@@ -103,9 +104,8 @@ class Affichage_fenetre:
 		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
 		self._menu.affichage_menu_haut(self)
 		self._menu.menu_statique(self)
-		self._menu.maj_menu(event)
+		self._menu.maj_menu(event, self)
 		self._menu.image(self)
 		self._menu.caracteristiques(self)
 		self._menu.boutons(self)
 		self._menu.interaction(event)
-		self._menu.maj_menu(event)
