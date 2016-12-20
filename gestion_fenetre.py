@@ -244,7 +244,9 @@ class Carte:
 				case_voisin = (tmp_a, tmp_b)
 				if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
 					liste_voisins.append(case_voisin)
-			assert(len(liste_voisins)>0)
+			if(len(liste_voisins)==0):
+				print("la carte est une ligne droite non ?")
+				return 0
 			if(len(liste_voisins)==1):
 				old_pos = pos_act
 				pos_act=liste_voisins[0]
