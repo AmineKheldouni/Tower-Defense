@@ -18,9 +18,6 @@ class Affichage_fenetre:
 		pygame.display.set_caption("Tower Defense")
 		self._bases = []
 		liste_x = [self.carte.nb_cases_l//10+3, (2*self.carte.nb_cases_l//5+3*self.carte.nb_cases_l//5)//2, 4*self.carte.nb_cases_l//5-2]
-		for x in liste_x:
-			pos_base = self.carte.positionner_objet((x, 0))
-			self._bases.append(Base(pos_base, self._joueur))
 
 	@property
 	def carte(self):

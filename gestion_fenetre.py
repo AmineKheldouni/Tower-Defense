@@ -185,8 +185,17 @@ class Carte:
 	def case_objet(self,i,j):
 		return self._objets[i][j]
 
+	def get_case(self,i,j):
+		return self._cases[i][j]
+
+	def get_case(self,pos):
+		return self._cases[pos[0]][pos[1]]
+
 	def get_type_case(self, pos):
 		return self[pos]._type_objet
+
+	def get_base(self,i):
+		return self.get_case(self._pos_bases[i])
 
 	def est_case_chemin(self,pos):
 		if      (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):

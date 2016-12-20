@@ -113,15 +113,16 @@ class Menu(object):
     	Affichage._fenetre.blit(text_temps, (20,10))
     	# Affichage des vies des bases
     	pos_vie = []
-    	for i in range(len(Affichage._bases)):
-    		pos_vie.append(Affichage.carte.positionner_objet((Affichage.carte.nb_cases_l-len(Affichage._bases)+i, 0)))
-    	for i, b in enumerate(Affichage._bases):
-    		if b._vie > b.vie_depart/2:
-    			Affichage.ajouter_element("images/interface/bases/hp_base.png", pos_vie[i])
-    		elif b._vie > b.vie_depart/5 and b._vie <= b.vie_depart/2:
-    			Affichage.ajouter_element("images/interface/bases/hp_base2.png", pos_vie[i])
-    		else:
-    			Affichage.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
+    	for i in range(len(self._joueur.carte._pos_bases)):
+    		pos_vie.append(Affichage.carte.positionner_objet((Affichage.carte.nb_cases_l-len(self._joueur.carte._pos_bases)+i, 0)))
+    	for i in range(len(self._joueur.carte._pos_bases)):
+            b = self._joueur.carte.get_base(i)
+            if b._vie > b.vie_depart/2:
+                Affichage.ajouter_element("images/interface/bases/hp_base.png", pos_vie[i])
+            elif b._vie > b.vie_depart/5 and b._vie <= b.vie_depart/2:
+                Affichage.ajouter_element("images/interface/bases/hp_base2.png", pos_vie[i])
+            else:
+                Affichage.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
 
     def maj_menu(self, event, Vue=None):
         if event !=None and event.type == MOUSEBUTTONDOWN and event.button==1:
