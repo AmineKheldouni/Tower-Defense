@@ -16,7 +16,6 @@ class Soldat:
 		self._valeur_soldat = extract("armee",id_soldat,6)	# Score du joueur en tuant ce type de soldat
 		self._graphic       = extract_string("armee",id_soldat,7)
 
-
 		self._position = position;
 		self._pos_init = position
 		self._joueur = joueur
