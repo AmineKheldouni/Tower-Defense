@@ -46,8 +46,11 @@ class Case(object):
 	def actualisation(self):
 		None
 	#Dis si l'armée peut marcher dessus
-	def est_chemin(self):
-		return self._est_chemin
+	def est_chemin(self, dir_soldat=0):
+		if((self._est_chemin==1) or (self._est_chemin==-(dir_soldat+1))):
+			return True
+		else:
+			return False
 
 class Emplacement(Case):
 	def __init__(self, position, tapis, id_excel):
@@ -87,7 +90,7 @@ class Base(Case):
 				self.set_id(104)
 			else:
 				self.set_id(105)
-
+				
 	def ameliorer(self):
 		if self._joueur.argent >= self._cout_entretien:
 			self._vie += 1
@@ -124,8 +127,10 @@ class Carte:
 					self._pos_bases.append((j,i))
 				elif dico_nom_id[ob]=="place_construction":
 					self._cases[j][i]= Emplacement((i,j),extract_carte(id_carte,i+1,j+1),ob)
-				if(extract_carte(id_carte,i+1,j+1)==1):
-					self._cases[j][i]._est_chemin=1;
+				chemin = extract_carte(id_carte,i+1,j+1)
+				if(chemin==1) or (chemin < 0):
+					self._cases[j][i]._est_chemin=chemin;
+					self._cases[j][i]._tapis = 1;
 	@property
 	def carte_couts(self):
 		return self._carte_couts
@@ -197,11 +202,11 @@ class Carte:
 	def get_base(self,i):
 		return self.get_case(self._pos_bases[i])
 
-	def est_case_chemin(self,pos):
+	def est_case_chemin(self,pos,soldat_direction=0):
 		if      (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
 			return False
 		else:
-			return self._cases[pos[0]][pos[1]].est_chemin()
+			return self._cases[pos[0]][pos[1]].est_chemin(soldat_direction)
 
 	def actualise(self):
 		for i in range(self._nb_cases_l):

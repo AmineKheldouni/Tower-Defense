@@ -35,8 +35,6 @@ class Affichage_fenetre:
 		"base_state1" in nom_image:
 			element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.hauteur/self.carte.nb_cases_h))
 
-		#if "balle" in nom_image:
-			#element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, self.carte.largeur/self.carte.nb_cases_l))
 
 		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image or "Aquadragon" in nom_image:
 			#element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
@@ -75,10 +73,6 @@ class Affichage_fenetre:
 				if T._position == pos:
 					pos = self.carte.positionner_objet((tmp[0]+0.5, tmp[1]+0.5))
 					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee, 2)
-
-	# def affichage_statique(self):
-	# 	for T in self.joueur.liste_tours:
-	# 		self.ajouter_element(self._listenoms_tours[T._id_graphic], T._position)
 
 	def affiche_soldat(self,soldat):
 		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",soldat._position)

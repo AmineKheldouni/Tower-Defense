@@ -24,7 +24,6 @@ def main():
 		tkey = pygame.key.get_pressed()
 		if tkey[K_LALT] and tkey[K_F4]:
 			tmp = 0
-
 		MJ.maj_menu(event)
 		En_jeu = MJ._etat
 		if En_jeu == "Quit":
@@ -62,6 +61,7 @@ def main():
 		compteur = 0
 		gameover_bool = False
 		#Boucle infinie
+		pos =[1,2]
 		while continuer:
 			if is_over(C):
 				if not gameover_bool:
@@ -108,8 +108,6 @@ def main():
 				F.affichage_carte(C)
 				F.affichage_armee(A)
 				F.affiche_carte_objet(C)
-				#F.affichage_statique()
-				#F.affichage_menu(A)
 				F.gestion_menu()
 				F.affichage_portee()
 				#F._fenetre.blit(fps_label, fps_rect)

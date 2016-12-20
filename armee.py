@@ -16,7 +16,7 @@ class Soldat:
 		self._valeur_soldat = extract("armee",id_soldat,6)	# Score du joueur en tuant ce type de soldat
 		self._graphic       = extract_string("armee",id_soldat,7)
 
-		self.pos_init = position
+		self._pos_init = position
 		self._joueur = joueur
 		self._position = position
 		self._ancienne_position = self._position
@@ -25,8 +25,7 @@ class Soldat:
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
 		# self._position_objectifs= self._joueur._carte.positionner_objet(position_base)
 		self._pas = 1.
-		self._voisins = [(0, int(self.pas)), (-int(self.pas),0), (0, -int(self.pas)), (int(self.pas), 0)] # FAIRE UN DICTIONNAIRE
-		self._chemin = []
+		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)] # FAIRE UN DICTIONNAIRE (b,g,h,d) aussi
 		self.liste_voisins = []
 		self.liste_vitesses = []
 		self._est_mort = False
@@ -86,7 +85,7 @@ class Soldat:
 		for voisin in self._voisins:
 			tmp_a, tmp_b = int(pos_case[0]+voisin[0]/self.pas), int(pos_case[1]+voisin[1]/self.pas)
 			case_voisin = (tmp_a, tmp_b)
-			if (self._joueur._carte.est_case_chemin(case_voisin)) and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
+			if (self._joueur._carte.est_case_chemin(case_voisin,self._direction)) and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self._pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
 		for i in range(len(self.liste_voisins)):
@@ -113,29 +112,51 @@ class Soldat:
 				self.deplacement_soldat(dt)
 
 	def maj_direction2(self, dt):
+		# A MODIFIER
 		pos_case = self._joueur._carte.objet_dans_case(self._position)
 		choix_voisin = None
 		self.liste_voisins = []
 		self.liste_vitesses = []
 		for voisin in self._voisins:
-			tmp_a, tmp_b = int(pos_case[0]+voisin[0]/self.pas), int(pos_case[1]+voisin[1]/self.pas)
+			tmp_a, tmp_b = int(pos_case[0]+voisin[0]), int(pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			if (self._joueur._carte.est_chemin(case_voisin)) and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self.pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
+			if (self._joueur._carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
-			else:
-					choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
+		for i in range(len(self.liste_voisins)):
+			for j in range(len(self.liste_voisins)):
+				choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
+				if len(self.liste_voisins) == 2:
+					pos_case = self._joueur._carte.objet_dans_case(self._position)
+					if self.liste_voisins[0][1] > self.liste_voisins[1][1]:
+						choix_voisin = self.liste_voisins[1], self.liste_vitesses[1]
+					if self.liste_voisins[0][1] < self.liste_voisins[1][1]:
+						choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
+					if self.liste_voisins[0][1] == self.liste_voisins[1][1] or \
+					(self.liste_voisins[0][1] < self.liste_voisins[1][1] and \
+					self.liste_voisins[1][1] == pos_case[1]) or  \
+					(self.liste_voisins[1][1] < self.liste_voisins[0][1] and \
+					self.liste_voisins[0][1] == pos_case[1]):
+						p = rd.randint(0, 2)
+						choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
 		if choix_voisin != None:
 			self._direction = self._voisins.index(choix_voisin[1])
 			self._vitesse = choix_voisin[1]
 			self._ancienne_position = self._position
-			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
-				self.deplacement_soldat(dt)
+			self._position =self._joueur._carte.positionner_objet(choix_voisin[0])
+			self.anime()
+			# # while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
+			# self.deplacement_soldat(dt)
 
 	def dir_to_graph(self):
 		dir_vect=["_bas","_gauche","_haut","_droite"]
 		dir_anim=["","_pd","_pg"]
 		return dir_vect[self._direction]+dir_anim[self._animation]
+	def anime(self):
+		self._animation += 1
+		if self._animation == 3:
+			self._animation = 0
+
 
 class Armee:
 	def __init__(self, tableau_soldat, joueur):
@@ -152,7 +173,7 @@ class Armee:
 		soldats_arrives = []
 		for i in range(len(self._liste_soldat)):
 			soldat = self._liste_soldat[i]
-			soldat.maj_direction(dt)
+			soldat.maj_direction2(dt)
 			if soldat.arriver_base():
 				soldats_arrives.append(i)
 		for i in soldats_arrives:
