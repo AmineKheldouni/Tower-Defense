@@ -61,7 +61,6 @@ def main():
 		compteur = 0
 		gameover_bool = False
 		#Boucle infinie
-		pos =[1,2]
 		while continuer:
 			if is_over(C):
 				if not gameover_bool:
@@ -104,12 +103,7 @@ def main():
 				dt=1
 				# Vider la fenêtre
 				#Graphic
-				F.affichage_terrain()
-				F.affichage_carte(C)
-				F.affichage_armee(A)
-				F.affiche_carte_objet(C)
-				F.gestion_menu()
-				F.affichage_portee()
+				F.affiche_all(C,A)
 				#F._fenetre.blit(fps_label, fps_rect)
 				#if True:
 					# if((time.time()-last_time_proj)> 0.05):
@@ -119,7 +113,6 @@ def main():
 				i =0
 				# Gestion des objets de la carte
 				C.actualise()
-				#
 				while(i<len(tableau_projectile)):
 					F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
 					tableau_projectile[i].bouge()
@@ -148,12 +141,12 @@ def main():
 				#temps = pygame.time.get_ticks()
 
 				#Gestion de l'attaque des tours
-				if (compteur%5 == 0):
+				if (compteur%2 == 0):
 					for T in F._joueur._liste_tours:
 						stock_attaque = (T.attaque(A, F))
 						if(stock_attaque[0]):
 							tableau_projectile.append(stock_attaque[1])
-
+				A.maj_troupe()
 				pygame.display.flip()
 					#last_time = time.time()
 

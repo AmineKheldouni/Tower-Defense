@@ -19,27 +19,25 @@ dt = 1
 DT = dt*5
 
 class Projectile():
-    def __init__(self, position_Tour, position_Cible, id_projectile, joueur, soldat_cible):
-        self._joueur = joueur
-        self._position_initiale = position_Tour
-        self._position_initiale = self._joueur.carte.objet_dans_case(self._position_initiale)
-        self._position_initiale = self._joueur.carte.positionner_objet((self._position_initiale[0]+0.5, self._position_initiale[1]+1))
-        self._position = self._position_initiale
+    def __init__(self, position_Tour, position_Cible, id_projectile, joueur, soldat_cible,degat):
+        position_initiale = position_Tour
+        position_initiale = joueur.carte.objet_dans_case(position_initiale)
+        position_initiale = joueur.carte.positionner_objet((position_initiale[0]+0.5, position_initiale[1]+1))
+        self._position = position_initiale
         self._id = id_projectile
         self._soldat_cible = soldat_cible
-        self._arrivee = position_Cible
-        self._arrivee = self._joueur.carte.objet_dans_case(self._arrivee)
-        self._arrivee = self._joueur.carte.positionner_objet((self._arrivee[0]+0.5, self._arrivee[1]+0.5))
-        v_x = (position_Cible[0]-position_Tour[0])/5
-        v_y = (position_Cible[1]-position_Tour[1])/5
-        self._vitesse = (v_x, v_y)
-        self._animation = 5. # Nombre d'étapes d'affichage
+        arrivee = position_Cible
+        arrivee = joueur.carte.objet_dans_case(arrivee)
+        arrivee = joueur.carte.positionner_objet((arrivee[0]+0.5, arrivee[1]+0.5))
+        self._animation = 5
+        self.v_x = (arrivee[0]-self._position[0])/self._animation
+        self.v_y = (arrivee[1]-self._position[1])/self._animation
+         # Nombre d'étapes d'affichage
         self._etape = self._animation #Gere l'animation du projectile
+        self._degat = degat
 
     def bouge(self):
-        pas_x, pas_y = (self._arrivee[0]-self._position_initiale[0])/self._animation, \
-        (self._arrivee[1]-self._position_initiale[1]) / self._animation
-        pos_tmp = (self._position[0]+pas_x, self._position[1]+pas_y)
+        pos_tmp = (self._position[0]+self.v_x, self._position[1]+self.v_y)
         self._position = pos_tmp
         self._etape -= 1
 
@@ -48,7 +46,8 @@ class Projectile():
         self._arrivee = pos
 
     def is_over(self):
-        if(self._etape==1):
+        if(self._etape==0):
+            self._soldat_cible._vie= max(0,self._soldat_cible._vie-self._degat)
             return True
         else:
             return False
@@ -61,14 +60,15 @@ class Tour(Case):
         self._cout_amelioration = extract("tourelle",id_tour+1,5)
         self._portee            = extract("tourelle",id_tour+1,6)
         self._degat             = extract("tourelle",id_tour+1,7)
+        self._cadence           = extract("tourelle",id_tour+1,8)
         self.vie_initiale       = extract("tourelle",id_tour+1,9)
         self._munitions_max     = extract("tourelle",id_tour+1,10)
         self._id_excel          = extract("tourelle",id_tour+1,11)
 
         self._joueur = joueur
         self._vie = self.vie_initiale
-        self._munitions = 50 # A MODIFIER
-        self._peut_tirer = 0
+        self._munitions = self._munitions_max
+        self._chargement = 0
         super(Tour,self).__init__(position, "tour", 0,self._id_excel,0)
         #du prochain niveau de tour, pour passer id_tour=2
 
@@ -113,6 +113,10 @@ class Tour(Case):
     def repare(self):
         print("Reparation de la tour")
         self._munitions = self.munitions_max
+        self._id_graphic = self._id_tour+50
+
+    def peut_tirer(self):
+        return self._munitions>0 and self._chargement>100
 
     def attaque(self, armee, F):
         '''_liste_soldat est le tableau des personnages de Armee'''
@@ -127,20 +131,19 @@ class Tour(Case):
                if distance_soldat < distance_cible:
                    cible = indice_soldat
                    distance_cible = distance_soldat
-        if cible != -1 and distance_cible != 10000000 and self.munitions > 0 and self._peut_tirer%2 == 0:
-            P = Projectile(self._position, self._joueur.carte.positionner_objet(armee._liste_soldat[cible]._position), 0, self._joueur, armee._liste_soldat[cible])
-            #if self._joueur._carte.objet_dans_case(P._position) != self._joueur._carte.objet_dans_case(P._arrivee): A QUOI SERT CETTE CONDITION ?
-            armee._liste_soldat[cible].vie = max(0,armee._liste_soldat[cible].vie-self._degat)
-            armee.maj_troupe()
-            self._peut_tirer = 0
+        if cible != -1 and self.peut_tirer():
+            self._chargement-=100;
+            P = Projectile(self._position, self._joueur.carte.positionner_objet(armee._liste_soldat[cible]._position), 0, self._joueur, armee._liste_soldat[cible], self._degat)
             self._munitions -= 1
             return (True, P)
-        elif (self._peut_tirer%2!=0):
-            self._peut_tirer = True
-            return (False,0)
         else:
             return (False,0)
 
+
+    def actualisation(self):
+        self._chargement+=self._cadence
+        if(self._munitions<=0):
+            self._id_graphic=53
 
 def TourFeu(Tour):
     def __init(self):
