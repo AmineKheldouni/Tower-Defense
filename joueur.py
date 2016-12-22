@@ -61,7 +61,3 @@ class Joueur:
 			return True
 		else:
 			return False
-
-
-	def gain(self, difficulte):
-		self._argent += self._score//difficulte

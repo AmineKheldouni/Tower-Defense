@@ -14,7 +14,8 @@ class Soldat:
 		self._vitesse       = extract("armee",id_soldat,4)
 		self._degat         = extract("armee",id_soldat,5)
 		self._valeur_soldat = extract("armee",id_soldat,6)	# Score du joueur en tuant ce type de soldat
-		self._graphic       = extract_string("armee",id_soldat,7)
+		self.argent_soldat = extract("armee",id_soldat,7)
+		self._graphic       = extract_string("armee",id_soldat,8)
 
 		self._position = position;
 		self._pos_init = position
@@ -53,12 +54,13 @@ class Soldat:
 	def pas(self):
 		return self._pas
 
-	def miseajourscore(self,joueur):
+	def miseajourjoueur(self,joueur):
 	    """
 	    mise à jour du score du joueur en cas d'élimination du soldat
 	    """
 	    if (self.vie == 0):
-	        joueur._score += self.valeur_soldat
+			joueur._score += self.valeur_soldat
+			joueur._argent += self.argent_soldat
 
 	def deplacement_soldat(self):
 		self._pas = self._pas + self._vitesse
@@ -180,7 +182,7 @@ class Armee:
 	def maj_troupe(self):
 		liste_morts = []
 		for i in range(len(self._liste_soldat)):
-			self._liste_soldat[i].miseajourscore(self._joueur)
+			self._liste_soldat[i].miseajourjoueur(self._joueur)
 			if self._liste_soldat[i].vie == 0:
 				liste_morts.append(i)
 		for idx in liste_morts:

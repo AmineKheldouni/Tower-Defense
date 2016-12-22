@@ -128,9 +128,8 @@ def main():
 						projectile.set_arrivee(C.positionner_objet(projectile._soldat_cible._position))
 					#last_time = time.time()
 				#temps = pygame.time.get_ticks()
-				if (compteur%2 == 0 and compteur > 10):
-					F._joueur.gain(compteur//5)
-				if (compteur%5 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
+
+				if (compteur%50 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
 					p = rd.randint(0, len(C.liste_sources))
 					pos_source = C.positionner_objet(C.liste_sources[p])
 					pos_source2 = C.positionner_objet((C.liste_sources[p][0],C.liste_sources[p][1]-1))
