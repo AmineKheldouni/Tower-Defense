@@ -103,7 +103,20 @@ class Affichage_fenetre:
 		self._menu.image(self)
 		self._menu.caracteristiques(self)
 		self._menu.boutons(self)
-		self._menu.interaction(event)
+		self._menu.interaction(event, self)
+
+	def animation_amelioration(self, elt):
+		for i in range(5):
+			pygame.time.wait(50)
+			if i<=2:
+				self.ajouter_element("images/tours/tour"+\
+				str(elt._id_tour)+"amelioration"+\
+				str(i+1)+".png",elt._position)
+			else:
+				self.ajouter_element("images/tours/tour"+\
+				str(elt._id_tour)+"amelioration"+\
+				str(5-i)+".png",elt._position)
+			pygame.display.flip()
 
 	def affiche_all(self,Carte,Arme):
 		self.affichage_terrain()

@@ -221,7 +221,7 @@ class Menu(object):
                     image = pygame.transform.scale(image, (4*self.largeur/self.nb_cases_l, 4*self.hauteur/self.nb_cases_h))
                     Vue._fenetre.blit(image, self._dict_boutons[b][1])
 
-    def interaction(self, event):
+    def interaction(self, event, Vue):
         if event != None and event.type == MOUSEBUTTONDOWN:
             pos_x, pos_y = event.pos
             pos_x, pos_y = self.objet_dans_case((pos_x, pos_y))
@@ -232,7 +232,7 @@ class Menu(object):
                         if (pos_x,pos_y) in self and abs(pos_x-pos_boutton[0]-1)<3 and abs(pos_y-pos_boutton[1]-1)<3:
                             if b == "ameliorer":
                                 self._joueur.ameliorer_tour(self._joueur.\
-                                liste_tours[self._index_objet])
+                                liste_tours[self._index_objet], Vue)
                             elif b == "entretenir":
                                 self._joueur.reparer_tour(self._joueur.\
                                 liste_tours[self._index_objet])

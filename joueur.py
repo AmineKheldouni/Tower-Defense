@@ -39,8 +39,9 @@ class Joueur:
 					self.carte._cases[pos_x][pos_y] = T
 				else:
 					print ("Vous n'avez pas suffisamment d'argent.")
-	def ameliorer_tour(self, T):
+	def ameliorer_tour(self, T, Vue):
 		if self.argent >= T.cout_amelioration:
+			Vue.animation_amelioration(T)
 			self._argent -= T.cout_amelioration
 			T.ameliore(self.carte)
 
