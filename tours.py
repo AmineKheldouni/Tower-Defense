@@ -19,16 +19,16 @@ dt = 1
 DT = dt*5
 
 class Projectile():
-    def __init__(self, position_Tour, position_Cible, id_projectile, joueur, soldat_cible,degat):
+    def __init__(self, position_Tour, position_Cible, id_projectile, C, soldat_cible,degat):
         position_initiale = position_Tour
-        position_initiale = joueur.carte.objet_dans_case(position_initiale)
-        position_initiale = joueur.carte.positionner_objet((position_initiale[0]+0.5, position_initiale[1]+1))
+        position_initiale = C.objet_dans_case(position_initiale)
+        position_initiale = C.positionner_objet((position_initiale[0]+0.5, position_initiale[1]+1))
         self._position = position_initiale
         self._id = id_projectile
         self._soldat_cible = soldat_cible
         arrivee = position_Cible
-        arrivee = joueur.carte.objet_dans_case(arrivee)
-        arrivee = joueur.carte.positionner_objet((arrivee[0]+0.5, arrivee[1]+0.5))
+        arrivee = C.objet_dans_case(arrivee)
+        arrivee = C.positionner_objet((arrivee[0]+0.5, arrivee[1]+0.5))
         self._animation = 5
         self.v_x = (arrivee[0]-self._position[0])/self._animation
         self.v_y = (arrivee[1]-self._position[1])/self._animation
@@ -53,7 +53,7 @@ class Projectile():
             return False
 
 class Tour(Case):
-    def __init__(self, position, joueur, id_tour):
+    def __init__(self, position, id_tour):
         self._id_tour = id_tour
         self._cout_construction = extract("tourelle",id_tour+1,3)
         self._cout_entretien    = extract("tourelle",id_tour+1,4)
@@ -65,7 +65,6 @@ class Tour(Case):
         self._munitions_max     = extract("tourelle",id_tour+1,10)
         self._id_excel          = extract("tourelle",id_tour+1,11)
 
-        self._joueur = joueur
         self._vie = self.vie_initiale
         self._munitions = self._munitions_max
         self._chargement = 0
@@ -101,11 +100,11 @@ class Tour(Case):
         #à appeler si le joueur n'a plus d'argent pour l'entretenir
         self._vie -= 2*self.vie//9
 
-    def ameliore(self):
+    def ameliore(self, C):
         # A MODIFIER ET ADAPTER PAR RAPPORT A LEXCEL
         print("Ameliration de la tour")
         self._vie += 100
-        self._portee += self._joueur.carte.nb_cases_h
+        self._portee += C.nb_cases_h
         self._degat *= 4
         self._cout_amelioration *= 2
         self._cout_entretien *= 2
@@ -118,22 +117,22 @@ class Tour(Case):
     def peut_tirer(self):
         return self._munitions>0 and self._chargement>100
 
-    def attaque(self, armee, F):
+    def attaque(self, armee, F, C):
         '''_liste_soldat est le tableau des personnages de Armee'''
         '''Renvoie (False/True, un projectile si true)'''
         cible = -1  #indice du soldat de _liste_soldat qui est choisi pour cibles
         distance_cible = 10000000
         for indice_soldat, soldat in enumerate(armee._liste_soldat):
             pos_case = soldat._position
-            pos_tour = self._joueur.carte.objet_dans_case(self.position)
+            pos_tour = C.objet_dans_case(self.position)
             distance_soldat = abs(pos_tour[0]-pos_case[0])+abs(pos_tour[1]-pos_case[1])
-            if distance_soldat < self._portee/self._joueur.carte.nb_cases_l :
+            if distance_soldat < self._portee/C.nb_cases_l :
                if distance_soldat < distance_cible:
                    cible = indice_soldat
                    distance_cible = distance_soldat
         if cible != -1 and self.peut_tirer():
             self._chargement-=100;
-            P = Projectile(self._position, self._joueur.carte.positionner_objet(armee._liste_soldat[cible]._position), 0, self._joueur, armee._liste_soldat[cible], self._degat)
+            P = Projectile(self._position, C.positionner_objet(armee._liste_soldat[cible]._position), 0, C, armee._liste_soldat[cible], self._degat)
             self._munitions -= 1
             return (True, P)
         else:

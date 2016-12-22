@@ -143,7 +143,7 @@ def main():
 				#Gestion de l'attaque des tours
 				if (compteur%2 == 0):
 					for T in F._joueur._liste_tours:
-						stock_attaque = (T.attaque(A, F))
+						stock_attaque = (T.attaque(A, F, F._joueur.carte))
 						if(stock_attaque[0]):
 							tableau_projectile.append(stock_attaque[1])
 				A.maj_troupe()

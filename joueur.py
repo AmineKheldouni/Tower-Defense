@@ -32,7 +32,7 @@ class Joueur:
 			elif (pos_x, pos_y) in self.carte and self.carte.get_type_case((pos_x,pos_y)) == "place_construction":
 				pos_pix = pos_x*self.carte._largeur/self.carte._nb_cases_l\
 				, pos_y*self.carte._hauteur/self.carte._nb_cases_h
-				T = Tour(pos_pix, self)
+				T = Tour(pos_pix)
 				if T._cout_construction <= self._argent:
 					self._liste_tours.append(T)
 					self._argent -= T._cout_construction
@@ -42,7 +42,7 @@ class Joueur:
 	def ameliorer_tour(self, T):
 		if self.argent >= T.cout_amelioration:
 			self._argent -= T.cout_amelioration
-			T.ameliore()
+			T.ameliore(self.carte)
 
 	def reparer_tour(self, T):
 		if self.argent >= T.cout_entretien and T.munitions < \
@@ -51,7 +51,7 @@ class Joueur:
 			T.repare()
 
 	def construire_tour(self, id_tour, pos):
-		T = Tour(self.carte.positionner_objet(pos), self, id_tour)
+		T = Tour(self.carte.positionner_objet(pos), id_tour)
 		assert(self.carte.get_type_case(pos) == "place_construction")
 		if T._cout_construction <= self._argent:
 			self._liste_tours.append(T)
