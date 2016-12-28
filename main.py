@@ -110,9 +110,11 @@ def main():
 					#last_time_proj=time.time()
 					# Gestion de l'avancée des projectiles
 					#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
-				i =0
+
 				# Gestion des objets de la carte
 				C.actualise()
+				i =0
+				#Gestion des projectiles
 				while(i<len(tableau_projectile)):
 					F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
 					tableau_projectile[i].bouge()

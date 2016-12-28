@@ -2,13 +2,14 @@
 #encoding: utf8
 
 from gestion_fenetre import *
+from objet_actif import *
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
-class Soldat:
+class Soldat(Objet_Actif):
 	def __init__(self, position, joueur, id_soldat=1):
+		super(Soldat,self).__init__(position,"soldat",id_soldat)
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
-
 		self._type_soldat   = extract("armee",id_soldat,0)
 		self._vie           = extract("armee",id_soldat,2)
 		self._vitesse       = extract("armee",id_soldat,4)
@@ -17,10 +18,9 @@ class Soldat:
 		self.argent_soldat = extract("armee",id_soldat,7)
 		self._graphic       = extract_string("armee",id_soldat,8)
 
-		self._position = position;
-		self._pos_init = position
+		self._position = position
+		self._ancienne_position = position
 		self._joueur = joueur
-		self._ancienne_position = self._position
 		self._is_dead = False
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
@@ -120,7 +120,7 @@ class Soldat:
 		for voisin in self._voisins:
 			tmp_a, tmp_b = int(pos_case[0]+voisin[0]), int(pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			if (self._joueur._carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != (self._ancienne_position) :
+			if (self._joueur._carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
 		for i in range(len(self.liste_voisins)):
@@ -144,6 +144,7 @@ class Soldat:
 			self._ancienne_position = self._position
 			self._position= choix_voisin[0]
 
+
 	def dir_to_graph(self):
 		dir_vect=["_bas","_gauche","_haut","_droite"]
 		dir_anim=["","_pd","_pg"]
@@ -153,7 +154,6 @@ class Soldat:
 		self._animation += 1
 		if self._animation == 3:
 			self._animation = 0
-
 
 class Armee:
 	def __init__(self, tableau_soldat, joueur):
@@ -177,7 +177,6 @@ class Armee:
                         #assert erreur index out of range
                         assert(i<len(self._liste_soldat))
 			del self._liste_soldat[i]
-
 
 	def maj_troupe(self):
 		liste_morts = []

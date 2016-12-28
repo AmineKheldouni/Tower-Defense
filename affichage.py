@@ -77,8 +77,8 @@ class Affichage_fenetre:
 	def affiche_soldat(self,soldat):
 		dir_voisin = soldat._voisins[soldat._direction]
 		pos_carte = self._joueur.carte.positionner_objet(soldat._position)
-		pos_x=pos_carte[0] + dir_voisin[0]*(soldat._pas*self._scale_l)/100
-		pos_y=pos_carte[1] + dir_voisin[1]*(soldat._pas*self._scale_h)/100
+		pos_x=pos_carte[0] + dir_voisin[0]*((soldat._pas-50)*self._scale_l)/100
+		pos_y=pos_carte[1] + dir_voisin[1]*((soldat._pas-50)*self._scale_h)/100
 		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",(pos_x,pos_y))
 
 	def affichage_armee(self, armee):

@@ -20,6 +20,7 @@ DT = dt*5
 
 class Projectile():
     def __init__(self, position_Tour, position_Cible, id_projectile, C, soldat_cible,degat):
+        self._animation = 5
         position_initiale = position_Tour
         position_initiale = C.objet_dans_case(position_initiale)
         position_initiale = C.positionner_objet((position_initiale[0]+0.5, position_initiale[1]+1))
@@ -29,7 +30,6 @@ class Projectile():
         arrivee = position_Cible
         arrivee = C.objet_dans_case(arrivee)
         arrivee = C.positionner_objet((arrivee[0]+0.5, arrivee[1]+0.5))
-        self._animation = 5
         self.v_x = (arrivee[0]-self._position[0])/self._animation
         self.v_y = (arrivee[1]-self._position[1])/self._animation
          # Nombre d'étapes d'affichage
@@ -52,6 +52,10 @@ class Projectile():
         else:
             return False
 
+'''
+Seuls les fonctions choisir cibles et l'attributs projectiles sont à changer pour les classes filles (ainsi que l'id)
+'''
+
 class Tour(Case):
     def __init__(self, position, id_tour):
         self._id_tour = id_tour
@@ -60,7 +64,7 @@ class Tour(Case):
         self._cout_amelioration = extract("tourelle",id_tour+1,5)
         self._portee            = extract("tourelle",id_tour+1,6)
         self._degat             = extract("tourelle",id_tour+1,7)
-        self._cadence           = extract("tourelle",id_tour+1,8)
+        self._vitesse           = extract("tourelle",id_tour+1,8)
         self.vie_initiale       = extract("tourelle",id_tour+1,9)
         self._munitions_max     = extract("tourelle",id_tour+1,10)
         self._id_excel          = extract("tourelle",id_tour+1,11)
@@ -117,6 +121,10 @@ class Tour(Case):
     def peut_tirer(self):
         return self._munitions>0 and self._chargement>100
 
+    def choisir_cible(self,soldat_1,soldat_2):
+
+        return
+
     def attaque(self, armee, F, C):
         '''_liste_soldat est le tableau des personnages de Armee'''
         '''Renvoie (False/True, un projectile si true)'''
@@ -138,9 +146,8 @@ class Tour(Case):
         else:
             return (False,0)
 
-
     def actualisation(self):
-        self._chargement+=self._cadence
+        self._chargement+=self._vitesse
         if(self._munitions<=0):
             self._id_graphic=53
 
