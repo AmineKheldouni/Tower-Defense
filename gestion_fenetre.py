@@ -129,6 +129,7 @@ class Carte:
 
 	def actualise(self):
 		for pos in self._pos_bases:
+			if(self._cases[pos[0]][pos[1]].actualisation()):
 				self.base_est_morte(pos)
 		for i in range(self._nb_cases_l):
 			for j in range(self._nb_cases_h):
@@ -157,7 +158,7 @@ class Carte:
 		#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
 		direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
 		self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
-
+		self._cases[old_pos[0]][old_pos[1]]._tapis = 0
 	def initialiser_carte(self, vec_decor=[]):
 		self.genere_decor(vec_decor)
 		for i in range(self._nb_cases_l):

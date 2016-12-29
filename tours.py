@@ -18,7 +18,8 @@ import math
 dt = 1
 DT = dt*5
 
-class Projectile():
+class Projectile(object):
+    """ Seules les méthodes dégâts et etats sont à modifier lors de la création d'un nouveau Projectile"""
     def __init__(self, position_Tour, position_Cible, id_projectile, C, soldat_cible,degat):
         self._animation = 5
         position_initiale = position_Tour
@@ -40,20 +41,43 @@ class Projectile():
         pos_tmp = (self._position[0]+self.v_x, self._position[1]+self.v_y)
         self._position = pos_tmp
         self._etape -= 1
+        if(self.is_over()):
+            self.degat_projectile()
+            self.effet_projectile()
 
-    def set_arrivee(self, pos):
-        """ A chaque mouvement du soldat, il faut actualiser la position finale du projectile """
-        self._arrivee = pos
+
+    # def set_arrivee(self, pos):
+    #     """ A chaque mouvement du soldat, il faut actualiser la position finale du projectile """
+    #     self._arrivee = pos
+
+    def degat_projectile(self):
+        self._soldat_cible._vie= max(0,self._soldat_cible._vie-self._degat)
+
+    def effet_projectile(self):
+        0
 
     def is_over(self):
         if(self._etape==0):
-            self._soldat_cible._vie= max(0,self._soldat_cible._vie-self._degat)
             return True
         else:
             return False
 
+class Projectile_Glace(Projectile):
+    """Utilisée par les tours de glace"""
+    def __init__(self, position_Tour, position_Cible, id_projectile, C, soldat_cible,degat):
+        super(Projectile_Glace, self).__init__(position_Tour, position_Cible, id_projectile, C, soldat_cible,degat)
+    def effet_projectile(self):
+        self._soldat_cible.change_etat(Glace())
+
+class Projectile_Feu(Projectile):
+    """Utilisée par les tours de glace"""
+    def __init__(self, position_Tour, position_Cible, id_projectile, C, soldat_cible,degat):
+        super(Projectile_Feu, self).__init__(position_Tour, position_Cible, id_projectile, C, soldat_cible,degat)
+    def effet_projectile(self):
+        self._soldat_cible.change_etat(Feu())
+
 '''
-Seuls les fonctions choisir cibles et l'attributs projectiles sont à changer pour les classes filles (ainsi que l'id)
+Seuls les fonctions choisir cibles et l'attributs projectiles sont à changer pour les classes filles (ainsi que l'id
 '''
 
 class Tour(Case):
@@ -113,6 +137,7 @@ class Tour(Case):
         self._cout_amelioration *= 2
         self._cout_entretien *= 2
         self._munitions_max *= 2
+
     def repare(self):
         print("Reparation de la tour")
         self._munitions = self.munitions_max
@@ -121,9 +146,8 @@ class Tour(Case):
     def peut_tirer(self):
         return self._munitions>0 and self._chargement>100
 
-    def choisir_cible(self,soldat_1,soldat_2):
-
-        return
+    def projectile(self,soldat,carte):
+        return Projectile(self._position, carte.positionner_objet(soldat._position), 0, carte, soldat, self._degat)
 
     def attaque(self, armee, F, C):
         '''_liste_soldat est le tableau des personnages de Armee'''
@@ -139,8 +163,8 @@ class Tour(Case):
                    cible = indice_soldat
                    distance_cible = distance_soldat
         if cible != -1 and self.peut_tirer():
-            self._chargement-=100;
-            P = Projectile(self._position, C.positionner_objet(armee._liste_soldat[cible]._position), 0, C, armee._liste_soldat[cible], self._degat)
+            self._chargement-=100
+            P = self.projectile(armee._liste_soldat[cible],C)
             self._munitions -= 1
             return (True, P)
         else:
@@ -151,14 +175,14 @@ class Tour(Case):
         if(self._munitions<=0):
             self._id_graphic=53
 
-def TourFeu(Tour):
-    def __init(self):
-        super(TourFeu, self).__init__()
-        self.id_excel = 51
-        Tour._portee = 100
+class Tour_Feu(Tour):
+    def __init__(self, position, id_tour):
+        super(Tour_Feu, self).__init__(position, id_tour)
+    def projectile(self,soldat,carte):
+        return Projectile_Feu(self._position, carte.positionner_objet(soldat._position), 0, carte, soldat, self._degat)
 
-def TourGlace(Tour):
-    def __init(self):
-        super(TourGlace, self).__init__()
-        self.id_excel = 52
-        Tour._portee = 200
+class Tour_Glace(Tour):
+    def __init__(self, position, id_tour):
+        super(Tour_Glace, self).__init__(position, id_tour)
+    def projectile(self,soldat,carte):
+        return Projectile_Glace(self._position, carte.positionner_objet(soldat._position), 0, carte, soldat, self._degat)

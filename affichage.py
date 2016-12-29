@@ -80,6 +80,11 @@ class Affichage_fenetre:
 		pos_x=pos_carte[0] + dir_voisin[0]*((soldat._pas-50)*self._scale_l)/100
 		pos_y=pos_carte[1] + dir_voisin[1]*((soldat._pas-50)*self._scale_h)/100
 		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",(pos_x,pos_y))
+		self.affiche_etat(soldat._etat, (pos_x,pos_y))
+
+	def affiche_etat(self,etat, pos_pix):
+		if(etat._nom != "0"):
+			self.ajouter_element("images/etat/"+(etat._nom)+"/"+"0.png",pos_pix)
 
 	def affichage_armee(self, armee):
 		for soldat in armee._liste_soldat:

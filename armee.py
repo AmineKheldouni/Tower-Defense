@@ -6,7 +6,7 @@ from objet_actif import *
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat(Objet_Actif):
-	def __init__(self, position, joueur, id_soldat=1):
+	def __init__(self, position, id_soldat=1):
 		super(Soldat,self).__init__(position,"soldat",id_soldat)
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
@@ -20,7 +20,6 @@ class Soldat(Objet_Actif):
 
 		self._position = position
 		self._ancienne_position = position
-		self._joueur = joueur
 		self._is_dead = False
 		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
@@ -62,17 +61,17 @@ class Soldat(Objet_Actif):
 			joueur._score += self.valeur_soldat
 			joueur._argent += self.argent_soldat
 
-	def deplacement_soldat(self):
+	def deplacement_soldat(self,carte):
 		self._pas = self._pas + self._vitesse
 		self.anime()
 		if(self._pas >= self._value_case):
 			self._pas-=self._value_case
-			self.maj_direction2()
+			self.maj_direction2(carte)
 
-	def arriver_base(self):
+	def arriver_base(self,carte):
 		pos_case = self._position
-		if self._joueur.carte.get_type_case(pos_case) == "base":
-			self._joueur.carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
+		if carte.get_type_case(pos_case) == "base":
+			carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
 			self._est_mort = True
 			return True
 		return False
@@ -111,7 +110,7 @@ class Soldat(Objet_Actif):
 			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
 				self.deplacement_soldat(dt)
 
-	def maj_direction2(self):
+	def maj_direction2(self,carte):
 		# A MODIFIER
 		pos_case = self._position
 		choix_voisin = None
@@ -120,7 +119,7 @@ class Soldat(Objet_Actif):
 		for voisin in self._voisins:
 			tmp_a, tmp_b = int(pos_case[0]+voisin[0]), int(pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			if (self._joueur._carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
+			if (carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
 				self.liste_voisins.append(case_voisin)
 				self.liste_vitesses.append(voisin)
 		for i in range(len(self.liste_voisins)):
@@ -155,6 +154,9 @@ class Soldat(Objet_Actif):
 		if self._animation == 3:
 			self._animation = 0
 
+	def actualisation(self):
+		self.actualise_etat()
+
 class Armee:
 	def __init__(self, tableau_soldat, joueur):
 		self._taille_effectif = len(tableau_soldat)
@@ -165,13 +167,14 @@ class Armee:
 	def joueur(self):
 		return self._joueur
 
-	def mouvement_troupe(self, dt):
+	def mouvement_troupe(self,carte):
 		assert(self._taille_effectif != 0)
 		soldats_arrives = []
 		for i in range(len(self._liste_soldat)):
 			soldat = self._liste_soldat[i]
-			soldat.deplacement_soldat()
-			if soldat.arriver_base():
+			soldat.actualisation()
+			soldat.deplacement_soldat(carte)
+			if soldat.arriver_base(carte):
 				soldats_arrives.append(i)
 		for i in soldats_arrives:
                         #assert erreur index out of range
