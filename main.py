@@ -44,7 +44,7 @@ def main():
 		S2 = Soldat(C.objet_dans_case(pos_source2))
 		S3 = Soldat(C.objet_dans_case(pos_source3))
 		C.initialiser_carte([0,10,0,20])
-		A = Armee([S, S2, S3], F._joueur)
+		A = Armee([S, S2, S3])
 		tableau_projectile =[] # Tableau des projectiles
 		continuer = 1
 		clock = pygame.time.Clock()
@@ -143,7 +143,7 @@ def main():
 						stock_attaque = (T.attaque(A, F, F._joueur.carte))
 						if(stock_attaque[0]):
 							tableau_projectile.append(stock_attaque[1])
-				A.maj_troupe()
+				F.joueur.actualise_valeurs( A.maj_troupe())
 				pygame.display.flip()
 					#last_time = time.time()
 

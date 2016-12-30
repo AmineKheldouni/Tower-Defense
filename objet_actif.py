@@ -74,16 +74,16 @@ class Objet_Actif(Case):
         self._est_mort = False
 
     def meurt(self):
-        self._est_mort = True
+        self._est_mort= True
+
+    def dommage(self,degat):
+        self._vie=max(0,self._vie-degat)
+        if(self._vie ==0):
+            self._est_mort = True
 
 	def est_mort(self):
 		return self._est_mort
-
-    def dommage(self,degat):
-        self._vie=max(0,self._vie-self._degat)
-        if(self._vie ==0):
-            self.est_mort = True
-
+    
     def change_etat(self,etat):
         #Enlève l'état précédent
         self.affecte( self._etat.valeur_fin())

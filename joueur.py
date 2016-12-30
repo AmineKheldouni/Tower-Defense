@@ -24,9 +24,13 @@ class Joueur:
 		return self._score
 
 	def score(self,point):
-		self._argent+=score
+		self._score+=point
 	def argent(self,tune):
 		self._argent+=tune
+
+	def actualise_valeurs(self, (argent,point)):
+		self.argent(argent)
+		self.score(point)
 
 	def gestion_tour(self, event):
 		if event.type == MOUSEBUTTONDOWN and event.button == 1:
@@ -45,13 +49,13 @@ class Joueur:
 				else:
 					print ("Vous n'avez pas suffisamment d'argent.")
 	def ameliorer_tour(self, T, Vue):
-		if self.argent >= T.cout_amelioration:
+		if self._argent >= T.cout_amelioration:
 			Vue.animation_amelioration(T)
 			self._argent -= T.cout_amelioration
 			T.ameliore(self.carte)
 
 	def reparer_tour(self, T):
-		if self.argent >= T.cout_entretien and T.munitions < \
+		if self._argent >= T.cout_entretien and T.munitions < \
 		T.munitions_max:
 			self._argent -= T.cout_entretien
 			T.repare()

@@ -67,10 +67,11 @@ class Base(Case):
 	@property
 	def position(self):
 	 	return self._position
-	def est_morte(self):
-		if self.vie == 0:
-			return True
-		return False
+	# def est_morte(self):
+	# 	if self.vie == 0:
+	# 		return True
+	# 	return False
+
 	def is_attackable(self):
 		return self._vie>0
 	def dommage(self,degat):

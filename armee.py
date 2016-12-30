@@ -29,6 +29,9 @@ class Soldat(Objet_Actif):
 		self.liste_voisins = []
 		self.liste_vitesses = []
 
+	def est_mort(self):
+		return self._est_mort
+
 	@property
 	def vie(self):
 		return self._vie
@@ -126,22 +129,17 @@ class Armee:
 			soldat = self._liste_soldat[i]
 			soldat.actualisation()
 			soldat.deplacement_soldat(carte)
-		# 	if soldat.arriver_base(carte):
-		# 		soldats_arrives.append(i)
-		# for i in soldats_arrives:
-        #                 #assert erreur index out of range
-        #                 assert(i<len(self._liste_soldat))
-		# 	del self._liste_soldat[i]
 
 	def maj_troupe(self):
 		liste_morts = []
 		argent = 0
 		point  = 0
 		for i in range(len(self._liste_soldat)):
-			if (self._liste_soldat[i]).est_mort():
+			soldat = self._liste_soldat[i]
+			if soldat.est_mort():
 				liste_morts.append(i)
 				argent+=self._liste_soldat[i]._argent_soldat
-				point +=self._liste_soldat[i]._valeur
+				point +=self._liste_soldat[i]._valeur_soldat
 		for idx in liste_morts:
 			del self._liste_soldat[idx]
-		return(argent,valeur)
+		return(argent,point)

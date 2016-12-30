@@ -83,7 +83,7 @@ class Menu(object):
         image_or = pygame.image.load("images/interface/or1.png").convert_alpha()
         Vue._fenetre.blit(image_or, pos_image)
         font_or = pygame.font.Font(None, 50)
-        or_joueur = str(self._joueur.argent)
+        or_joueur = str(self._joueur._argent)
         texte_or = font_or.render(or_joueur, 1, (255, 255, 0))
         Vue._fenetre.blit(texte_or, (60, pos_image[1]+5))
 
@@ -92,7 +92,7 @@ class Menu(object):
         image_score = pygame.image.load("images/interface/etoile.png").convert_alpha()
         Vue._fenetre.blit(image_score, pos_image)
         font_score = pygame.font.Font(None, 50)
-        score_joueur = str(self._joueur.score)
+        score_joueur = str(self._joueur._score)
         texte_score = font_score.render(score_joueur, 1, (0, 0, 255))
         Vue._fenetre.blit(texte_score, (60, pos_image[1]+5))
 
@@ -288,14 +288,14 @@ class Menu(object):
                     if ((pos[1]>=self._dict_boutons[b][1][1])and(pos[1]<=self._dict_boutons[b][1][1]+150/3)):
                         if (self._dict_boutons[b][0]=="ameliorer"):
                             objet=self._joueur.liste_tours[self._index_objet]
-                            if objet._cout_amelioration<=self._joueur.argent:
+                            if objet._cout_amelioration<=self._joueur._argent:
                                 self._argent -= objet._cout_amelioration
                                 self._joueur.liste_tours[self._index_objet].ameliore()
                             else :
                                 F.blit("Argent non suffisant",self._dict_boutons[b][1][0])
                         if (self._dict_boutons[b][0]=="entretenir"):
                             objet=self._joueur.liste_tours[self._index_objet]
-                            if objet._cout_entretien<=self._joueur.argent:
+                            if objet._cout_entretien<=self._joueur._argent:
                                 self._argent -= objet._cout_entretien
                                 self._joueur.liste_tours[self._index_objet].entretient()  #creer une telle methode (score, points de vie...)
                             else :
