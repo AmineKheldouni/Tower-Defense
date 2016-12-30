@@ -85,19 +85,9 @@ class Soldat(Objet_Actif):
 		for i in range(len(self.liste_voisins)):
 			for j in range(len(self.liste_voisins)):
 				choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
-				if len(self.liste_voisins) == 2:
-					pos_case = self._position
-					if self.liste_voisins[0][1] > self.liste_voisins[1][1]:
-						choix_voisin = self.liste_voisins[1], self.liste_vitesses[1]
-					if self.liste_voisins[0][1] < self.liste_voisins[1][1]:
-						choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
-					if self.liste_voisins[0][1] == self.liste_voisins[1][1] or \
-					(self.liste_voisins[0][1] < self.liste_voisins[1][1] and \
-					self.liste_voisins[1][1] == pos_case[1]) or  \
-					(self.liste_voisins[1][1] < self.liste_voisins[0][1] and \
-					self.liste_voisins[0][1] == pos_case[1]):
-						p = rd.randint(0, 2)
-						choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
+				if len(self.liste_voisins) > 1:
+					p = rd.randint(0, len(self.liste_voisins))
+					choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
 		if choix_voisin != None:
 			self._direction = self._voisins.index(choix_voisin[1])
 			self._ancienne_position = self._position
