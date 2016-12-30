@@ -23,6 +23,11 @@ class Joueur:
 	def score(self):
 		return self._score
 
+	def score(self,point):
+		self._argent+=score
+	def argent(self,tune):
+		self._argent+=tune
+
 	def gestion_tour(self, event):
 		if event.type == MOUSEBUTTONDOWN and event.button == 1:
 			pos_x, pos_y = self.carte.objet_dans_case(event.pos)

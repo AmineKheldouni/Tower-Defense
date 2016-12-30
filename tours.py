@@ -51,7 +51,7 @@ class Projectile(object):
     #     self._arrivee = pos
 
     def degat_projectile(self):
-        self._soldat_cible._vie= max(0,self._soldat_cible._vie-self._degat)
+        self._soldat_cible.dommage(self._degat)
 
     def effet_projectile(self):
         0

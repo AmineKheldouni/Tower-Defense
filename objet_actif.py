@@ -68,9 +68,21 @@ class Objet_Actif(Case):
     """docstring for Objet_Actif(Case  def __init__(self, arg):"""
     def __init__(self,position,type_objet,id_excel):
         super(Objet_Actif,self).__init__(position,type_objet,0,id_excel)
-        self._pv=100
+        self._vie=100
         self._vitesse=100
         self._etat = Etat_0()
+        self._est_mort = False
+
+    def meurt(self):
+        self._est_mort = True
+
+	def est_mort(self):
+		return self._est_mort
+
+    def dommage(self,degat):
+        self._vie=max(0,self._vie-self._degat)
+        if(self._vie ==0):
+            self.est_mort = True
 
     def change_etat(self,etat):
         #Enlève l'état précédent
@@ -92,6 +104,6 @@ class Objet_Actif(Case):
     def affecte(self, vect_effets):
         for i in range(len(vect_effets)):
             if(vect_effets[i][0]=="p"):
-                self._pv+=vect_effets[i][1]
+                self.dommage(vect_effets[i][1])
             elif(vect_effets[i][0]=="v"):
                 self._vitesse*=vect_effets[i][1]

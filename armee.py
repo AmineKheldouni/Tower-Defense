@@ -15,7 +15,7 @@ class Soldat(Objet_Actif):
 		self._vitesse       = extract("armee",id_soldat,4)
 		self._degat         = extract("armee",id_soldat,5)
 		self._valeur_soldat = extract("armee",id_soldat,6)	# Score du joueur en tuant ce type de soldat
-		self.argent_soldat = extract("armee",id_soldat,7)
+		self._argent_soldat = extract("armee",id_soldat,7)
 		self._graphic       = extract_string("armee",id_soldat,8)
 
 		self._position = position
@@ -28,7 +28,6 @@ class Soldat(Objet_Actif):
 		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
 		self.liste_voisins = []
 		self.liste_vitesses = []
-		self._est_mort = False
 
 	@property
 	def vie(self):
@@ -53,14 +52,6 @@ class Soldat(Objet_Actif):
 	def pas(self):
 		return self._pas
 
-	def miseajourjoueur(self,joueur):
-	    """
-	    mise à jour du score du joueur en cas d'élimination du soldat
-	    """
-	    if (self.vie == 0):
-			joueur._score += self.valeur_soldat
-			joueur._argent += self.argent_soldat
-
 	def deplacement_soldat(self,carte):
 		self._pas = self._pas + self._vitesse
 		self.anime()
@@ -72,43 +63,9 @@ class Soldat(Objet_Actif):
 		pos_case = self._position
 		if carte.get_type_case(pos_case) == "base":
 			carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
-			self._est_mort = True
+			self.meurt()
 			return True
 		return False
-
-	def maj_direction(self, dt):
-		# A MODIFIER
-		pos_case = self._position;
-		choix_voisin = None
-		self.liste_voisins = []
-		self.liste_vitesses = []
-		for voisin in self._voisins:
-			tmp_a, tmp_b = int(pos_case[0]+voisin[0]/self.pas), int(pos_case[1]+voisin[1]/self.pas)
-			case_voisin = (tmp_a, tmp_b)
-			if (self._joueur._carte.est_case_chemin(case_voisin,self._direction)) and case_voisin not in self.liste_voisins and case_voisin != self._joueur._carte.objet_dans_case(self._pos_init) and case_voisin != self._joueur.carte.objet_dans_case(self._ancienne_position) :
-				self.liste_voisins.append(case_voisin)
-				self.liste_vitesses.append(voisin)
-		for i in range(len(self.liste_voisins)):
-			for j in range(len(self.liste_voisins)):
-				choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
-				if len(self.liste_voisins) == 2:
-					pos_case = self._joueur._carte.objet_dans_case(self._position)
-					if self.liste_voisins[0][1] > self.liste_voisins[1][1]:
-						choix_voisin = self.liste_voisins[1], self.liste_vitesses[1]
-					if self.liste_voisins[0][1] < self.liste_voisins[1][1]:
-						choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
-					if self.liste_voisins[0][1] == self.liste_voisins[1][1] or \
-					(self.liste_voisins[0][1] < self.liste_voisins[1][1] and \
-					self.liste_voisins[1][1] == pos_case[1]) or  \
-					(self.liste_voisins[1][1] < self.liste_voisins[0][1] and \
-					self.liste_voisins[0][1] == pos_case[1]):
-						p = rd.randint(0, 2)
-						choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
-		if choix_voisin != None:
-			self._direction = self._voisins.index(choix_voisin[1])
-			self._ancienne_position = self._position
-			while self._position != self._joueur._carte.positionner_objet(choix_voisin[0]):
-				self.deplacement_soldat(dt)
 
 	def maj_direction2(self,carte):
 		# A MODIFIER
@@ -158,14 +115,9 @@ class Soldat(Objet_Actif):
 		self.actualise_etat()
 
 class Armee:
-	def __init__(self, tableau_soldat, joueur):
+	def __init__(self, tableau_soldat):
 		self._taille_effectif = len(tableau_soldat)
 		self._liste_soldat = tableau_soldat
-		self._joueur = joueur
-
-	@property
-	def joueur(self):
-		return self._joueur
 
 	def mouvement_troupe(self,carte):
 		assert(self._taille_effectif != 0)
@@ -174,18 +126,22 @@ class Armee:
 			soldat = self._liste_soldat[i]
 			soldat.actualisation()
 			soldat.deplacement_soldat(carte)
-			if soldat.arriver_base(carte):
-				soldats_arrives.append(i)
-		for i in soldats_arrives:
-                        #assert erreur index out of range
-                        assert(i<len(self._liste_soldat))
-			del self._liste_soldat[i]
+		# 	if soldat.arriver_base(carte):
+		# 		soldats_arrives.append(i)
+		# for i in soldats_arrives:
+        #                 #assert erreur index out of range
+        #                 assert(i<len(self._liste_soldat))
+		# 	del self._liste_soldat[i]
 
 	def maj_troupe(self):
 		liste_morts = []
+		argent = 0
+		point  = 0
 		for i in range(len(self._liste_soldat)):
-			self._liste_soldat[i].miseajourjoueur(self._joueur)
-			if self._liste_soldat[i].vie == 0:
+			if (self._liste_soldat[i]).est_mort():
 				liste_morts.append(i)
+				argent+=self._liste_soldat[i]._argent_soldat
+				point +=self._liste_soldat[i]._valeur
 		for idx in liste_morts:
 			del self._liste_soldat[idx]
+		return(argent,valeur)
