@@ -28,9 +28,12 @@ class Soldat(Objet_Actif):
 		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
 		self.liste_voisins = []
 		self.liste_vitesses = []
+		print(self._position)
+		print(self._ancienne_position)
+
 
 	def est_mort(self):
-		return self._est_mort
+		return self._est_mort or self._vie ==0
 
 	@property
 	def vie(self):
@@ -66,18 +69,16 @@ class Soldat(Objet_Actif):
 		pos_case = self._position
 		if carte.get_type_case(pos_case) == "base":
 			carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
-			self.meurt()
 			return True
 		return False
 		
 	def maj_direction2(self,carte):
-		# A MODIFIER
 		pos_case = self._position
 		choix_voisin = None
 		self.liste_voisins = []
 		self.liste_vitesses = []
 		for voisin in self._voisins:
-			tmp_a, tmp_b = int(pos_case[0]+voisin[0]), int(pos_case[1]+voisin[1])
+			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
 			if (carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
 				self.liste_voisins.append(case_voisin)
@@ -106,7 +107,6 @@ class Soldat(Objet_Actif):
 			self._ancienne_position = self._position
 			self._position= choix_voisin[0]
 
-
 	def dir_to_graph(self):
 		dir_vect=["_bas","_gauche","_haut","_droite"]
 		dir_anim=["","_pd","_pg"]
@@ -119,6 +119,7 @@ class Soldat(Objet_Actif):
 
 	def actualisation(self):
 		self.actualise_etat()
+
 
 class Armee:
 	def __init__(self, tableau_soldat):
@@ -133,7 +134,7 @@ class Armee:
 			soldat.actualisation()
 			soldat.deplacement_soldat(carte)
 
-	def maj_troupe(self):
+	def maj_troupe(self,carte):
 		liste_morts = []
 		argent = 0
 		point  = 0
@@ -143,6 +144,8 @@ class Armee:
 				liste_morts.append(i)
 				argent+=self._liste_soldat[i]._argent_soldat
 				point +=self._liste_soldat[i]._valeur_soldat
+			elif(soldat.arriver_base(carte)):
+				liste_morts.append(i)
 		for idx in liste_morts:
 			del self._liste_soldat[idx]
 		return(argent,point)

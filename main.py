@@ -34,17 +34,11 @@ def main():
 		C = Carte()
 		J = Joueur(C)
 		F = Affichage_fenetre(J)
-		pos_source = (C.nb_cases_l//5, C.nb_cases_h-1)
-		pos_source = C.positionner_objet(pos_source)
-		pos_source2 = (C.nb_cases_l//5, C.nb_cases_h-2)
-		pos_source2 = C.positionner_objet(pos_source2)
-		pos_source3 = (C.nb_cases_l//5, C.nb_cases_h-3)
-		pos_source3 = C.positionner_objet(pos_source3)
-		S = Soldat(C.objet_dans_case(pos_source))
-		S2 = Soldat(C.objet_dans_case(pos_source2))
-		S3 = Soldat(C.objet_dans_case(pos_source3))
+		S=[]
+		for i in range(len(C._pos_sources)):
+			S.append( Soldat(C._pos_sources[i]))
 		C.initialiser_carte([0,10,0,20])
-		A = Armee([S, S2, S3])
+		A = Armee(S)
 		tableau_projectile =[] # Tableau des projectiles
 		continuer = 1
 		clock = pygame.time.Clock()
@@ -128,11 +122,10 @@ def main():
 				#temps = pygame.time.get_ticks()
 
 				if (compteur%50 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
-					p = rd.randint(0, len(C.liste_sources))
-					pos_source = C.positionner_objet(C.liste_sources[p])
-					pos_source2 = C.positionner_objet((C.liste_sources[p][0],C.liste_sources[p][1]-1))
-					S = Soldat(C.objet_dans_case(pos_source))
-					S2 = Soldat(C.objet_dans_case(pos_source2))
+					p = rd.randint(0, len(C._pos_sources)-1)
+					p2 = rd.randint(0, len(C._pos_sources)-1)
+					S = Soldat(C._pos_sources[p])
+					S2 = Soldat(C._pos_sources[p2])
 					A._liste_soldat.append(S)
 					A._liste_soldat.append(S2)
 				#temps = pygame.time.get_ticks()
@@ -143,7 +136,7 @@ def main():
 						stock_attaque = (T.attaque(A, F, F._joueur.carte))
 						if(stock_attaque[0]):
 							tableau_projectile.append(stock_attaque[1])
-				F.joueur.actualise_valeurs( A.maj_troupe())
+				F.joueur.actualise_valeurs( A.maj_troupe(C))
 				pygame.display.flip()
 					#last_time = time.time()
 

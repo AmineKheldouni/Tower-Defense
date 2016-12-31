@@ -16,8 +16,6 @@ import numpy as np
 import copy
 import numpy.random as rd
 
-
-
 class Carte:
 	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 25, \
 	nb_cases_l = 25,id_carte="cartes_carte1"):
@@ -26,10 +24,10 @@ class Carte:
 		self._pos_bases =[]
 		self._id_carte=id_carte
 		self._nb_cases_h = ExtractIntFromFile(id_carte+".csv",0,1)
-		self._nb_cases_l = ExtractIntFromFile(id_carte+".csv",0,1)
+		self._nb_cases_l = ExtractIntFromFile(id_carte+".csv",1,0)
 		self._hauteur = hauteur
 		self._largeur = largeur
-		self.liste_sources = []
+		self._pos_sources = []
 		tab_carte=LoadIntFromFile(id_carte+".csv",1,self._nb_cases_l,1,self._nb_cases_h)
 		tab_carte_objets=LoadIntFromFile(id_carte+"objets.csv",1,self._nb_cases_l,1,self._nb_cases_h)
 		self._cases =  [[ Case( (i,j), tab_carte_objets[i][j], tab_carte[i][j] ) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
@@ -41,14 +39,14 @@ class Carte:
 				ob = tab_carte_objets[i][j]
 				if(dico_nom_id[ob]=="source"):
 					self._cases[j][i] = Source((i,j),tab_carte[i][j],ob)
-					self.liste_sources.append((j, i))
+					self._pos_sources.append((j, i))
 				elif dico_nom_id[ob]=="base":
 					self._cases[j][i] = Base((i,j),tab_carte[i][j],ob)
 					self._pos_bases.append((j,i))
 				elif dico_nom_id[ob]=="place_construction":
 					self._cases[j][i]= Emplacement((i,j),tab_carte[i][j],ob)
 				chemin = tab_carte[i][j]
-				if(chemin==1) or (chemin < 0):
+				if(chemin==1):
 					self._cases[j][i]._est_chemin=chemin;
 					self._cases[j][i]._tapis = 1;
 	@property
@@ -124,6 +122,8 @@ class Carte:
 
 	def get_base(self,i):
 		return self.get_case(self._pos_bases[i])
+	def get_source(self,i):
+		return self.get_case(self._pos_source[i])
 
 	def est_case_chemin(self,pos,soldat_direction=0):
 		if      (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
