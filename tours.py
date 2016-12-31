@@ -83,15 +83,15 @@ Seuls les fonctions choisir cibles et l'attributs projectiles sont à changer po
 class Tour(Case):
     def __init__(self, position, id_tour):
         self._id_tour = id_tour
-        self._cout_construction = extract("tourelle",id_tour+1,3)
-        self._cout_entretien    = extract("tourelle",id_tour+1,4)
-        self._cout_amelioration = extract("tourelle",id_tour+1,5)
-        self._portee            = extract("tourelle",id_tour+1,6)
-        self._degat             = extract("tourelle",id_tour+1,7)
-        self._vitesse           = extract("tourelle",id_tour+1,8)
-        self.vie_initiale       = extract("tourelle",id_tour+1,9)
-        self._munitions_max     = extract("tourelle",id_tour+1,10)
-        self._id_excel          = extract("tourelle",id_tour+1,11)
+        self._cout_construction = ExtractIntFromFile("data_tourelle.csv",id_tour+1,3)
+        self._cout_entretien    = ExtractIntFromFile("data_tourelle.csv",id_tour+1,4)
+        self._cout_amelioration = ExtractIntFromFile("data_tourelle.csv",id_tour+1,5)
+        self._portee            = ExtractIntFromFile("data_tourelle.csv",id_tour+1,6)
+        self._degat             = ExtractIntFromFile("data_tourelle.csv",id_tour+1,7)
+        self._vitesse           = ExtractIntFromFile("data_tourelle.csv",id_tour+1,8)
+        self.vie_initiale       = ExtractIntFromFile("data_tourelle.csv",id_tour+1,9)
+        self._munitions_max     = ExtractIntFromFile("data_tourelle.csv",id_tour+1,10)
+        self._id_excel          = ExtractIntFromFile("data_tourelle.csv",id_tour+1,11)
 
         self._vie = self.vie_initiale
         self._munitions = self._munitions_max

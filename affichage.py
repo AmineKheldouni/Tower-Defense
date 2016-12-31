@@ -3,14 +3,12 @@
 
 from joueur import *
 from menu import *
-from excel import *
-from menu import *
-
+from csvuser import *
 
 class Affichage_fenetre:
 	def __init__(self, joueur):
-		self.dico_carte=cree_dico('legend',1,2)
-		self.dico_carte_object=cree_dico('legend2',1,2)
+		self.dico_carte=DicoFromFile("cartes_legend.csv",2,7,1,2)
+		self.dico_carte_object=DicoFromFile("cartes_legend2.csv",2,16,1,2)
 		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
 		self._joueur = joueur
 		self._menu = Menu(self._joueur)

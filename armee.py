@@ -10,13 +10,13 @@ class Soldat(Objet_Actif):
 		super(Soldat,self).__init__(position,"soldat",id_soldat)
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
-		self._type_soldat   = extract("armee",id_soldat,0)
-		self._vie           = extract("armee",id_soldat,2)
-		self._vitesse       = extract("armee",id_soldat,4)
-		self._degat         = extract("armee",id_soldat,5)
-		self._valeur_soldat = extract("armee",id_soldat,6)	# Score du joueur en tuant ce type de soldat
-		self._argent_soldat = extract("armee",id_soldat,7)
-		self._graphic       = extract_string("armee",id_soldat,8)
+		self._type_soldat   = ExtractIntFromFile("data_armee.csv",id_soldat,0)
+		self._vie           = ExtractIntFromFile("data_armee.csv",id_soldat,2)
+		self._vitesse       = ExtractIntFromFile("data_armee.csv",id_soldat,4)
+		self._degat         = ExtractIntFromFile("data_armee.csv",id_soldat,5)
+		self._valeur_soldat = ExtractIntFromFile("data_armee.csv",id_soldat,6)	# Score du joueur en tuant ce type de soldat
+		self._argent_soldat = ExtractIntFromFile("data_armee.csv",id_soldat,7)
+		self._graphic       = ExtractStrFromFile("data_armee.csv",id_soldat,8)
 
 		self._position = position
 		self._ancienne_position = position

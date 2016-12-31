@@ -4,7 +4,7 @@
 import pygame
 from pygame.locals import *
 
-from excel import *
+from csvuser import *
 from objets_interraction import *
 from case import *
 
@@ -20,33 +20,34 @@ import numpy.random as rd
 
 class Carte:
 	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 25, \
-	nb_cases_l = 25,id_carte="carte_1"):
+	nb_cases_l = 25,id_carte="cartes_carte1"):
 		self._liste_tours =[]
 		self._liste_souces=[]
 		self._pos_bases =[]
-
 		self._id_carte=id_carte
-		self._nb_cases_h = extract_carte(id_carte,0,1)
-		self._nb_cases_l = extract_carte(id_carte,1,0)
+		self._nb_cases_h = ExtractIntFromFile(id_carte+".csv",0,1)
+		self._nb_cases_l = ExtractIntFromFile(id_carte+".csv",0,1)
 		self._hauteur = hauteur
 		self._largeur = largeur
 		self.liste_sources = []
-		self._cases =  [[ Case( (i,j), extract_carte(id_carte+"_objets",i+1,j+1),(extract_carte(id_carte,i+1,j+1))) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
+		tab_carte=LoadIntFromFile(id_carte+".csv",1,self._nb_cases_l,1,self._nb_cases_h)
+		tab_carte_objets=LoadIntFromFile(id_carte+"objets.csv",1,self._nb_cases_l,1,self._nb_cases_h)
+		self._cases =  [[ Case( (i,j), tab_carte_objets[i][j], tab_carte[i][j] ) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		# self._grille = [[ extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
-		dico_nom_id=cree_dico('legend2',1,0)
-		dico_name_to_id_graph=cree_dico('legend2',1,2)
+		dico_nom_id=DicoFromFile("cartes_legend2.csv",2,16,1,0)
+		dico_name_to_id_graph=DicoFromFile("cartes_legend2.csv",2,16,1,2)
 		for j in range(0,self.nb_cases_l):
 			for i in range(0,self._nb_cases_h):
-				ob = extract_carte(id_carte+"_objets",i+1,j+1)
+				ob = tab_carte_objets[i][j]
 				if(dico_nom_id[ob]=="source"):
-					self._cases[j][i] = Source((i,j),extract_carte(id_carte,i+1,j+1),ob)
+					self._cases[j][i] = Source((i,j),tab_carte[i][j],ob)
 					self.liste_sources.append((j, i))
 				elif dico_nom_id[ob]=="base":
-					self._cases[j][i] = Base((i,j),extract_carte(id_carte,i+1,j+1),ob)
+					self._cases[j][i] = Base((i,j),tab_carte[i][j],ob)
 					self._pos_bases.append((j,i))
 				elif dico_nom_id[ob]=="place_construction":
-					self._cases[j][i]= Emplacement((i,j),extract_carte(id_carte,i+1,j+1),ob)
-				chemin = extract_carte(id_carte,i+1,j+1)
+					self._cases[j][i]= Emplacement((i,j),tab_carte[i][j],ob)
+				chemin = tab_carte[i][j]
 				if(chemin==1) or (chemin < 0):
 					self._cases[j][i]._est_chemin=chemin;
 					self._cases[j][i]._tapis = 1;
@@ -99,13 +100,16 @@ class Carte:
 		return (a, b)
 
 	def genere_decor(self,tab_objet):
+		max_ligne_tab_objet=max([tab_objet[j] for j in range(len(tab_objet))])
+		tab_carte_objets=LoadIntFromFile(self._id_carte+"objets.csv",1,max_ligne_tab_objet,1,len(tab_objet))
 		for j in range(len(tab_objet)):
 			for i in range(tab_objet[j]):
 				tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(1, self.nb_cases_h-1)
 				while self._cases[tmp1][tmp2].tapis!=0 and self.get_type_case((tmp1,tmp2))!="place_construction":
 					tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(self.nb_cases_h-1)
 				pos_x, pos_y = self.positionner_objet((tmp1,tmp2))
-				self._cases[tmp1][tmp2] = Element_decor((tmp1,tmp2),extract_carte(self._id_carte+"_objets",i+1,j+1),1000+j+1)
+				self._cases[tmp1][tmp2] = Element_decor((tmp1,tmp2),tab_carte_objets[i][j],1000+j+1)
+
 	def case_objet(self,i,j):
 		return self._objets[i][j]
 
