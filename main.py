@@ -121,7 +121,7 @@ def main():
 					#last_time = time.time()
 				#temps = pygame.time.get_ticks()
 
-				if (compteur%50 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
+				if (compteur%40 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
 					p = rd.randint(0, len(C._pos_sources)-1)
 					p2 = rd.randint(0, len(C._pos_sources)-1)
 					S = Soldat(C._pos_sources[p])

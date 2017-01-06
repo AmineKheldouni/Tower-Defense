@@ -6,7 +6,7 @@ from objet_actif import *
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat(Objet_Actif):
-	def __init__(self, position, id_soldat=1):
+	def __init__(self, position, id_soldat=10):
 		super(Soldat,self).__init__(position,"soldat",id_soldat)
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
@@ -71,7 +71,7 @@ class Soldat(Objet_Actif):
 			carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
 			return True
 		return False
-		
+
 	def maj_direction2(self,carte):
 		pos_case = self._position
 		choix_voisin = None
