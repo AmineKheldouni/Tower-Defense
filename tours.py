@@ -130,7 +130,6 @@ class Tour(Case):
 
     def ameliore(self, C):
         # A MODIFIER ET ADAPTER PAR RAPPORT A LEXCEL
-        print("Ameliration de la tour")
         self._vie += 100
         self._portee += C.nb_cases_h
         self._degat *= 4
@@ -139,7 +138,6 @@ class Tour(Case):
         self._munitions_max *= 2
 
     def repare(self):
-        print("Reparation de la tour")
         self._munitions = self.munitions_max
         self._id_graphic = self._id_tour+50
 

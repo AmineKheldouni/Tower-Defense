@@ -49,6 +49,7 @@ class Carte:
 				if(chemin==1):
 					self._cases[j][i]._est_chemin=chemin;
 					self._cases[j][i]._tapis = 1;
+		print("pos bases : ", self._pos_bases)
 	@property
 	def carte_couts(self):
 		return self._carte_couts

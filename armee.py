@@ -6,7 +6,7 @@ from objet_actif import *
 
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat(Objet_Actif):
-	def __init__(self, position, id_soldat=10):
+	def __init__(self, position, id_soldat=6):
 		super(Soldat,self).__init__(position,"soldat",id_soldat)
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
@@ -28,8 +28,6 @@ class Soldat(Objet_Actif):
 		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
 		self.liste_voisins = []
 		self.liste_vitesses = []
-		print(self._position)
-		print(self._ancienne_position)
 
 
 	def est_mort(self):

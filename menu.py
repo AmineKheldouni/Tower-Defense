@@ -138,8 +138,8 @@ class Menu(object):
                 self._etat = "place_construction"
                 self._dernier_click = (pos_x, pos_y)
             elif (pos_x, pos_y) in self._joueur.carte and self._joueur.carte.get_type_case((pos_x, pos_y)) == "base":
-                for i in range(len(Vue._bases)):
-                    if (pos_x,pos_y) == self._joueur.carte.objet_dans_case(self._joueur.carte[(pos_x,pos_y)]._position):
+                for i in range(len(Vue.joueur.carte._pos_bases)):
+                    if (pos_x,pos_y) == self._joueur.carte._pos_bases[i]:
                         self._index_objet = i
                 self._etat = "base"
                 self._dernier_click = (pos_x, pos_y)
@@ -187,20 +187,40 @@ class Menu(object):
                             "couts d'entretien : ":(pos_cout_entretien,tour.cout_entretien),
                             "munitions : ":(pos_munitions, tour.munitions)
                             }
-            if self._dict_infos != None :
-                for d in self._dict_infos.keys():
-                    font_donnee = pygame.font.Font(None, 30)
-                    text_donnee = font_donnee.render(d+" "+str(self._dict_infos[d][1]), 1, (255, 255, 255))
-                    Vue._fenetre.blit(text_donnee, self._dict_infos[d][0])
+        if self._etat == "base" and self._index_objet != None :
+            pos_vie= self.positionner_objet((20,0.5))
+            pos_cout_entretien= self.positionner_objet((20,2.5))
+            pos_cout_amelioration = self.positionner_objet((20,4.5))
+            b = self._joueur.carte.get_base(self._index_objet)
+            self._dict_infos= {
+                            "vie : ":(pos_vie,b._vie),
+                            "couts d'entretien : ":(pos_cout_entretien,b._cout_entretien),
+                            "couts d'amelioration : ":(pos_cout_amelioration,b._cout_amelioration)
+                            }
+        if self._dict_infos != None :
+            for d in self._dict_infos.keys():
+                font_donnee = pygame.font.Font(None, 30)
+                text_donnee = font_donnee.render(d+" "+str(self._dict_infos[d][1]), 1, (255, 255, 255))
+                Vue._fenetre.blit(text_donnee, self._dict_infos[d][0])
 
     def boutons(self, Vue):
-        if self._etat == "tour" and self._index_objet != None:
+        if (self._etat == "tour" or self._etat == "base") and self._index_objet != None:
             pos_bouton_ameliorer= self.positionner_objet((35,2))
             pos_bouton_entretenir= self.positionner_objet((45,2))        # boutton12
+            if (self._etat == "tour"):
+                elt = self._joueur.liste_tours[self._index_objet]
+            elif (self._etat == "base"):
+                elt = self._joueur.carte.get_base(self._index_objet)
+
             self._dict_boutons = {
                                "ameliorer":("images/interface/amelioration.png",pos_bouton_ameliorer),
                                "entretenir":("images/interface/reparation.png",pos_bouton_entretenir)
                                  }
+            if Vue._joueur._argent < elt._cout_entretien:
+                self._dict_boutons["entretenir"] = ("images/interface/reparation_indisponible.png",pos_bouton_entretenir)
+
+            if Vue._joueur._argent < elt._cout_amelioration:
+                self._dict_boutons["ameliorer"] = ("images/interface/amelioration_indisponible.png",pos_bouton_ameliorer)
             if self._dict_boutons != None :
                 for b in self._dict_boutons.keys():
                     image = pygame.image.load(self._dict_boutons[b][0]).convert_alpha()
@@ -244,59 +264,3 @@ class Menu(object):
                                 if b == "tour"+str(i):
                                     if self._joueur.construire_tour(i, self._dernier_click) :
                                         self._etat = "tour"
-
-
-    def menu_place_construction(self, event, F):
-        """ Affiche l'image, les caracteristiques (vie, degat) et les boutons"""
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            pos_x, pos_y = self.objet_dans_case(event.pos)
-            if self._joueur.carte.cases[pos_x][pos_y].type_objet == 102:
-                self._etat="place"
-                pos_image = (2*self.largeur/6, self.hauteur+self.hauteur/2) # image
-                pos_vie=  (3*self.largeur/6, self.hauteur+150/6)            #attributs
-                pos_degat= (3*self.largeur/6, self.hauteur+150/6*2)
-                pos_portee= (3*self.largeur/6, self.hauteur+150/6*3)
-                pos_cout_amelioration= (3*self.largeur/6, self.hauteur+150/6*4)
-                pos_cout_entretien= (3*self.largeur/6, self.hauteur+150/6*5)
-                pos_bouton_ameliorer=(5*self.largeur/6, self.hauteur+150/3)
-                pos_bouton_entretenir=(5*self.largeur/6, self.hauteur+150/3*2)       # boutton
-                #Creer une tout virtuelle pour avoir les infos avant
-                self._dict_infos = {
-                                "vie : ":(pos_vie,tour._vie),
-                                "degats : ":(pos_degat,tour._degat),
-                                "portee : ":(pos_portee,tour._portee),
-                                "couts d'amelioration : ":(pos_cout_amelioration,tour._cout_amelioration),
-                                "couts d'entretien : ":(pos_cout_entretien,tour._cout_entretien)}
-                self._dict_boutons = {"construire":("/images/interface/amelioration.png",pos_bouton_ameliorer)}
-
-                image_tour = pygame.image.load("images/tours/tour.png").convert_alpha()
-                F.blit(image_tour, pos_image)
-
-                for d in self._dict_infos.keys():
-                    font_donnee = pygame.font.Font(None, 20)
-            	    text_donnee = font_donnee.render(d, 1, (255, 255, 255))
-                    F.blit(text_donnee, self._dict_infos[d])
-                for b in self._dict_boutons.keys():
-                    image = pygame.image.load(self._dict_boutons[b][0]).convert_alpha()
-                    F.blit(self._dict_boutons[b][0], self._dict_boutons[b][1])
-
-        if event.type == MOUSEBUTTONDOWN and event.button == 1 and type_objet==5:
-            pos_x, pos_y = self.objet_dans_case(event.pos)
-            pos = (pos_x,pos_y)
-            for b in self._dict_boutons.keys():
-                if ((pos[0]>=self._dict_boutons[b][1][0])and(pos[0]<=self._dict_boutons[b][1][0]+2000)):
-                    if ((pos[1]>=self._dict_boutons[b][1][1])and(pos[1]<=self._dict_boutons[b][1][1]+150/3)):
-                        if (self._dict_boutons[b][0]=="ameliorer"):
-                            objet=self._joueur.liste_tours[self._index_objet]
-                            if objet._cout_amelioration<=self._joueur._argent:
-                                self._argent -= objet._cout_amelioration
-                                self._joueur.liste_tours[self._index_objet].ameliore()
-                            else :
-                                F.blit("Argent non suffisant",self._dict_boutons[b][1][0])
-                        if (self._dict_boutons[b][0]=="entretenir"):
-                            objet=self._joueur.liste_tours[self._index_objet]
-                            if objet._cout_entretien<=self._joueur._argent:
-                                self._argent -= objet._cout_entretien
-                                self._joueur.liste_tours[self._index_objet].entretient()  #creer une telle methode (score, points de vie...)
-                            else :
-                                F.blit("Argent non suffisant",self._dict_boutons[b][1][0])
