@@ -121,13 +121,13 @@ def main():
 					#last_time = time.time()
 				#temps = pygame.time.get_ticks()
 
-				if (compteur%40 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
-					p = rd.randint(0, len(C._pos_sources)-1)
-					p2 = rd.randint(0, len(C._pos_sources)-1)
-					S = Soldat(C._pos_sources[p])
-					S2 = Soldat(C._pos_sources[p2])
-					A._liste_soldat.append(S)
-					A._liste_soldat.append(S2)
+				# if (compteur%40 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
+				# 	p = rd.randint(0, len(C._pos_sources)-1)
+				# 	p2 = rd.randint(0, len(C._pos_sources)-1)
+				# 	S = Soldat(C._pos_sources[p])
+				# 	S2 = Soldat(C._pos_sources[p2])
+				# 	A._liste_soldat.append(S)
+				# 	A._liste_soldat.append(S2)
 				#temps = pygame.time.get_ticks()
 
 				#Gestion de l'attaque des tours

@@ -26,7 +26,6 @@ class Soldat(Objet_Actif):
 		self._pas = 0 #position dans la case
 		self._value_case = 100 #valeur d'une case
 		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
-		self.liste_voisins = []
 		self.liste_vitesses = []
 
 	def est_mort(self):
@@ -60,7 +59,7 @@ class Soldat(Objet_Actif):
 		self.anime()
 		if(self._pas >= self._value_case):
 			self._pas-=self._value_case
-			self.maj_direction2(carte)
+			self.maj_direction(carte)
 
 	def arriver_base(self,carte):
 		pos_case = self._position
@@ -69,40 +68,49 @@ class Soldat(Objet_Actif):
 			return True
 		return False
 
-	def maj_direction2(self,carte):
+	def maj_direction(self,carte):
 		pos_case = self._position
-		choix_voisin = None
-		self.liste_voisins = []
-		self.liste_vitesses = []
-		for voisin in self._voisins:
+		liste_voisins = []
+		liste_direction = []
+		for i,voisin in enumerate(self._voisins):
 			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
 			if (carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
-				self.liste_voisins.append(case_voisin)
-				self.liste_vitesses.append(voisin)
-		for i in range(len(self.liste_voisins)):
-			for j in range(len(self.liste_voisins)):
-				choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
-				if len(self.liste_voisins) > 1:
-					p = rd.randint(0, len(self.liste_voisins))
-					choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
-				if len(self.liste_voisins) == 2:
-					pos_case = carte.objet_dans_case(self._position)
-					if self.liste_voisins[0][1] > self.liste_voisins[1][1]:
-						choix_voisin = self.liste_voisins[1], self.liste_vitesses[1]
-					if self.liste_voisins[0][1] < self.liste_voisins[1][1]:
-						choix_voisin = self.liste_voisins[0], self.liste_vitesses[0]
-					if self.liste_voisins[0][1] == self.liste_voisins[1][1] or \
-					(self.liste_voisins[0][1] < self.liste_voisins[1][1] and \
-					self.liste_voisins[1][1] == pos_case[1]) or  \
-					(self.liste_voisins[1][1] < self.liste_voisins[0][1] and \
-					self.liste_voisins[0][1] == pos_case[1]):
-						p = rd.randint(0, 2)
-						choix_voisin = self.liste_voisins[p], self.liste_vitesses[p]
-		if choix_voisin != None:
-			self._direction = self._voisins.index(choix_voisin[1])
+				liste_voisins.append(case_voisin)
+				liste_direction.append(i)
+		if(len(liste_voisins)==1):
+			chosen_path = 0
+		else:
+			chosen_path  = self.choix_chemin_pondere(liste_voisins, carte)
+		if len(liste_voisins)>0:
 			self._ancienne_position = self._position
-			self._position= choix_voisin[0]
+			self._direction = liste_direction[chosen_path]
+			self._position= liste_voisins[chosen_path]
+
+	def choix_chemin_deterministe(self, liste_voisin, carte):
+		ind = 0
+		cout_min = carte.get_cout_chemin(liste_voisin[0])
+		for i in range(len(liste_voisin)):
+			cout = carte.get_cout_chemin(liste_voisin[i])
+			if(cout_min>cout):
+				ind = i
+				cout_min = cout
+		return ind
+
+	def choix_chemin_pondere(self, liste_voisin, carte):
+		ind = 0
+		coef = 0
+		cout = [carte.get_cout_chemin(liste_voisin[0])^2]*len(liste_voisin)
+		for i in range(1,len(liste_voisin)):
+			cout[i]= cout[i-1]+carte.get_cout_chemin(liste_voisin[i])^2
+		value_random = np.random.randint(cout[len(cout)-1])
+		print(value_random)
+		while(value_random>cout[ind]):
+			ind = ind+1
+			assert(ind<len(cout))
+		print(value_random, cout, ind)
+		return ind
+
 
 	def maj_direction4(self,carte):
 		pos_case = self._position
@@ -112,7 +120,7 @@ class Soldat(Objet_Actif):
 		print(chemin)
 		print("soldat maj")
 		choix_voisin = None
-		self.liste_voisins = []
+		liste_voisinins = []
 		self.liste_vitesses = []
 		self._liste_voisins_vitesses_cout=[]
 		case_suivante=chemin[-2]

@@ -124,7 +124,7 @@ class Affichage_fenetre:
 	def affiche_all(self,Carte,Arme):
 		self.affichage_terrain()
 		self.affichage_carte(Carte)
-		self.affichage_armee(Arme)
 		self.affiche_carte_objet(Carte)
+		self.affichage_armee(Arme)
 		self.gestion_menu()
 		self.affichage_portee()
