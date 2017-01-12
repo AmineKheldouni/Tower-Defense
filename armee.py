@@ -3,7 +3,7 @@
 
 from gestion_fenetre import *
 from objet_actif import *
-
+import random
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat(Objet_Actif):
 	def __init__(self, position, id_soldat=6):
@@ -100,11 +100,10 @@ class Soldat(Objet_Actif):
 	def choix_chemin_pondere(self, liste_voisin, carte):
 		ind = 0
 		coef = 0
-		cout = [carte.get_cout_chemin(liste_voisin[0])^2]*len(liste_voisin)
+		cout = [carte.get_cout_chemin(liste_voisin[0])**(-2)]*len(liste_voisin)
 		for i in range(1,len(liste_voisin)):
-			cout[i]= cout[i-1]+carte.get_cout_chemin(liste_voisin[i])^2
-		value_random = np.random.randint(cout[len(cout)-1])
-		print(value_random)
+			cout[i]= cout[i-1]+1000*(carte.get_cout_chemin(liste_voisin[i])**(-2))
+		value_random = random.uniform(0,cout[len(cout)-1])
 		while(value_random>cout[ind]):
 			ind = ind+1
 			assert(ind<len(cout))
