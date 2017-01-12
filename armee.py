@@ -29,7 +29,6 @@ class Soldat(Objet_Actif):
 		self.liste_voisins = []
 		self.liste_vitesses = []
 
-
 	def est_mort(self):
 		return self._est_mort or self._vie ==0
 
@@ -126,7 +125,6 @@ class Soldat(Objet_Actif):
 		voisin_vitesse=(voisin_x,voisin_y)
 
 		choix_voisin=case_voisin,voisin_vitesse
-
 
 		if choix_voisin != None:
 			self._direction = self._voisins.index(choix_voisin[1])
