@@ -16,18 +16,112 @@ import numpy as np
 import copy
 import numpy.random as rd
 
+#fonction récursive utilisée pour créer la carte des couts
+def miseajour_carte_couts_aux(numero_base,matrice_a_remplir,position_a_remplir,cout,nb_cases_l,nb_cases_h,fonction_de_chemin):
+	if((matrice_a_remplir[numero_base][position_a_remplir[0]][position_a_remplir[1]]==-1)):
+		matrice_a_remplir[numero_base][position_a_remplir[0]][position_a_remplir[1]]=cout
+		for i in [0,1,3]:
+			direction=i
+			position_x=position_a_remplir[0]
+			position_y = position_a_remplir[1]
+			position_x+= liste_des_voisins_possible[i][0]
+			position_y+= liste_des_voisins_possible[i][1]
+			position_aux=(position_x,position_y)
+			if((position_aux[0]>=0) and (position_aux[0]<nb_cases_l) and (position_aux[1]>=0) and (position_aux[1]<nb_cases_h) and (fonction_de_chemin(position_aux,direction)) ):
+				print("fuck")
+				miseajour_carte_couts_aux(numero_base,matrice_a_remplir,position_aux,cout+1,nb_cases_l,nb_cases_h,fonction_de_chemin)
+				print("da fuck")
+
+def cout_dun_chemin(liste_chemin):
+	res=0
+	for i in range(len(liste_chemin)):
+		res=res+liste_chemin[i][2]
+	return res
+
+#liste_chemin contient des triplets reliant la base à la dernière position du chemin
+def miseajour_carte_chemin_aux(numero_base,matrice_a_remplir_chemin,matrice_de_couts,position_a_remplir,liste_chemin,nb_cases_l,nb_cases_h,fonction_chemin):
+	coord_x=position_a_remplir[0]
+	coord_y=position_a_remplir[1]
+	print("utilisation fonction mise a jour")
+	print("base est reconnue chemin?")
+	print(fonction_chemin(position_a_remplir))
+	if(liste_chemin==[]):
+		print("on rentre dans la mise a jour d'une base")
+		case=(coord_x,coord_y,matrice_de_couts[numero_base][coord_x][coord_y])
+		matrice_a_remplir_chemin[numero_base][coord_x][coord_y]==[case]
+		liste_chemin=[case]
+		for i in range(4):
+			pos_x=coord_x
+			pos_y=coord_y
+			pos_x+= liste_des_voisins_possible[i][0]
+			pos_y+= liste_des_voisins_possible[i][1]
+			position_aux=(pos_x,pos_y)
+			liste_intermediaire=list(liste_chemin)
+			miseajour_carte_chemin_aux(numero_base,matrice_a_remplir_chemin,matrice_de_couts,position_aux,liste_intermediaire,nb_cases_l,nb_cases_h,fonction_chemin)
+
+
+	else:
+		print("liste des chemins")
+		print(liste_chemin)
+		derniere_position_x=liste_chemin[-1][0]
+		derniere_position_y=liste_chemin[-1][1]
+
+		direction_x=derniere_position_x-coord_x
+		direction_y=derniere_position_y-coord_y
+
+		direction=dictionnaire_direction[(direction_x,direction_y)]
+
+		if((coord_x>=0) and (coord_x<nb_cases_l) and (coord_y>=0) and (coord_y<nb_cases_h) and fonction_chemin(position_a_remplir,direction)):
+			print("on rentre dans la mise a jour d'une base")
+			if(matrice_a_remplir_chemin[numero_base][coord_x][coord_y]==[]):
+				liste_nouveau_chemin=list(liste_chemin)
+				case=(coord_x,coord_y,matrice_de_couts[numero_base][coord_x][coord_y])
+				liste_nouveau_chemin.append(case)
+				matrice_a_remplir_chemin[numero_base][coord_x][coord_y]=list(liste_nouveau_chemin)
+				print("mise a jour connard?")
+				print(matrice_a_remplir_chemin[numero_base][coord_x][coord_y])
+				for i in range(4):
+					pos_x=coord_x
+					pos_y=coord_y
+					pos_x+= liste_des_voisins_possible[i][0]
+					pos_y+= liste_des_voisins_possible[i][1]
+					position_aux=(pos_x,pos_y)
+					liste_voisins=list(liste_nouveau_chemin)
+					miseajour_carte_chemin_aux(numero_base,matrice_a_remplir_chemin,matrice_de_couts,position_aux,liste_voisins,nb_cases_l,nb_cases_h,fonction_chemin)
+
+				else:
+
+					cout_ancien_chemin=cout_dun_chemin(matrice_a_remplir_chemin[numero_base][coord_x][coord_y])
+					cout_nouveau_chemin=cout_dun_chemin(liste_chemin)+matrice_de_couts[numero_base][coord_x][coord_y]
+
+					if(cout_nouveau_chemin<cout_ancien_chemin):
+						liste_nouveau_chemin=list(liste_chemin)
+						case=(coord_x,coord_y,matrice_de_couts[numero_base][coord_x][coord_y])
+						liste_nouveau_chemin.append(case)
+						matrice_a_remplir_chemin[numero_base][coord_x][coord_y]=list(liste_nouveau_chemin)
+						for i in range(4):
+							pos_x=coord_x
+							pos_y=coord_y
+							pos_x+= liste_des_voisins_possible[i][0]
+							pos_y+= liste_des_voisins_possible[i][1]
+							position_aux=(pos_x,pos_y)
+							liste_voisins=list(liste_nouveau_chemin)
+							miseajour_carte_chemin_aux(numero_base,matrice_a_remplir_chemin,matrice_de_couts,position_aux,liste_voisins,nb_cases_l,nb_cases_h,fonction_chemin)
+
 class Carte:
-	def __init__(self, hauteur=700, largeur=1250, nb_cases_h = 25, \
-	nb_cases_l = 25,id_carte="cartes_carte1"):
+	def __init__(self,id_carte="cartes_carte1", hauteur=700, largeur=1250, nb_cases_h = 25, \
+	nb_cases_l = 25):
 		self._liste_tours =[]
 		self._liste_souces=[]
 		self._pos_bases =[]
 		self._id_carte=id_carte
 		self._nb_cases_h = ExtractIntFromFile(id_carte+".csv",0,1)
-		self._nb_cases_l = ExtractIntFromFile(id_carte+".csv",1,0)
+		self._nb_cases_l = ExtractIntFromFile(id_carte+".csv",0,2)
 		self._hauteur = hauteur
 		self._largeur = largeur
 		self._pos_sources = []
+		self._cout_chemin=[[ 1000 for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
+		self._cout_case  =[[ 1 for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		tab_carte=LoadIntFromFile(id_carte+".csv",1,self._nb_cases_l,1,self._nb_cases_h)
 		tab_carte_objets=LoadIntFromFile(id_carte+"objets.csv",1,self._nb_cases_l,1,self._nb_cases_h)
 		self._cases =  [[ Case( (i,j), tab_carte_objets[i][j], tab_carte[i][j] ) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
@@ -49,7 +143,7 @@ class Carte:
 				if(chemin==1):
 					self._cases[j][i]._est_chemin=chemin;
 					self._cases[j][i]._tapis = 1;
-		print("pos bases : ", self._pos_bases)
+					self.set_cout_case((i,j),1)
 	@property
 	def carte_couts(self):
 		return self._carte_couts
@@ -71,6 +165,8 @@ class Carte:
 	@property
 	def cases(self):
 		return self._cases
+	# def __contains__(self, pos):
+	# 	return (pos[0]<self.nb_cases_l) and (pos[1]<self.nb_cases_h) or (pos[0]>=0)or (pos[1]>=0)
 
 	def __contains__(self, position):
 	    lig, col = position
@@ -86,6 +182,20 @@ class Carte:
 	    lig, col = position
 	    if position in self:
 	        self._cases[lig][col] = valeur
+
+# Getteur setter des cout
+	def get_cout_chemin(self,(i,j)):
+		return self._cout_chemin[i][j]
+
+	def get_cout_case(self,(i,j)):
+		return self._cout_case[i][j]
+
+	def set_cout_chemin(self,(i,j),cout):
+		self._cout_chemin[i][j] = cout;
+
+	def set_cout_case(self,(i,j),cout):
+		self._cout_case[i][j] = cout;
+
 
 	def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnées de la case de l'objet """
@@ -109,6 +219,8 @@ class Carte:
 				pos_x, pos_y = self.positionner_objet((tmp1,tmp2))
 				self._cases[tmp1][tmp2] = Element_decor((tmp1,tmp2),tab_carte_objets[i][j],1000+j+1)
 
+
+#@getter et setter
 	def case_objet(self,i,j):
 		return self._objets[i][j]
 
@@ -127,7 +239,7 @@ class Carte:
 		return self.get_case(self._pos_source[i])
 
 	def est_case_chemin(self,pos,soldat_direction=0):
-		if      (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
+		if  (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
 			return False
 		else:
 			return self._cases[pos[0]][pos[1]].est_chemin(soldat_direction)
@@ -138,7 +250,9 @@ class Carte:
 				self.base_est_morte(pos)
 		for i in range(self._nb_cases_l):
 			for j in range(self._nb_cases_h):
-				self._cases[i][j].actualisation();
+				self._cases[i][j].actualisation()
+
+#Gestion des bases
 
 	def base_est_morte(self, pos):
 		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
@@ -164,8 +278,55 @@ class Carte:
 		direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
 		self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
 		#self._cases[old_pos[0]][old_pos[1]]._tapis = 0
+
+	def miseajour_carte_couts_bases2(self):
+		for k in range(len(self._pos_bases)):
+			base=self.get_base(k)
+			position_base=base.position
+			miseajour_carte_couts_aux(k,self.carte_couts,position_base,0,self.nb_cases_l,self.nb_cases_h,self.est_case_chemin)
+
+	def miseajour_carte_chemin1(self):
+		for k in range(len(self._pos_bases)):
+			base=self.get_base(k)
+			position_base=base.position
+			case=(position_base[0],position_base[1],self.carte_couts[k][position_base[0]][position_base[1]])
+			print("dans mise à jour la base est reconnue dans chemin ou non?")
+			print(self.est_case_chemin(position_base))
+			miseajour_carte_chemin_aux(k,self._carte_des_chemins,self.carte_couts,position_base,[],self.nb_cases_l,self.nb_cases_h,self.est_case_chemin)
+
+	def miseajour_carte_chemin1(self):
+		for k in range(len(self._pos_bases)):
+			base=self.get_base(k)
+			position_base=base.position
+			case=(position_base[0],position_base[1],self.carte_couts[k][position_base[0]][position_base[1]])
+			print("dans mise à jour la base est reconnue dans chemin ou non?")
+			print(self.est_case_chemin(position_base))
+			miseajour_carte_chemin_aux(k,self._carte_des_chemins,self.carte_couts,position_base,[],self.nb_cases_l,self.nb_cases_h,self.est_case_chemin)
+
+#Gestion de la carte de cout
+
+	def rec_actualise_cout_chemin(self, pos_case, vect_voisin, cout_actuel):
+		self.set_cout_chemin(pos_case, cout_actuel)
+		for i in range( len(vect_voisin)):
+			#le soldat va dans l'autre sens et est tourné dans le sens opposé
+			direction = i+2%4
+			voisin = vect_voisin[i]
+			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
+			case_voisin = (tmp_a, tmp_b)
+			# Si je suis un chemin et que Cout_CHemin +COut_case < Cout_chemin je remplace et j'actualise
+			if (self.est_case_chemin(case_voisin,direction)) and \
+			(self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case) < self.get_cout_chemin(case_voisin) ):
+				new_cost = self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case)
+				self.rec_actualise_cout_chemin(case_voisin, vect_voisin, new_cost )
+
+	def actualise_cout_chemin(self):
+		voisin = [(0, 1), (-1,0), (0, -1), (1, 0)]
+		for pos_base in self._pos_bases:
+			self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
+
 	def initialiser_carte(self, vec_decor=[]):
 		self.genere_decor(vec_decor)
+		self.actualise_cout_chemin()
 		for i in range(self._nb_cases_l):
 			for j in range(self._nb_cases_h):
 				if(self._cases[i][j]._type_objet=="source"):

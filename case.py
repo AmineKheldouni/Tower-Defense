@@ -30,6 +30,8 @@ class Case(object):
 	def actualisation(self):
 		None
 	#Dis si l'armée peut marcher dessus
+	def est_chemin(self):
+		return self._est_chemin!=0
 	def est_chemin(self, dir_soldat=0):
 		if(self._est_chemin==1):
 			return True
@@ -55,7 +57,7 @@ class Source(Case):
 
 class Base(Case):
 	def __init__(self, position, tapis=0,id_excel=103):
-	 	super(Base,self).__init__(position,"base",tapis,id_excel,0)
+	 	super(Base,self).__init__(position,"base",tapis,id_excel,1)
 	 	self.vie_depart = 20
 		self._vie = self.vie_depart
 		self._cout_entretien = 100

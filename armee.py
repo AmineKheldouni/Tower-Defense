@@ -105,6 +105,34 @@ class Soldat(Objet_Actif):
 			self._ancienne_position = self._position
 			self._position= choix_voisin[0]
 
+	def maj_direction4(self,carte):
+		pos_case = self._position
+		numero_base=self._numero_base_visee
+		chemin=carte._carte_des_chemins[numero_base][pos_case[0]][pos_case[1]]
+		print("chemin")
+		print(chemin)
+		print("soldat maj")
+		choix_voisin = None
+		self.liste_voisins = []
+		self.liste_vitesses = []
+		self._liste_voisins_vitesses_cout=[]
+		case_suivante=chemin[-2]
+		pos_x_suivante=case_suivante[0]
+		pos_y_suivante=case_suivante[1]
+		case_voisin=(pos_x_suivante,pos_y_suivante)
+
+		voisin_x=pos_x_suivante-pos_case[0]
+		voisin_y=pos_y_suivante-pos_case[1]
+		voisin_vitesse=(voisin_x,voisin_y)
+
+		choix_voisin=case_voisin,voisin_vitesse
+
+
+		if choix_voisin != None:
+			self._direction = self._voisins.index(choix_voisin[1])
+			self._ancienne_position = self._position
+			self._position= choix_voisin[0]
+
 	def dir_to_graph(self):
 		dir_vect=["_bas","_gauche","_haut","_droite"]
 		dir_anim=["","_pd","_pg"]
