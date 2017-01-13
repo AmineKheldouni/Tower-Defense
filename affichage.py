@@ -45,6 +45,7 @@ class Affichage_fenetre:
 		self.ajouter_element("images/interface/background2.jpg", (0, 0))
 
 	def affichage_carte(self,carte):
+		""" affiche tapis des cases (chemin par exemple)"""
 		for j in range(carte.nb_cases_l):
 			for i in range(carte.nb_cases_h):
 				value_case=carte._cases[j][i].tapis
@@ -125,6 +126,6 @@ class Affichage_fenetre:
 		self.affichage_terrain()
 		self.affichage_carte(Carte)
 		self.affichage_armee(Arme)
+		self._menu.affichage_menu_haut(self)
 		self.affiche_carte_objet(Carte)
-		self.gestion_menu()
 		self.affichage_portee()

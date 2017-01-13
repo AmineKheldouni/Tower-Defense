@@ -69,7 +69,6 @@ def main():
 					    F._fenetre.fill((i,i,i),special_flags=BLEND_RGB_SUB)
 					    pygame.display.flip()
 				else:
-					pygame.time.Clock().tick(30)
 					for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 					    if event.type == QUIT:     #Si un de ces événements est de type QUIT
 					      continuer = 0      #On arrête la boucle
@@ -94,10 +93,7 @@ def main():
 
 				if tkey[K_LALT] and tkey[K_F4]:
 					continuer = 0
-				#dt = clock.tick() / 1000
-				dt=1
-				# Vider la fenêtre
-				#Graphic
+
 				F.affiche_all(C,A)
 				#F._fenetre.blit(fps_label, fps_rect)
 				#if True:
