@@ -34,7 +34,7 @@ class Affichage_fenetre:
 			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
 
 
-		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image or "Aquadragon" in nom_image:
+		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
 			#element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
 			self._fenetre.blit(element, (position[0], position[1]-\
 			2.35*self.carte.hauteur/self.carte.nb_cases_h))
@@ -97,12 +97,15 @@ class Affichage_fenetre:
 		if projectile._position != projectile._arrivee:
 			self.ajouter_element("images/tours/balle.png",projectile._position)
 
-	def gestion_menu(self, event=None):
-		""" Nouvelle gestion du Menu avec la classe Menu """
+	def gestion_menu_statique(self):
 		pos_menu = self.carte.positionner_objet((0, self.carte.nb_cases_h))
 		self.ajouter_element("images/interface/Menubas/menu_bas3.png", pos_menu)
 		self._menu.affichage_menu_haut(self)
 		self._menu.menu_statique(self)
+
+	def gestion_menu(self, event=None):
+		""" Nouvelle gestion du Menu avec la classe Menu """
+		self.gestion_menu_statique()
 		self._menu.maj_menu(event, self)
 		self._menu.image(self)
 		self._menu.caracteristiques(self)

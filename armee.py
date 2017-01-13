@@ -6,7 +6,7 @@ from objet_actif import *
 import random
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat(Objet_Actif):
-	def __init__(self, position, id_soldat=6):
+	def __init__(self, position, id_soldat=1):
 		super(Soldat,self).__init__(position,"soldat",id_soldat)
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
@@ -107,17 +107,17 @@ class Soldat(Objet_Actif):
 		while(value_random>cout[ind]):
 			ind = ind+1
 			assert(ind<len(cout))
-		print(value_random, cout, ind)
+		#print(value_random, cout, ind)
 		return ind
 
 
 	def maj_direction4(self,carte):
 		pos_case = self._position
-		numero_base=self._numero_base_visee
+		numero_base=self._numero_base_visee # A MODIFIER NE SERS A RIEN !
 		chemin=carte._carte_des_chemins[numero_base][pos_case[0]][pos_case[1]]
-		print("chemin")
-		print(chemin)
-		print("soldat maj")
+		#print("chemin")
+		#print(chemin)
+		#print("soldat maj")
 		choix_voisin = None
 		liste_voisinins = []
 		self.liste_vitesses = []
