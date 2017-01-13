@@ -99,7 +99,7 @@ class Affichage_fenetre:
 	def gestion_menu(self, event=None):
 		""" Nouvelle gestion du Menu avec la classe Menu """
 		pos_menu = self.carte.positionner_objet((0, self.carte.nb_cases_h))
-		self.ajouter_element("images/interface/menu_bas2.jpg", pos_menu)
+		self.ajouter_element("images/interface/Menubas/menu_bas3.png", pos_menu)
 		self._menu.affichage_menu_haut(self)
 		self._menu.menu_statique(self)
 		self._menu.maj_menu(event, self)

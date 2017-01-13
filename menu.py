@@ -124,6 +124,19 @@ class Menu(object):
             else:
                 Affichage.ajouter_element("images/interface/bases/hp_base3.png", pos_vie[i])
 
+        # Boutons play/pause
+        pos_x, pos_y = pos_vie[0]
+        pix_x = self._joueur.carte.largeur/self._joueur.carte.nb_cases_l
+        pix_y = self._joueur.carte.hauteur/self._joueur.carte.nb_cases_h
+        pos_y += pix_y
+        dict_play = {
+                        "images/interface/play.png":  (pos_x,pos_y),
+                        "images/interface/pause.png": (pos_x+pix_x,pos_y),
+                        "images/interface/accelerate.png": (pos_x+2*pix_x,pos_y)
+        }
+        for d in dict_play.keys():
+            Affichage.ajouter_element(d, dict_play[d])
+
     def maj_menu(self, event, Vue=None):
         if event !=None and event.type == MOUSEBUTTONDOWN and event.button==1:
             pos_x, pos_y = self._joueur.carte.objet_dans_case(event.pos)
@@ -187,6 +200,12 @@ class Menu(object):
                             "couts d'entretien : ":(pos_cout_entretien,tour.cout_entretien),
                             "munitions : ":(pos_munitions, tour.munitions)
                             }
+            if self._dict_infos != None :
+                for d in self._dict_infos.keys():
+                    font_donnee = pygame.font.Font(None, 30)
+                    text_donnee = font_donnee.render(d+" "+str(self._dict_infos[d][1]), 1, (255, 255, 255))
+                    Vue._fenetre.blit(text_donnee, self._dict_infos[d][0])
+
         if self._etat == "base" and self._index_objet != None :
             pos_vie= self.positionner_objet((20,0.5))
             pos_cout_entretien= self.positionner_objet((20,2.5))
@@ -197,11 +216,11 @@ class Menu(object):
                             "couts d'entretien : ":(pos_cout_entretien,b._cout_entretien),
                             "couts d'amelioration : ":(pos_cout_amelioration,b._cout_amelioration)
                             }
-        if self._dict_infos != None :
-            for d in self._dict_infos.keys():
-                font_donnee = pygame.font.Font(None, 30)
-                text_donnee = font_donnee.render(d+" "+str(self._dict_infos[d][1]), 1, (255, 255, 255))
-                Vue._fenetre.blit(text_donnee, self._dict_infos[d][0])
+            if self._dict_infos != None :
+                for d in self._dict_infos.keys():
+                    font_donnee = pygame.font.Font(None, 30)
+                    text_donnee = font_donnee.render(d+" "+str(self._dict_infos[d][1]), 1, (255, 255, 255))
+                    Vue._fenetre.blit(text_donnee, self._dict_infos[d][0])
 
     def boutons(self, Vue):
         if (self._etat == "tour" or self._etat == "base") and self._index_objet != None:
