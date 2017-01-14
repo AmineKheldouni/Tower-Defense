@@ -8,8 +8,8 @@ from vague import *
 import random
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat(Objet_Actif):
-	def __init__(self, position, id_soldat=1):
-		super(Soldat,self).__init__(position,"soldat",id_soldat)
+	def __init__(self, source, id_soldat=1):
+		super(Soldat,self).__init__(source.position,"soldat",id_soldat)
 		""" Les champs position et vitesse sont deux vecteurs de composantes x et y
 	    valeur_soldat correspond à la valeur que le joueur obtient s'il l'élimine"""
 		self._type_soldat   = ExtractIntFromFile("data_armee.csv",id_soldat,0)
@@ -20,15 +20,15 @@ class Soldat(Objet_Actif):
 		self._argent_soldat = ExtractIntFromFile("data_armee.csv",id_soldat,7)
 		self._graphic       = ExtractStrFromFile("data_armee.csv",id_soldat,8)
 
-		self._position = position
-		self._ancienne_position = position
+		ligne, colonne = source._position
+		self._position = (colonne, ligne)
+		self._ancienne_position = self._position
 		self._is_dead = False
-		self._direction = 2 # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
+		self._direction = source.get_a_direction() # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
 		self._animation = 0 # 0 : statique 1 : pied droit 2 : pied gauche
 		self._pas = 0 #position dans la case
 		self._value_case = 100 #valeur d'une case
 		self._voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
-		self.liste_vitesses = []
 
 	def est_mort(self):
 		return self._est_mort or self._vie ==0
@@ -82,8 +82,8 @@ class Soldat(Objet_Actif):
 				liste_direction.append(i)
 		if(len(liste_voisins)==1):
 			chosen_path = 0
-		else:
-			chosen_path  = self.choix_chemin_pondere(liste_voisins, carte)
+		if(len(liste_voisins)>1):
+			chosen_path  = self.choix_chemin_deterministe(liste_voisins, carte)
 		if len(liste_voisins)>0:
 			self._ancienne_position = self._position
 			self._direction = liste_direction[chosen_path]
@@ -99,27 +99,29 @@ class Soldat(Objet_Actif):
 				cout_min = cout
 		return ind
 
+	def pondere_inverse(self, valeur):
+		return 100/(float(valeur*valeur))
+
 	def choix_chemin_pondere(self, liste_voisin, carte):
 		ind = 0
 		coef = 0
-		cout = [carte.get_cout_chemin(liste_voisin[0])**(-2)]*len(liste_voisin)
+		cout = [self.pondere_inverse(carte.get_cout_chemin(liste_voisin[0]))]*len(liste_voisin)
 		for i in range(1,len(liste_voisin)):
-			cout[i]= cout[i-1]+1000*(carte.get_cout_chemin(liste_voisin[i])**(-2))
+			cout[i]= cout[i-1]+self.pondere_inverse(carte.get_cout_chemin(liste_voisin[i]))
 		value_random = random.uniform(0,cout[len(cout)-1])
 		while(value_random>cout[ind]):
 			ind = ind+1
 			assert(ind<len(cout))
-		#print(value_random, cout, ind)
 		return ind
 
 
 	def maj_direction4(self,carte):
 		pos_case = self._position
-		numero_base=self._numero_base_visee # A MODIFIER NE SERS A RIEN !
+		numero_base=self._numero_base_visee
 		chemin=carte._carte_des_chemins[numero_base][pos_case[0]][pos_case[1]]
-		#print("chemin")
-		#print(chemin)
-		#print("soldat maj")
+		print("chemin")
+		print(chemin)
+		print("soldat maj")
 		choix_voisin = None
 		liste_voisinins = []
 		self.liste_vitesses = []
@@ -176,26 +178,28 @@ class Armee(Vague):
 		self._liste_soldat.append(Soldat(pos,id_soldat))
 
 	def actualise_vague(self, carte):
-		for pos_source in (carte._pos_sources):
+		for i in range(len(carte._pos_sources)):
 			indice = self.renvoie_soldat()
 			if(indice>0):
-				self.ajout_soldat(pos_source, indice)
+				self.ajout_soldat(carte.get_source(i), indice)
 
 	def maj_troupe(self,carte):
 		liste_morts = []
 		argent = 0
 		point  = 0
-		for i in range(len(self._liste_soldat)):
-			soldat = self._liste_soldat[i]
+		idx = 0
+		while idx < len(self._liste_soldat):
+			soldat = self._liste_soldat[idx]
 			if soldat.est_mort():
-				liste_morts.append(i)
-				argent+=self._liste_soldat[i]._argent_soldat
-				point +=self._liste_soldat[i]._valeur_soldat
+				argent+=self._liste_soldat[idx]._argent_soldat
+				point +=self._liste_soldat[idx]._valeur_soldat
+				del(self._liste_soldat[idx])
+				idx = idx -1
 			elif(soldat.arriver_base(carte)):
-				liste_morts.append(i)
-		for idx in liste_morts:
-			del self._liste_soldat[idx]
-		return(argent,point)
+				del(self._liste_soldat[idx])
+				idx = idx -1
+			idx = idx+1
+		return(argent, point)
 
 	def actualisation(self, carte):
 		self.actualise_vague(carte)

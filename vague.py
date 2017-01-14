@@ -18,12 +18,10 @@ class Vague(object):
 
     def decrease(self,id_decrease):
         """ Diminue le compteur correspondant à une pause ou un ennemis"""
-        print(self._nb_ennemis, self._nb_tot_ennemis, id_decrease)
         assert(self._nb_ennemis[id_decrease]>0)
         self._nb_ennemis[id_decrease] -= 1
         if(id_decrease>0):
             self._nb_tot_ennemis-= 1
-
 
     def get_nb_ennemis(self,indice):
         return self._nb_ennemis[indice]
@@ -31,10 +29,7 @@ class Vague(object):
     def renvoie_soldat(self):
         """Renvoie (id_soldat, id_source), l'id et la source étant aléatoires"""
         if(self.is_over()):
-<<<<<<< 4175a692b684167772c3f8d3d9514e849a438570
-=======
             # print("was over before")
->>>>>>> amélioration de la mort des bases
             return 0
         indice =0
         value_indice = self.get_nb_ennemis(0)

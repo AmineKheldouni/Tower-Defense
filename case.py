@@ -1,5 +1,6 @@
 #!/usr/bin/python
 #encoding: utf8
+import random
 
 class Case(object):
 	def __init__(self, position, type_objet="",tapis=0, id_graphic=0, is_chemin=0):
@@ -54,8 +55,13 @@ class Source(Case):
 	"""docstring for Element_decor."""
 	def __init__(self, position, tapis, id_excel):
 		super(Source,self).__init__(position,"source",tapis,id_excel)
-		self.direction = 0
-
+		self._direction = []
+	"Rend une direction accessible aléatoire"
+	def get_a_direction(self):
+		if(len(self._direction)>1):
+			return self._direction[  random.randint(0,len(self._direction)-1)]
+		else:
+			return self._direction[0]
 class Base(Case):
 	def __init__(self, position, tapis=0,id_excel=103):
 	 	super(Base,self).__init__(position,"base",tapis,id_excel,1)
@@ -77,9 +83,11 @@ class Base(Case):
 
 	def is_attackable(self):
 		return self._vie>0
+
 	def dommage(self,degat):
 		self._vie -= degat
 		self._vie = max(0,self._vie)
+
 	def actualisation(self):
 		if(not self._est_mort):
 			if self._vie > self.vie_depart/2:

@@ -31,7 +31,7 @@ def main():
 			return 0
 	if En_jeu == "Jouer":
 		#Ouverture de la fenêtre Pygame
-		C = Carte()
+		C = Carte("cartes_carte3")
 		J = Joueur(C)
 		F = Affichage_fenetre(J)
 		S=[]

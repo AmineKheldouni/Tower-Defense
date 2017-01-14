@@ -190,43 +190,48 @@ class Carte:
 		old_pos = pos
 		pos_act = pos
 		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
-		liste_voisins =[];
-		while len(liste_voisins)<=1:
-			liste_voisins =[]
-			for voisin in voisins:
-				tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
-				case_voisin = (tmp_a, tmp_b)
-				if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
-					liste_voisins.append(case_voisin)
-			if(len(liste_voisins)==0):
-				print("la carte est une ligne droite non ?")
-				return 0
-			if(len(liste_voisins)==1):
-				old_pos = pos_act
-				pos_act=liste_voisins[0]
-		print(liste_voisins)
-		#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
-		direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
-		self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
-		self._cases[old_pos[0]][old_pos[1]]._tapis = 0
+		liste_voisins =[]
+		for voisin in voisins:
+			tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
+			case_voisin = (tmp_a, tmp_b)
+			if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
+				liste_voisins.append(case_voisin)
+		if(len(liste_voisins)==1):
+			while len(liste_voisins)<=1:
+				liste_voisins =[]
+				for voisin in voisins:
+					tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
+					case_voisin = (tmp_a, tmp_b)
+					if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
+						liste_voisins.append(case_voisin)
+				if(len(liste_voisins)==0):
+					print("la carte est une ligne droite non ?")
+					return 0
+				if(len(liste_voisins)==1):
+					old_pos = pos_act
+					pos_act=liste_voisins[0]
+			#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
+			direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
+			self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
+			# self._cases[old_pos[0]][old_pos[1]]._tapis = 0
+		else :
+			# La base ou la source a plusieurs voisins et il ne faut pas toucher au reste.
+			None
 
-	def initialiser_source(self, source):
-		pos_case = source._position
+	def initialiser_source(self, i):
+		pos_case = self._pos_sources[i]
+		source = self.get_source(i)
 		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
-		liste_voisins = []
-		liste_direction = []
 		for i,voisin in enumerate(voisins):
 			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
 			assert(case_voisin != (source._position))
 			if (self.est_case_chemin(case_voisin,(i+2)%4)):
-				direction = i
-		source.direction = i
-		print(source._position)
+				source._direction.append(i)
 
 	def initialiser_sources(self):
 		for i in range(len(self._pos_sources)):
-			self.initialiser_source(self.get_source(i))
+			self.initialiser_source(i)
 			self.base_est_morte(self._pos_sources[i])
 
 	def initialiser_carte(self, vec_decor=[]):
