@@ -186,7 +186,7 @@ class Carte:
 
 	def base_est_morte(self, pos):
 		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
-		dico_dir_vers_entier = { (0,1) : -3 , (0,-1) : -1 , (1,0) : -4 , (1,0) : -2}
+		dico_dir_vers_entier = { (0,1) : -3 , (0,-1) : -1 , (1,0) : -4 , (-1,0) : -2}
 		old_pos = pos
 		pos_act = pos
 		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
@@ -208,7 +208,7 @@ class Carte:
 		#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
 		direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
 		self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
-		#self._cases[old_pos[0]][old_pos[1]]._tapis = 0
+		self._cases[old_pos[0]][old_pos[1]]._tapis = 0
 
 	def initialiser_source(self, source):
 		pos_case = source._position

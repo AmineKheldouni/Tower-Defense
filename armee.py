@@ -77,7 +77,7 @@ class Soldat(Objet_Actif):
 		for i,voisin in enumerate(self._voisins):
 			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			if (carte.est_case_chemin(case_voisin,self._direction)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
+			if (carte.est_case_chemin(case_voisin,i)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
 				liste_voisins.append(case_voisin)
 				liste_direction.append(i)
 		if(len(liste_voisins)==1):
