@@ -228,6 +228,7 @@ class Carte:
 			assert(case_voisin != (source._position))
 			if (self.est_case_chemin(case_voisin,(i+2)%4)):
 				source._direction.append(i)
+		print(source._direction)
 
 	def initialiser_sources(self):
 		for i in range(len(self._pos_sources)):
