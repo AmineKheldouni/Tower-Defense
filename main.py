@@ -35,10 +35,8 @@ def main():
 		J = Joueur(C)
 		F = Affichage_fenetre(J)
 		S=[]
-		for i in range(len(C._pos_sources)):
-			S.append( Soldat(C._pos_sources[i]))
 		C.initialiser_carte([0,10,0,20])
-		A = Armee(S)
+		A = Armee()
 		tableau_projectile =[] # Tableau des projectiles
 		continuer = 1
 		clock = pygame.time.Clock()
@@ -69,7 +67,7 @@ def main():
 					    F._fenetre.fill((i,i,i),special_flags=BLEND_RGB_SUB)
 					    pygame.display.flip()
 				else:
-					pygame.time.Clock().tick(60)	
+					pygame.time.Clock().tick(60)
 
 					for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 					    if event.type == QUIT:     #Si un de ces événements est de type QUIT
@@ -122,17 +120,10 @@ def main():
 					A.mouvement_troupe(C)
 					#last_time = time.time()
 				#temps = pygame.time.get_ticks()
-
-
-				#gestion des ayyyyyyyyy
-				if (compteur%40 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
-					p = rd.randint(0, len(C._pos_sources)-1)
-					p2 = rd.randint(0, len(C._pos_sources)-1)
-					S = Soldat(C._pos_sources[p])
-					S2 = Soldat(C._pos_sources[p2])
-					A._liste_soldat.append(S)
-					A._liste_soldat.append(S2)
-				temps = pygame.time.get_ticks()
+				#gestion des armées
+				if (compteur%10 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
+					A.actualise_vague(C)
+					temps = pygame.time.get_ticks()
 
 				#Gestion de l'attaque des tours
 				if (compteur%2 == 0):

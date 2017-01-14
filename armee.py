@@ -82,13 +82,8 @@ class Soldat(Objet_Actif):
 				liste_direction.append(i)
 		if(len(liste_voisins)==1):
 			chosen_path = 0
-<<<<<<< 62b0c30597a4ee460c5f922d84075abbf9813323
 		else:
 			chosen_path  = self.choix_chemin_pondere(liste_voisins, carte)
-=======
-		if(len(liste_voisins)>1):
-			chosen_path  = self.choix_chemin_deterministe(liste_voisins, carte)
->>>>>>> gestion du système de vague
 		if len(liste_voisins)>0:
 			self._ancienne_position = self._position
 			self._direction = liste_direction[chosen_path]

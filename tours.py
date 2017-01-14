@@ -4,7 +4,6 @@
 #Code pas encore entièrement révisé pour intégration aux autres codes
 
 from armee import*
-from objets_interraction import *
 import pygame
 from pygame.locals import *
 

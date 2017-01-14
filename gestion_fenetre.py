@@ -5,7 +5,6 @@ import pygame
 from pygame.locals import *
 
 from csvuser import *
-from objets_interraction import *
 from case import *
 
 import functools
@@ -16,97 +15,6 @@ import numpy as np
 import copy
 import numpy.random as rd
 
-#fonction récursive utilisée pour créer la carte des couts
-def miseajour_carte_couts_aux(numero_base,matrice_a_remplir,position_a_remplir,cout,nb_cases_l,nb_cases_h,fonction_de_chemin):
-	if((matrice_a_remplir[numero_base][position_a_remplir[0]][position_a_remplir[1]]==-1)):
-		matrice_a_remplir[numero_base][position_a_remplir[0]][position_a_remplir[1]]=cout
-		for i in [0,1,3]:
-			direction=i
-			position_x=position_a_remplir[0]
-			position_y = position_a_remplir[1]
-			position_x+= liste_des_voisins_possible[i][0]
-			position_y+= liste_des_voisins_possible[i][1]
-			position_aux=(position_x,position_y)
-			if((position_aux[0]>=0) and (position_aux[0]<nb_cases_l) and (position_aux[1]>=0) and (position_aux[1]<nb_cases_h) and (fonction_de_chemin(position_aux,direction)) ):
-				print("fuck")
-				miseajour_carte_couts_aux(numero_base,matrice_a_remplir,position_aux,cout+1,nb_cases_l,nb_cases_h,fonction_de_chemin)
-				print("da fuck")
-
-def cout_dun_chemin(liste_chemin):
-	res=0
-	for i in range(len(liste_chemin)):
-		res=res+liste_chemin[i][2]
-	return res
-
-#liste_chemin contient des triplets reliant la base à la dernière position du chemin
-def miseajour_carte_chemin_aux(numero_base,matrice_a_remplir_chemin,matrice_de_couts,position_a_remplir,liste_chemin,nb_cases_l,nb_cases_h,fonction_chemin):
-	coord_x=position_a_remplir[0]
-	coord_y=position_a_remplir[1]
-	print("utilisation fonction mise a jour")
-	print("base est reconnue chemin?")
-	print(fonction_chemin(position_a_remplir))
-	if(liste_chemin==[]):
-		print("on rentre dans la mise a jour d'une base")
-		case=(coord_x,coord_y,matrice_de_couts[numero_base][coord_x][coord_y])
-		matrice_a_remplir_chemin[numero_base][coord_x][coord_y]==[case]
-		liste_chemin=[case]
-		for i in range(4):
-			pos_x=coord_x
-			pos_y=coord_y
-			pos_x+= liste_des_voisins_possible[i][0]
-			pos_y+= liste_des_voisins_possible[i][1]
-			position_aux=(pos_x,pos_y)
-			liste_intermediaire=list(liste_chemin)
-			miseajour_carte_chemin_aux(numero_base,matrice_a_remplir_chemin,matrice_de_couts,position_aux,liste_intermediaire,nb_cases_l,nb_cases_h,fonction_chemin)
-
-
-	else:
-		print("liste des chemins")
-		print(liste_chemin)
-		derniere_position_x=liste_chemin[-1][0]
-		derniere_position_y=liste_chemin[-1][1]
-
-		direction_x=derniere_position_x-coord_x
-		direction_y=derniere_position_y-coord_y
-
-		direction=dictionnaire_direction[(direction_x,direction_y)]
-
-		if((coord_x>=0) and (coord_x<nb_cases_l) and (coord_y>=0) and (coord_y<nb_cases_h) and fonction_chemin(position_a_remplir,direction)):
-			print("on rentre dans la mise a jour d'une base")
-			if(matrice_a_remplir_chemin[numero_base][coord_x][coord_y]==[]):
-				liste_nouveau_chemin=list(liste_chemin)
-				case=(coord_x,coord_y,matrice_de_couts[numero_base][coord_x][coord_y])
-				liste_nouveau_chemin.append(case)
-				matrice_a_remplir_chemin[numero_base][coord_x][coord_y]=list(liste_nouveau_chemin)
-				print("mise a jour connard?")
-				print(matrice_a_remplir_chemin[numero_base][coord_x][coord_y])
-				for i in range(4):
-					pos_x=coord_x
-					pos_y=coord_y
-					pos_x+= liste_des_voisins_possible[i][0]
-					pos_y+= liste_des_voisins_possible[i][1]
-					position_aux=(pos_x,pos_y)
-					liste_voisins=list(liste_nouveau_chemin)
-					miseajour_carte_chemin_aux(numero_base,matrice_a_remplir_chemin,matrice_de_couts,position_aux,liste_voisins,nb_cases_l,nb_cases_h,fonction_chemin)
-
-				else:
-
-					cout_ancien_chemin=cout_dun_chemin(matrice_a_remplir_chemin[numero_base][coord_x][coord_y])
-					cout_nouveau_chemin=cout_dun_chemin(liste_chemin)+matrice_de_couts[numero_base][coord_x][coord_y]
-
-					if(cout_nouveau_chemin<cout_ancien_chemin):
-						liste_nouveau_chemin=list(liste_chemin)
-						case=(coord_x,coord_y,matrice_de_couts[numero_base][coord_x][coord_y])
-						liste_nouveau_chemin.append(case)
-						matrice_a_remplir_chemin[numero_base][coord_x][coord_y]=list(liste_nouveau_chemin)
-						for i in range(4):
-							pos_x=coord_x
-							pos_y=coord_y
-							pos_x+= liste_des_voisins_possible[i][0]
-							pos_y+= liste_des_voisins_possible[i][1]
-							position_aux=(pos_x,pos_y)
-							liste_voisins=list(liste_nouveau_chemin)
-							miseajour_carte_chemin_aux(numero_base,matrice_a_remplir_chemin,matrice_de_couts,position_aux,liste_voisins,nb_cases_l,nb_cases_h,fonction_chemin)
 
 class Carte:
 	def __init__(self,id_carte="cartes_carte1", hauteur=700, largeur=1250, nb_cases_h = 25, \
@@ -237,7 +145,7 @@ class Carte:
 		return self.get_case(self._pos_bases[i])
 
 	def get_source(self,i):
-		return self.get_case(self._pos_source[i])
+		return self.get_case(self._pos_sources[i])
 
 	def est_case_chemin(self,pos,soldat_direction=0):
 		if  (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
@@ -252,65 +160,6 @@ class Carte:
 		for i in range(self._nb_cases_l):
 			for j in range(self._nb_cases_h):
 				self._cases[i][j].actualisation()
-
-#Gestion des bases et des sources
-
-	def base_est_morte(self, pos):
-		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
-		dico_dir_vers_entier = { (0,1) : -3 , (0,-1) : -1 , (1,0) : -4 , (1,0) : -2}
-		old_pos =(-50,-50) #non accessible en 0
-		pos_act = pos
-		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
-		liste_voisins =[];
-		while len(liste_voisins)<=1:
-			liste_voisins =[]
-			for voisin in voisins:
-				tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
-				case_voisin = (tmp_a, tmp_b)
-				if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
-					liste_voisins.append(case_voisin)
-			if(len(liste_voisins)==0):
-				print("la carte est une ligne droite non ?")
-				return 0
-			if(len(liste_voisins)==1):
-				old_pos = pos_act
-				pos_act=liste_voisins[0]
-		#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
-		direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
-		self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
-		#self._cases[old_pos[0]][old_pos[1]]._tapis = 0
-
-	def initialiser_source(self, source):
-		pos_case = source._position
-		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
-		liste_voisins = []
-		liste_direction = []
-		for i,voisin in enumerate(self._voisins):
-			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
-			case_voisin = (tmp_a, tmp_b)
-			if (carte.est_case_chemin(case_voisin,(i+2)%4)) and case_voisin != (self._position):
-				direction = i
-		source.direction = i
-		print(i)
-
-	def initialiser_sources(self):
-		for i in range(len(self._pos_source)):
-			self.initialiser_source(self.get_source[i])
-
-	def miseajour_carte_couts_bases2(self):
-		for k in range(len(self._pos_bases)):
-			base=self.get_base(k)
-			position_base=base.position
-			miseajour_carte_couts_aux(k,self.carte_couts,position_base,0,self.nb_cases_l,self.nb_cases_h,self.est_case_chemin)
-
-	def miseajour_carte_chemin1(self):
-		for k in range(len(self._pos_bases)):
-			base=self.get_base(k)
-			position_base=base.position
-			case=(position_base[0],position_base[1],self.carte_couts[k][position_base[0]][position_base[1]])
-			print("dans mise à jour la base est reconnue dans chemin ou non?")
-			print(self.est_case_chemin(position_base))
-			miseajour_carte_chemin_aux(k,self._carte_des_chemins,self.carte_couts,position_base,[],self.nb_cases_l,self.nb_cases_h,self.est_case_chemin)
 
 #Gestion de la carte de cout
 
@@ -333,10 +182,54 @@ class Carte:
 		for pos_base in self._pos_bases:
 			self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
 
+#Gestion des sources et des bases
+
+	def base_est_morte(self, pos):
+		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
+		dico_dir_vers_entier = { (0,1) : -3 , (0,-1) : -1 , (1,0) : -4 , (1,0) : -2}
+		old_pos = pos
+		pos_act = pos
+		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
+		liste_voisins =[];
+		while len(liste_voisins)<=1:
+			liste_voisins =[]
+			for voisin in voisins:
+				tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
+				case_voisin = (tmp_a, tmp_b)
+				if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
+					liste_voisins.append(case_voisin)
+			if(len(liste_voisins)==0):
+				print("la carte est une ligne droite non ?")
+				return 0
+			if(len(liste_voisins)==1):
+				old_pos = pos_act
+				pos_act=liste_voisins[0]
+		print(liste_voisins)
+		#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
+		direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
+		self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
+		#self._cases[old_pos[0]][old_pos[1]]._tapis = 0
+
+	def initialiser_source(self, source):
+		pos_case = source._position
+		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
+		liste_voisins = []
+		liste_direction = []
+		for i,voisin in enumerate(voisins):
+			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
+			case_voisin = (tmp_a, tmp_b)
+			assert(case_voisin != (source._position))
+			if (self.est_case_chemin(case_voisin,(i+2)%4)):
+				direction = i
+		source.direction = i
+		print(source._position)
+
+	def initialiser_sources(self):
+		for i in range(len(self._pos_sources)):
+			self.initialiser_source(self.get_source(i))
+			self.base_est_morte(self._pos_sources[i])
+
 	def initialiser_carte(self, vec_decor=[]):
 		self.genere_decor(vec_decor)
 		self.actualise_cout_chemin()
-		for i in range(self._nb_cases_l):
-			for j in range(self._nb_cases_h):
-				if(self._cases[i][j]._type_objet=="source"):
-					self.base_est_morte((i,j))
+		self.initialiser_sources()

@@ -32,13 +32,7 @@ class Affichage_fenetre:
 		not "arbre" in nom_image and not "tour" in nom_image and not \
 		"base_state1" in nom_image:
 			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
-
-
-<<<<<<< 62b0c30597a4ee460c5f922d84075abbf9813323
 		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
-=======
-		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image :
->>>>>>> gestion du système de vague
 			#element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
 			self._fenetre.blit(element, (position[0], position[1]-\
 			2.35*self.carte.hauteur/self.carte.nb_cases_h))
