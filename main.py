@@ -10,6 +10,11 @@ def is_over(carte):
 	return True
 
 def main():
+	print( random.randint(0,1))
+	print( random.randint(0,2))
+	print( random.randint(0,2))
+	print( random.randint(0,2))
+	print( random.randint(0,0))
 	pygame.init()
 	En_jeu = 0
 	MJ = MenuJeu()
@@ -120,7 +125,7 @@ def main():
 					A.mouvement_troupe(C)
 					#last_time = time.time()
 				#temps = pygame.time.get_ticks()
-				#gestion des armées
+
 				if (compteur%10 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
 					A.actualise_vague(C)
 					temps = pygame.time.get_ticks()
