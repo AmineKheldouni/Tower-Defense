@@ -31,8 +31,8 @@ def main():
 			return 0
 	if En_jeu == "Jouer":
 		#Ouverture de la fenêtre Pygame
-		C = Carte("cartes_carte3")
-		C.initialiser_carte([1,1,1,1])
+		C = Carte("cartes_carte4")
+		C.initialiser_carte([5,4,3,2])
 		J = Joueur(C)
 		F = Affichage_fenetre(J)
 		A = Armee()
