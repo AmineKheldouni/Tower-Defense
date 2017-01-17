@@ -235,6 +235,7 @@ class Carte:
 
 	def get_base(self,i):
 		return self.get_case(self._pos_bases[i])
+
 	def get_source(self,i):
 		return self.get_case(self._pos_source[i])
 
@@ -252,7 +253,7 @@ class Carte:
 			for j in range(self._nb_cases_h):
 				self._cases[i][j].actualisation()
 
-#Gestion des bases
+#Gestion des bases et des sources
 
 	def base_est_morte(self, pos):
 		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
@@ -279,20 +280,28 @@ class Carte:
 		self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
 		#self._cases[old_pos[0]][old_pos[1]]._tapis = 0
 
+	def initialiser_source(self, source):
+		pos_case = source._position
+		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
+		liste_voisins = []
+		liste_direction = []
+		for i,voisin in enumerate(self._voisins):
+			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
+			case_voisin = (tmp_a, tmp_b)
+			if (carte.est_case_chemin(case_voisin,(i+2)%4)) and case_voisin != (self._position):
+				direction = i
+		source.direction = i
+		print(i)
+
+	def initialiser_sources(self):
+		for i in range(len(self._pos_source)):
+			self.initialiser_source(self.get_source[i])
+
 	def miseajour_carte_couts_bases2(self):
 		for k in range(len(self._pos_bases)):
 			base=self.get_base(k)
 			position_base=base.position
 			miseajour_carte_couts_aux(k,self.carte_couts,position_base,0,self.nb_cases_l,self.nb_cases_h,self.est_case_chemin)
-
-	def miseajour_carte_chemin1(self):
-		for k in range(len(self._pos_bases)):
-			base=self.get_base(k)
-			position_base=base.position
-			case=(position_base[0],position_base[1],self.carte_couts[k][position_base[0]][position_base[1]])
-			print("dans mise à jour la base est reconnue dans chemin ou non?")
-			print(self.est_case_chemin(position_base))
-			miseajour_carte_chemin_aux(k,self._carte_des_chemins,self.carte_couts,position_base,[],self.nb_cases_l,self.nb_cases_h,self.est_case_chemin)
 
 	def miseajour_carte_chemin1(self):
 		for k in range(len(self._pos_bases)):

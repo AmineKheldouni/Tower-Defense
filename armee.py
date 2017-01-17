@@ -3,6 +3,8 @@
 
 from gestion_fenetre import *
 from objet_actif import *
+from vague import *
+
 import random
 # AJOUTER LA CLASSE ARMEE ET SOLDAT PUIS LA CLASSE PROJECTILE
 class Soldat(Objet_Actif):
@@ -80,8 +82,13 @@ class Soldat(Objet_Actif):
 				liste_direction.append(i)
 		if(len(liste_voisins)==1):
 			chosen_path = 0
+<<<<<<< 62b0c30597a4ee460c5f922d84075abbf9813323
 		else:
 			chosen_path  = self.choix_chemin_pondere(liste_voisins, carte)
+=======
+		if(len(liste_voisins)>1):
+			chosen_path  = self.choix_chemin_deterministe(liste_voisins, carte)
+>>>>>>> gestion du système de vague
 		if len(liste_voisins)>0:
 			self._ancienne_position = self._position
 			self._direction = liste_direction[chosen_path]
@@ -152,18 +159,32 @@ class Soldat(Objet_Actif):
 		self.actualise_etat()
 
 
-class Armee:
-	def __init__(self, tableau_soldat):
-		self._taille_effectif = len(tableau_soldat)
-		self._liste_soldat = tableau_soldat
+class Armee(Vague):
+	"""
+	Vecteur contenant l'ensemble des soldats
+	"""
+	def __init__(self, id_vague=1):
+		super(Armee,self).__init__(id_vague)
+		self._liste_soldat = []
 
 	def mouvement_troupe(self,carte):
-		assert(self._taille_effectif != 0)
 		soldats_arrives = []
 		for i in range(len(self._liste_soldat)):
 			soldat = self._liste_soldat[i]
 			soldat.actualisation()
 			soldat.deplacement_soldat(carte)
+
+	def taille_effectif(self):
+		return len(tableau_soldat)
+
+	def ajout_soldat(self, pos, id_soldat):
+		self._liste_soldat.append(Soldat(pos,id_soldat))
+
+	def actualise_vague(self, carte):
+		for pos_source in (carte._pos_sources):
+			indice = self.renvoie_soldat()
+			if(indice>0):
+				self.ajout_soldat(pos_source, indice)
 
 	def maj_troupe(self,carte):
 		liste_morts = []
@@ -180,3 +201,8 @@ class Armee:
 		for idx in liste_morts:
 			del self._liste_soldat[idx]
 		return(argent,point)
+
+	def actualisation(self, carte):
+		self.actualise_vague(carte)
+		self.mouvement_troupe(carte)
+		return self.is_over()

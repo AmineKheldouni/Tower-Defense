@@ -54,7 +54,8 @@ class Source(Case):
 	"""docstring for Element_decor."""
 	def __init__(self, position, tapis, id_excel):
 		super(Source,self).__init__(position,"source",tapis,id_excel)
-
+		self.direction = []
+		
 class Base(Case):
 	def __init__(self, position, tapis=0,id_excel=103):
 	 	super(Base,self).__init__(position,"base",tapis,id_excel,1)

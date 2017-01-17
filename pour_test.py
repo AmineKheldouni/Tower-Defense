@@ -51,12 +51,10 @@ def main():
 	if En_jeu == "Jouer":
 		#Ouverture de la fenêtre Pygame
 		C = Carte()
+		C.initialiser_carte([1,1,1,1])
 		J = Joueur(C)
 		F = Affichage_fenetre(J)
-		S=[]
-		S.append( Soldat(C._pos_sources[0]))
-		C.initialiser_carte([0,10,0,20])
-		A = Armee(S)
+		A = Armee()
 		tableau_projectile =[] # Tableau des projectiles
 		continuer = 1
 		clock = pygame.time.Clock()
@@ -139,14 +137,9 @@ def main():
 					#last_time = time.time()
 				#temps = pygame.time.get_ticks()
 
-				# if (compteur%40 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
-				# 	p = rd.randint(0, len(C._pos_sources)-1)
-				# 	p2 = rd.randint(0, len(C._pos_sources)-1)
-				# 	S = Soldat(C._pos_sources[p])
-				# 	S2 = Soldat(C._pos_sources[p2])
-				# 	A._liste_soldat.append(S)
-				# 	A._liste_soldat.append(S2)
-				#temps = pygame.time.get_ticks()
+				if (compteur%10 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
+					A.actualise_vague(C)
+					temps = pygame.time.get_ticks()
 
 				#Gestion de l'attaque des tours
 				if (compteur%2 == 0):
@@ -157,9 +150,6 @@ def main():
 				F.joueur.actualise_valeurs( A.maj_troupe(C))
 				pygame.display.flip()
 					#last_time = time.time()
-
-if __name__ == '__main__':
-    main()
 
 if __name__ == '__main__':
     main()
