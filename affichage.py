@@ -46,7 +46,7 @@ class Affichage_fenetre:
 		""" affiche tapis des cases (chemin par exemple)"""
 		for j in range(carte.nb_cases_l):
 			for i in range(carte.nb_cases_h):
-				value_case=carte._cases[j][i].tapis
+				value_case=carte._cases[j][i]._tapis
 				pos = carte.positionner_objet((j,i))
 				if(value_case!=0):
 					self.ajouter_element(self.dico_carte[value_case],pos)

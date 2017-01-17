@@ -48,7 +48,7 @@ class Emplacement(Case):
 # Pour faire un No_Objet : (self,position,graphic,arg,id_exel)
 class Element_decor(Case):
 	"""docstring for Element_decor."""
-	def __init__(self, position, tapis, id_excel):
+	def __init__(self, position,  id_excel,tapis,):
 		super(Element_decor,self).__init__(position,"element_decor",tapis,id_excel)
 
 class Source(Case):
@@ -56,6 +56,7 @@ class Source(Case):
 	def __init__(self, position, tapis, id_excel):
 		super(Source,self).__init__(position,"source",tapis,id_excel)
 		self._direction = []
+
 	"Rend une direction accessible aléatoire"
 	def get_a_direction(self):
 		if(len(self._direction)>1):

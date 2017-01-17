@@ -10,11 +10,6 @@ def is_over(carte):
 	return True
 
 def main():
-	print( random.randint(0,1))
-	print( random.randint(0,2))
-	print( random.randint(0,2))
-	print( random.randint(0,2))
-	print( random.randint(0,0))
 	pygame.init()
 	En_jeu = 0
 	MJ = MenuJeu()
@@ -36,7 +31,7 @@ def main():
 			return 0
 	if En_jeu == "Jouer":
 		#Ouverture de la fenêtre Pygame
-		C = Carte("cartes_carte1")
+		C = Carte("cartes_carte3")
 		J = Joueur(C)
 		F = Affichage_fenetre(J)
 		S=[]

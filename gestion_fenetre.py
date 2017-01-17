@@ -52,6 +52,7 @@ class Carte:
 					self._cases[j][i]._est_chemin=chemin;
 					self._cases[j][i]._tapis = 1;
 					self.set_cout_case((i,j),1)
+
 	@property
 	def carte_couts(self):
 		return self._carte_couts
@@ -122,10 +123,10 @@ class Carte:
 		for j in range(len(tab_objet)):
 			for i in range(tab_objet[j]):
 				tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(1, self.nb_cases_h-1)
-				while self._cases[tmp1][tmp2].tapis!=0 and self.get_type_case((tmp1,tmp2))!="place_construction":
+				while self._cases[tmp1][tmp2]._tapis!=0 and self.get_type_case((tmp1,tmp2))!="place_construction":
 					tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(self.nb_cases_h-1)
 				pos_x, pos_y = self.positionner_objet((tmp1,tmp2))
-				self._cases[tmp1][tmp2] = Element_decor((tmp1,tmp2),tab_carte_objets[i][j],1000+j+1)
+				self._cases[tmp1][tmp2] = Element_decor((tmp1,tmp2),1000+j+1,0)
 
 
 #@getter et setter
@@ -162,6 +163,10 @@ class Carte:
 				self._cases[i][j].actualisation()
 
 #Gestion de la carte de cout
+	def reinitialiser_cout_chemin(self):
+		for i in range(self._nb_cases_h):
+			for j in range(self._nb_cases_l):
+				self._cout_chemin[j][i] = 1000
 
 	def rec_actualise_cout_chemin(self, pos_case, vect_voisin, cout_actuel):
 		self.set_cout_chemin(pos_case, cout_actuel)
@@ -178,9 +183,11 @@ class Carte:
 				self.rec_actualise_cout_chemin(case_voisin, vect_voisin, new_cost )
 
 	def actualise_cout_chemin(self):
+		self.reinitialiser_cout_chemin()
 		voisin = [(0, 1), (-1,0), (0, -1), (1, 0)]
-		for pos_base in self._pos_bases:
-			self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
+		for i,pos_base in enumerate(self._pos_bases):
+			if(not self.get_base(i)._est_mort):
+				self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
 
 #Gestion des sources et des bases
 
@@ -213,7 +220,6 @@ class Carte:
 			#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
 			direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
 			self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
-			# self._cases[old_pos[0]][old_pos[1]]._tapis = 0
 		else :
 			# La base ou la source a plusieurs voisins et il ne faut pas toucher au reste.
 			None
@@ -228,7 +234,6 @@ class Carte:
 			assert(case_voisin != (source._position))
 			if (self.est_case_chemin(case_voisin,(i+2)%4)):
 				source._direction.append(i)
-		print(source._direction)
 
 	def initialiser_sources(self):
 		for i in range(len(self._pos_sources)):
