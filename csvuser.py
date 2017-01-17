@@ -7,7 +7,7 @@ import csv
 #compris dans la zone (i_min,j_min)-(i_max,j_max)
 def LoadIntFromFile(name_file,i_min,i_max,j_min,j_max):
     tab=[]
-    with open(name_file,'r') as fichier:
+    with open("data/"+name_file,'r') as fichier:
         csv_file=csv.reader(fichier)
         cpt_ligne=-1
         for ligne in csv_file:
@@ -29,7 +29,7 @@ def LoadIntFromFile(name_file,i_min,i_max,j_min,j_max):
 #Retourne le terme en position (i,j) du fichier csv
 #Renvoit None s'il n'existe pas
 def ExtractFromFile(name_file,i,j):
-    with open(name_file,'r') as fichier:
+    with open("data/"+name_file,'r') as fichier:
         csv_file=csv.reader(fichier)
         cpt=-1
         for ligne in csv_file:
@@ -54,7 +54,7 @@ def ExtractStrFromFile(name_file,i,j):
 #(situés entre ligne_debut et ligne_fin)
 #La fonction suppose que de tels élements existent
 def DicoFromFile(name_file,ligne_debut,ligne_fin,col_1,col_2):
-    with open(name_file,'r') as fichier:
+    with open("data/"+name_file,'r') as fichier:
         csv_file=csv.reader(fichier)
         dico_carte={}
         cpt_ligne=-1
