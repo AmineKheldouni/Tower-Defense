@@ -81,6 +81,7 @@ def main():
 				compteur += 1 # A modifier pour une vitesse x2
 				#clock.tick(FPS)
 				#time.sleep(0.02)
+				pygame.time.Clock().tick(100)
 				for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 					#F._joueur.gestion_tour(event)
 					F.gestion_menu(event)
