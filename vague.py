@@ -34,6 +34,7 @@ class Vague(object):
         indice =0
         value_indice = self.get_nb_ennemis(0)
         value_rand = random.randint(1,self._nb_tot_ennemis+value_indice)
+        #value_rand = 1
         while(value_indice < value_rand):
             indice+=1
             value_indice+= self.get_nb_ennemis(indice)

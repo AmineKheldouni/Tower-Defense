@@ -5,7 +5,7 @@ from gestion_fenetre import *
 from tours import *
 
 class Joueur:
-	def __init__(self, carte, argent = 1000, score = 0):
+	def __init__(self, carte, argent = 500, score = 0):
 		self._argent = argent
 		self._score = score
 		self._carte = carte
@@ -25,29 +25,14 @@ class Joueur:
 
 	def score(self,point):
 		self._score+=point
-	def argent(self,tune):
-		self._argent+=tune
+	def gain_argent(self,gain):
+		self._argent+= gain
 
-	def actualise_valeurs(self, (argent,point)):
-		self.argent(argent)
-		self.score(point)
+	def actualise_valeurs(self, pos):
+		""" pos = [argent, point_score] """
+		self.gain_argent(pos[0])
+		self.score(pos[1])
 
-	def gestion_tour(self, event):
-		if event.type == MOUSEBUTTONDOWN and event.button == 1:
-			pos_x, pos_y = self.carte.objet_dans_case(event.pos)
-			if (pos_x, pos_y) in self.carte and self.carte.get_type_case((pos_x,pos_y)) == "tour":
-				# PROPOSER AMELIORATION OU REPARATION
-				print ("Amélioration ? Réparation ?")
-			elif (pos_x, pos_y) in self.carte and self.carte.get_type_case((pos_x,pos_y)) == "place_construction":
-				pos_pix = pos_x*self.carte._largeur/self.carte._nb_cases_l\
-				, pos_y*self.carte._hauteur/self.carte._nb_cases_h
-				T = Tour(pos_pix)
-				if T._cout_construction <= self._argent:
-					self._liste_tours.append(T)
-					self._argent -= T._cout_construction
-					self.carte._cases[pos_x][pos_y] = T
-				else:
-					print ("Vous n'avez pas suffisamment d'argent.")
 	def ameliorer_tour(self, T, Vue=None):
 		if self._argent >= T.cout_amelioration:
 			if Vue!=None:
@@ -61,6 +46,8 @@ class Joueur:
 		T.munitions_max:
 			self._argent -= T.cout_entretien
 			T.repare()
+			return True
+		return False
 
 	def construire_tour(self, id_tour, pos):
 		if(id_tour == 0):
