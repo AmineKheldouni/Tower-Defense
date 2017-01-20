@@ -146,7 +146,7 @@ class Tour(Case):
     def projectile(self,soldat,carte):
         return Projectile(self._position, carte.positionner_objet(soldat._position), 0, carte, soldat, self._degat)
 
-    def attaque(self, armee, F, C):
+    def attaque(self, armee, C):
         '''_liste_soldat est le tableau des personnages de Armee'''
         '''Renvoie (False/True, un projectile si true)'''
         cible = -1  #indice du soldat de _liste_soldat qui est choisi pour cibles

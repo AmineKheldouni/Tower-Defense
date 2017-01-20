@@ -81,7 +81,7 @@ def main():
 				compteur += 1 # A modifier pour une vitesse x2
 				#clock.tick(FPS)
 				#time.sleep(0.02)
-				pygame.time.Clock().tick(100)
+				pygame.time.Clock().tick(60)
 				for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 					#F._joueur.gestion_tour(event)
 					F.gestion_menu(event)
@@ -129,7 +129,7 @@ def main():
 				#Gestion de l'attaque des tours
 				if (compteur%2 == 0):
 					for T in F._joueur._liste_tours:
-						stock_attaque = (T.attaque(A, F, F._joueur.carte))
+						stock_attaque = (T.attaque(A, F._joueur.carte))
 						if(stock_attaque[0]):
 							tableau_projectile.append(stock_attaque[1])
 				F.joueur.actualise_valeurs( A.maj_troupe(C))

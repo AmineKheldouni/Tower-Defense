@@ -114,7 +114,7 @@ class Soldat(Objet_Actif):
 			assert(ind<len(cout))
 		return ind
 
-
+		
 	def maj_direction4(self,carte):
 		pos_case = self._position
 		numero_base=self._numero_base_visee
