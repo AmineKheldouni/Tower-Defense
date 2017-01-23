@@ -52,6 +52,7 @@ def main():
 		#F.affichage_menu(A)
 		compteur = 0
 		gameover_bool = False
+		etat_jeu = "play"
 		#Boucle infinie
 		while continuer:
 			if is_over(C):
@@ -86,6 +87,8 @@ def main():
 					#F._joueur.gestion_tour(event)
 					if event.type != MOUSEMOTION:
 						F.gestion_menu(event)
+						if F._menu.interaction_menu_haut(event) != None :
+							etat_jeu = F._menu.interaction_menu_haut(event)
 					if event.type == QUIT:     #Si un de ces événements est de type QUIT
 						continuer = 0      #On arrête la boucle
 					if event.type == KEYDOWN and event.key == K_ESCAPE:
@@ -110,30 +113,31 @@ def main():
 				C.actualise()
 				i =0
 				#Gestion des projectiles
-				while(i<len(tableau_projectile)):
-					F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
-					tableau_projectile[i].bouge()
-					if(tableau_projectile[i].is_over()):
-						del(tableau_projectile[i])
-						i=i-1
-					i=i+1
-				#Mouvement des troupes
-				if (compteur%2 == 0):
-					A.mouvement_troupe(C)
-					#last_time = time.time()
-				#temps = pygame.time.get_ticks()
+				if etat_jeu == "play":
+					while(i<len(tableau_projectile)):
+						F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
+						tableau_projectile[i].bouge()
+						if(tableau_projectile[i].is_over()):
+							del(tableau_projectile[i])
+							i=i-1
+						i=i+1
+					#Mouvement des troupes
+					if (compteur%2 == 0):
+						A.mouvement_troupe(C)
+						#last_time = time.time()
+					#temps = pygame.time.get_ticks()
 
-				if (compteur%10 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
-					A.actualise_vague(C)
-					temps = pygame.time.get_ticks()
+					if (compteur%10 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
+						A.actualise_vague(C)
+						temps = pygame.time.get_ticks()
 
-				#Gestion de l'attaque des tours
-				if (compteur%2 == 0):
-					for T in F._joueur._liste_tours:
-						stock_attaque = (T.attaque(A, F._joueur.carte))
-						if(stock_attaque[0]):
-							tableau_projectile.append(stock_attaque[1])
-				F.joueur.actualise_valeurs( A.maj_troupe(C))
+					#Gestion de l'attaque des tours
+					if (compteur%2 == 0):
+						for T in F._joueur._liste_tours:
+							stock_attaque = (T.attaque(A, F._joueur.carte))
+							if(stock_attaque[0]):
+								tableau_projectile.append(stock_attaque[1])
+					F.joueur.actualise_valeurs( A.maj_troupe(C))
 				pygame.display.flip()
 					#last_time = time.time()
 

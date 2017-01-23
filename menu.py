@@ -62,7 +62,7 @@ class Menu(object):
         self.largeur = self._joueur.carte.largeur
         self._dict_boutons= None
         self._dernier_click = None
-
+        self._dict_play = None
     def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnees de la case de l'objet """
 		pas_l = int(self.largeur/self.nb_cases_l)
@@ -104,13 +104,13 @@ class Menu(object):
     def affichage_menu_haut(self, Affichage):
     	""" Menu du haut de fenetre : Temps, Vie des bases, argent du joueur et son score """
     	# Affichage du temps (Min:Sec)
-    	font_temps = pygame.font.Font(None, 36)
+    	"""font_temps = pygame.font.Font(None, 36)
     	temps = pygame.time.get_ticks()
     	temps /= 1000
     	secondes = temps%60
     	minutes = temps//60
     	text_temps = font_temps.render(str(minutes)+ " : "+ str(secondes), 1, (255, 255, 255))
-    	Affichage._fenetre.blit(text_temps, (20,10))
+    	Affichage._fenetre.blit(text_temps, (20,10))"""
     	# Affichage des vies des bases
     	pos_vie = []
     	for i in range(len(self._joueur.carte._pos_bases)):
@@ -129,13 +129,24 @@ class Menu(object):
         pix_x = self._joueur.carte.largeur/self._joueur.carte.nb_cases_l
         pix_y = self._joueur.carte.hauteur/self._joueur.carte.nb_cases_h
         pos_y += pix_y
-        dict_play = {
+        self._dict_play = {
                         "images/interface/play.png":  (pos_x,pos_y),
                         "images/interface/pause.png": (pos_x+pix_x,pos_y),
                         "images/interface/accelerate.png": (pos_x+2*pix_x,pos_y)
         }
-        for d in dict_play.keys():
-            Affichage.ajouter_element(d, dict_play[d])
+        for d in self._dict_play.keys():
+            Affichage.ajouter_element(d, self._dict_play[d])
+
+    def interaction_menu_haut(self, event=None):
+        if event.type == MOUSEBUTTONDOWN and event.button==1:
+            pos_x,pos_y = self._joueur.carte.objet_dans_case(event.pos)
+            for d in self._dict_play.keys():
+                if (pos_x,pos_y) == self._joueur.carte.objet_dans_case(self._dict_play[d]):
+                    if "play" in d:
+                        return "play"
+                    elif "pause" in d:
+                        return "pause"
+        return None
 
     def maj_menu(self, event, Vue=None):
         if event !=None and event.type == MOUSEBUTTONDOWN and event.button==1:
