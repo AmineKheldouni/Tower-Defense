@@ -84,7 +84,8 @@ def main():
 				pygame.time.Clock().tick(60)
 				for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 					#F._joueur.gestion_tour(event)
-					F.gestion_menu(event)
+					if event.type != MOUSEMOTION:
+						F.gestion_menu(event)
 					if event.type == QUIT:     #Si un de ces événements est de type QUIT
 						continuer = 0      #On arrête la boucle
 					if event.type == KEYDOWN and event.key == K_ESCAPE:

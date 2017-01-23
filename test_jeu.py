@@ -39,6 +39,7 @@ def duree_jeu():
 			print("Nombre de tours ameliorees : ", nb_amelioree)
 			print("Argent joueur : ", J._argent)
 			print("vies bases : ", [J._carte._cases[pos[0]][pos[1]]._vie for pos in J._carte._pos_bases])
+			print("Taille armee : ", len(A._liste_soldat))
 			#print("nb vagues : ", nb_vagues)
 
 		# L'IA Joue :
@@ -71,12 +72,11 @@ def duree_jeu():
 			A.actualise_vague(J.carte)
 			nb_vagues += 1
 		#Gestion de l'attaque des tours
-		if (compteur%2 == 0):
+		if (compteur%1 == 0):
 			for T in J.liste_tours:
 				stock_attaque = (T.attaque(A, J.carte))
-
 		J.actualise_valeurs(A.maj_troupe(J.carte))
 	print("vies bases : ", [J._carte._cases[pos[0]][pos[1]]._vie for pos in J._carte._pos_bases])
-	
+
 duree_jeu()
 print("fin test")
