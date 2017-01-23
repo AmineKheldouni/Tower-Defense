@@ -33,6 +33,7 @@ class Case(object):
 	#Dis si l'armée peut marcher dessus
 	def est_chemin(self):
 		return self._est_chemin!=0
+
 	def est_chemin(self, dir_soldat=0):
 		if(self._est_chemin==1):
 			return True

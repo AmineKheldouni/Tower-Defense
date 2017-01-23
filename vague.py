@@ -10,11 +10,14 @@ class Vague(object):
     actualise est la réelle utilité de Vague, elle renvoie les ennemis à créer.
      """
     def __init__(self,id_vague=1, nb_ennemis = 4, nb_source=3):
-        self._nb_ennemis = [ExtractIntFromFile("data_vague.csv", id_vague,col) for col in range(1,nb_ennemis+2)]
+        self._nb_ennemis = [ExtractIntFromFile("vague.csv",id_vague,col) for col in range(1,nb_ennemis+2)]
+        # print(self._nb_ennemis)
         self._nb_tot_ennemis = 0
         for i in range(1,len(self._nb_ennemis)):
             self._nb_tot_ennemis += self._nb_ennemis[i]
-        self._nb_source     = nb_source
+        self._nb_source = nb_source
+        self._nb_max_ennemis_sur_carte = ExtractIntFromFile("vague.csv",id_vague,nb_ennemis+2)
+        # print(self._nb_max_ennemis_sur_carte)
 
     def decrease(self,id_decrease):
         """ Diminue le compteur correspondant à une pause ou un ennemis"""
@@ -22,6 +25,7 @@ class Vague(object):
         self._nb_ennemis[id_decrease] -= 1
         if(id_decrease>0):
             self._nb_tot_ennemis-= 1
+
 
     def get_nb_ennemis(self,indice):
         return self._nb_ennemis[indice]
@@ -43,7 +47,6 @@ class Vague(object):
 
     def is_over(self):
         return self._nb_tot_ennemis==0
-
 
 #  nb ennemis
 #  temps

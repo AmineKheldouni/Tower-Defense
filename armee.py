@@ -83,11 +83,14 @@ class Soldat(Objet_Actif):
 		if(len(liste_voisins)==1):
 			chosen_path = 0
 		if(len(liste_voisins)>1):
-			chosen_path  = self.choix_chemin_deterministe(liste_voisins, carte)
+			chosen_path  = self.choix_chemin_pondere(liste_voisins, carte)
 		if len(liste_voisins)>0:
 			self._ancienne_position = self._position
 			self._direction = liste_direction[chosen_path]
 			self._position= liste_voisins[chosen_path]
+		if(len(liste_voisins)==0):
+			self._position = self._ancienne_position
+			self._direction = (self._direction+2)%4
 
 	def choix_chemin_deterministe(self, liste_voisin, carte):
 		ind = 0
@@ -171,17 +174,18 @@ class Armee(Vague):
 			soldat.actualisation()
 			soldat.deplacement_soldat(carte)
 
-	def taille_effectif(self):
-		return len(tableau_soldat)
+	def nb_soldats(self):
+		return len(self._liste_soldat)
 
 	def ajout_soldat(self, pos, id_soldat):
 		self._liste_soldat.append(Soldat(pos,id_soldat))
 
 	def actualise_vague(self, carte):
-		for i in range(len(carte._pos_sources)):
-			indice = self.renvoie_soldat()
-			if(indice>0):
-				self.ajout_soldat(carte.get_source(i), indice)
+		if(self.nb_soldats() < self._nb_max_ennemis_sur_carte):
+			for i in range(len(carte._pos_sources)):
+				indice = self.renvoie_soldat()
+				if(indice>0):
+					self.ajout_soldat(carte.get_source(i), indice)
 
 	def maj_troupe(self,carte):
 		liste_morts = []

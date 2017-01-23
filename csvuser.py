@@ -53,6 +53,7 @@ def ExtractStrFromFile(name_file,i,j):
 #Crée le dictionnaire qui associe aux clés en col_1 les valeurs en col_2
 #(situés entre ligne_debut et ligne_fin)
 #La fonction suppose que de tels élements existent
+
 def DicoFromFile(name_file,ligne_debut,ligne_fin,col_1,col_2):
     with open("data/"+name_file,'r') as fichier:
         csv_file=csv.reader(fichier)

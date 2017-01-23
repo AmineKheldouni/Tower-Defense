@@ -14,7 +14,7 @@ import sys
 import numpy as np
 import copy
 import numpy.random as rd
-
+from utils import *
 
 class Carte:
 	def __init__(self,id_carte="cartes_carte1", hauteur=700, largeur=1250, nb_cases_h = 25, \
@@ -158,16 +158,12 @@ class Carte:
 		for pos in self._pos_bases:
 			if(self._cases[pos[0]][pos[1]].actualisation()):
 				self.base_est_morte(pos)
+				self.actualise_cout_chemin()
 		for i in range(self._nb_cases_l):
 			for j in range(self._nb_cases_h):
 				self._cases[i][j].actualisation()
 
 #Gestion de la carte de cout
-	def reinitialiser_cout_chemin(self):
-		for i in range(self._nb_cases_h):
-			for j in range(self._nb_cases_l):
-				self._cout_chemin[j][i] = 1000
-
 	def rec_actualise_cout_chemin(self, pos_case, vect_voisin, cout_actuel):
 		self.set_cout_chemin(pos_case, cout_actuel)
 		for i in range( len(vect_voisin)):
@@ -182,18 +178,22 @@ class Carte:
 				new_cost = self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case)
 				self.rec_actualise_cout_chemin(case_voisin, vect_voisin, new_cost )
 
+	def reinitialiser_cout_chemin(self):
+		for i in range(self._nb_cases_h):
+			for j in range(self._nb_cases_l):
+				self._cout_chemin[j][i] = 1000
+
 	def actualise_cout_chemin(self):
 		self.reinitialiser_cout_chemin()
 		voisin = [(0, 1), (-1,0), (0, -1), (1, 0)]
 		for i,pos_base in enumerate(self._pos_bases):
 			if(not self.get_base(i)._est_mort):
-				self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
-
+				affiche_tableau(self._cout_chemin)
 #Gestion des sources et des bases
 
 	def base_est_morte(self, pos):
 		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
-		dico_dir_vers_entier = { (0,1) : -3 , (0,-1) : -1 , (1,0) : -4 , (-1,0) : -2}
+		dico_dir_vers_entier = { (0,1) : -3 , (0,-1) : -1 , (1,0) : -2 , (-1,0) : -4}
 		old_pos = pos
 		pos_act = pos
 		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
@@ -220,6 +220,7 @@ class Carte:
 			#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
 			direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
 			self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
+			self._cases[old_pos[0]][old_pos[1]]._tapis = 0;
 		else :
 			# La base ou la source a plusieurs voisins et il ne faut pas toucher au reste.
 			None
@@ -244,3 +245,15 @@ class Carte:
 		self.genere_decor(vec_decor)
 		self.actualise_cout_chemin()
 		self.initialiser_sources()
+
+
+	def get_voisins_case(self,pos, liste_voisin, old_pos = (-50,-50)):
+		"Renvoie la liste des voisins d'une case dans la liste liste_voisin (supposée vide au départ), qui est modifiée en place"
+		assert(len(liste_voisin)==0)
+		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
+		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
+		for voisin in voisins:
+			tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
+			case_voisin = (tmp_a, tmp_b)
+			if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
+				liste_voisins.append(case_voisin)
