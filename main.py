@@ -123,12 +123,7 @@ def main():
 						i=i+1
 					#Mouvement des troupes
 					if (compteur%2 == 0):
-						A.mouvement_troupe(C)
-						#last_time = time.time()
-					#temps = pygame.time.get_ticks()
-
-					if (compteur%10 == 0) and [C.get_base(i)._vie for i in range(len(C._pos_bases))] != [0]*len(C._pos_bases):
-						A.actualise_vague(C)
+						A.actualisation(C,compteur)
 						temps = pygame.time.get_ticks()
 
 					#Gestion de l'attaque des tours
@@ -137,7 +132,8 @@ def main():
 							stock_attaque = (T.attaque(A, F._joueur.carte))
 							if(stock_attaque[0]):
 								tableau_projectile.append(stock_attaque[1])
-					F.joueur.actualise_valeurs( A.maj_troupe(C))
+					argent, point = A.maj_troupe(C)
+					F.joueur.actualise_valeurs((argent, point))
 				pygame.display.flip()
 					#last_time = time.time()
 

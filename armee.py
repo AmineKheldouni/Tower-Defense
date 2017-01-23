@@ -117,7 +117,7 @@ class Soldat(Objet_Actif):
 			assert(ind<len(cout))
 		return ind
 
-		
+
 	def maj_direction4(self,carte):
 		pos_case = self._position
 		numero_base=self._numero_base_visee
@@ -164,8 +164,10 @@ class Armee(Vague):
 	Vecteur contenant l'ensemble des soldats
 	"""
 	def __init__(self, id_vague=1):
-		super(Armee,self).__init__(id_vague)
+		super(Armee,self).__init__()
 		self._liste_soldat = []
+		self._time_before_wave = 20
+		self._time_before_soldier = 10
 
 	def mouvement_troupe(self,carte):
 		soldats_arrives = []
@@ -205,7 +207,18 @@ class Armee(Vague):
 			idx = idx+1
 		return(argent, point)
 
-	def actualisation(self, carte):
-		self.actualise_vague(carte)
-		self.mouvement_troupe(carte)
-		return self.is_over()
+	def actualisation(self, carte, compteur):
+		if(not self.armee_is_over()):
+			self.mouvement_troupe(carte)
+			if(compteur%self._time_before_soldier == 0):
+				self.actualise_vague(carte)
+		else:
+			if(self._time_before_wave == 0):
+				self.new_wave()
+				self._time_before_wave = 50
+			else:
+				self._time_before_wave -=1
+
+
+	def armee_is_over(self):
+		return self.wave_is_over() and self.nb_soldats()==0

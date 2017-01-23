@@ -23,7 +23,7 @@ class Joueur:
 	def score(self):
 		return self._score
 
-	def score(self,point):
+	def gain_score(self,point):
 		self._score+=point
 	def gain_argent(self,gain):
 		self._argent+= gain
@@ -31,7 +31,7 @@ class Joueur:
 	def actualise_valeurs(self, pos):
 		""" pos = [argent, point_score] """
 		self.gain_argent(pos[0])
-		self.score(pos[1])
+		self.gain_score(pos[1])
 
 	def ameliorer_tour(self, T, Vue=None):
 		if self._argent >= T.cout_amelioration:

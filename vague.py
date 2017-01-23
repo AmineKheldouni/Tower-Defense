@@ -9,15 +9,14 @@ class Vague(object):
     correspond à une pause et une apparation d'aucun ennemis.
     actualise est la réelle utilité de Vague, elle renvoie les ennemis à créer.
      """
-    def __init__(self,id_vague=1, nb_ennemis = 4, nb_source=3):
-        self._nb_ennemis = [ExtractIntFromFile("vague.csv",id_vague,col) for col in range(1,nb_ennemis+2)]
-        # print(self._nb_ennemis)
+    def __init__(self, nb_ennemis = 4, max_wave = 2):
+        self._nb_type_ennemis = 4
+        self._id_vague = 1
+        self._nb_ennemis = [ExtractIntFromFile("vague.csv",self.get_id(),col) for col in range(1,self._nb_type_ennemis+2)]
         self._nb_tot_ennemis = 0
         for i in range(1,len(self._nb_ennemis)):
             self._nb_tot_ennemis += self._nb_ennemis[i]
-        self._nb_source = nb_source
-        self._nb_max_ennemis_sur_carte = ExtractIntFromFile("vague.csv",id_vague,nb_ennemis+2)
-        # print(self._nb_max_ennemis_sur_carte)
+        self._nb_max_ennemis_sur_carte = ExtractIntFromFile("vague.csv",self.get_id(),nb_ennemis+2)
 
     def decrease(self,id_decrease):
         """ Diminue le compteur correspondant à une pause ou un ennemis"""
@@ -26,13 +25,17 @@ class Vague(object):
         if(id_decrease>0):
             self._nb_tot_ennemis-= 1
 
+    def get_id(self):
+        return self._id_vague
+    def new_id(self):
+        self._id_vague += 1
 
     def get_nb_ennemis(self,indice):
         return self._nb_ennemis[indice]
 
     def renvoie_soldat(self):
         """Renvoie (id_soldat, id_source), l'id et la source étant aléatoires"""
-        if(self.is_over()):
+        if(self.wave_is_over()):
             # print("was over before")
             return 0
         indice =0
@@ -45,8 +48,17 @@ class Vague(object):
         self.decrease(indice)
         return indice
 
-    def is_over(self):
+    def wave_is_over(self):
         return self._nb_tot_ennemis==0
+
+    def new_wave(self):
+        assert(self._nb_tot_ennemis ==0)
+        self.new_id()
+        self._nb_ennemis = [ExtractIntFromFile("vague.csv",self.get_id(),col) for col in range(1,self._nb_type_ennemis+2)]
+        self._nb_tot_ennemis = 0
+        for i in range(1,len(self._nb_ennemis)):
+            self._nb_tot_ennemis += self._nb_ennemis[i]
+        self._nb_max_ennemis_sur_carte = ExtractIntFromFile("vague.csv",self.get_id(),self._nb_type_ennemis+2)
 
 #  nb ennemis
 #  temps

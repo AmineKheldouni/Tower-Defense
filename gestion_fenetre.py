@@ -188,7 +188,7 @@ class Carte:
 		voisin = [(0, 1), (-1,0), (0, -1), (1, 0)]
 		for i,pos_base in enumerate(self._pos_bases):
 			if(not self.get_base(i)._est_mort):
-				affiche_tableau(self._cout_chemin)
+				self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
 #Gestion des sources et des bases
 
 	def base_est_morte(self, pos):
@@ -220,7 +220,7 @@ class Carte:
 			#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
 			direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
 			self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
-			self._cases[old_pos[0]][old_pos[1]]._tapis = 0;
+			# self._cases[old_pos[0]][old_pos[1]]._tapis = 0; # NE PAS EFFACER CETTE LIGNE !!!!!!!!!!!!!!!!!!!!!!
 		else :
 			# La base ou la source a plusieurs voisins et il ne faut pas toucher au reste.
 			None
