@@ -63,6 +63,8 @@ class Menu(object):
         self._dict_boutons= None
         self._dernier_click = None
         self._dict_play = None
+        self._etat_play = "play"
+
     def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnees de la case de l'objet """
 		pas_l = int(self.largeur/self.nb_cases_l)
@@ -131,11 +133,22 @@ class Menu(object):
         pos_y += pix_y
         self._dict_play = {
                         "images/interface/play.png":  (pos_x,pos_y),
+                        "images/interface/playing.png":  (pos_x,pos_y),
                         "images/interface/pause.png": (pos_x+pix_x,pos_y),
-                        "images/interface/accelerate.png": (pos_x+2*pix_x,pos_y)
+                        "images/interface/pausing.png": (pos_x+pix_x,pos_y),
+                        "images/interface/accelerate.png": (pos_x+2*pix_x,pos_y),
+                        "images/interface/accelerating.png": (pos_x+2*pix_x,pos_y)
         }
+
         for d in self._dict_play.keys():
-            Affichage.ajouter_element(d, self._dict_play[d])
+            if "ing" not in d:
+                Affichage.ajouter_element(d, self._dict_play[d])
+            if self._etat_play == "play" and "playing" in d:
+                Affichage.ajouter_element(d, self._dict_play[d])
+            elif self._etat_play == "pause" and "pausing" in d:
+                Affichage.ajouter_element(d, self._dict_play[d])
+            elif self._etat_play == "accelerate" and "accelerating" in d:
+                Affichage.ajouter_element(d, self._dict_play[d])
 
     def interaction_menu_haut(self, event=None):
         if event.type == MOUSEBUTTONDOWN and event.button==1:
@@ -143,9 +156,13 @@ class Menu(object):
             for d in self._dict_play.keys():
                 if (pos_x,pos_y) == self._joueur.carte.objet_dans_case(self._dict_play[d]):
                     if "play" in d:
-                        return "play"
+                        self._etat_play = "play"
                     elif "pause" in d:
-                        return "pause"
+                        self._etat_play = "pause"
+                    elif "accelerate" in d:
+                        self._etat_play = "play"
+
+                    return self._etat_play
         return None
 
     def maj_menu(self, event, Vue=None):
@@ -264,7 +281,11 @@ class Menu(object):
                 liste_boutons_tour.append(self.positionner_objet(((2+i)*self.nb_cases_l//5,1)))
             self._dict_boutons = {}
             for i in range(3):
-                self._dict_boutons["tour"+str(i)] = ("images/tours/construction_tour"+str(i)+".png", liste_boutons_tour[i])
+                if Vue._joueur._argent < ExtractIntFromFile("data_tourelle.csv",i+1,3):
+                    self._dict_boutons["tour"+str(i)] = ("images/tours/construction_tour_indisponible.png", liste_boutons_tour[i])
+                else:
+                    self._dict_boutons["tour"+str(i)] = ("images/tours/construction_tour"+str(i)+".png", liste_boutons_tour[i])
+
             if self._dict_boutons != None :
                 for b in self._dict_boutons.keys():
                     image = pygame.image.load(self._dict_boutons[b][0]).convert_alpha()

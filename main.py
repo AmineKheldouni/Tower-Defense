@@ -111,6 +111,7 @@ def main():
 					#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
 				# Gestion des objets de la carte
 				C.actualise()
+				F.gestion_menu()
 				i =0
 				#Gestion des projectiles
 				if etat_jeu == "play":
