@@ -115,6 +115,12 @@ def main():
 				i =0
 				#Gestion des projectiles
 				if etat_jeu == "play":
+
+					#Mouvement des troupes
+					if (compteur%2 == 0):
+						A.actualisation(C,compteur)
+						temps = pygame.time.get_ticks()
+
 					while(i<len(tableau_projectile)):
 						F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
 						tableau_projectile[i].bouge()
@@ -122,11 +128,6 @@ def main():
 							del(tableau_projectile[i])
 							i=i-1
 						i=i+1
-					#Mouvement des troupes
-					if (compteur%2 == 0):
-						A.actualisation(C,compteur)
-						temps = pygame.time.get_ticks()
-
 					#Gestion de l'attaque des tours
 					if (compteur%2 == 0):
 						for T in F._joueur._liste_tours:
