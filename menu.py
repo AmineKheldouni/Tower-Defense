@@ -143,6 +143,9 @@ class Menu(object):
         for d in self._dict_play.keys():
             if "ing" not in d:
                 Affichage.ajouter_element(d, self._dict_play[d])
+
+
+        for d in self._dict_play.keys():
             if self._etat_play == "play" and "playing" in d:
                 Affichage.ajouter_element(d, self._dict_play[d])
             elif self._etat_play == "pause" and "pausing" in d:
@@ -160,7 +163,7 @@ class Menu(object):
                     elif "pause" in d:
                         self._etat_play = "pause"
                     elif "accelerate" in d:
-                        self._etat_play = "play"
+                        self._etat_play = "accelerate"
 
                     return self._etat_play
         return None

@@ -22,22 +22,25 @@ class Projectile(object):
     def __init__(self, position_Tour, position_Cible, id_projectile, C, soldat_cible,degat):
         self._animation = 5
         position_initiale = position_Tour
-        position_initiale = C.objet_dans_case(position_initiale)
-        position_initiale = C.positionner_objet((position_initiale[0]+0.5, position_initiale[1]+1))
+        pos_init_case = C.objet_dans_case(position_initiale)
+        position_initiale = C.positionner_objet((pos_init_case[0]+0.5, pos_init_case[1]+1))
         self._position = position_initiale
         self._id = id_projectile
         self._soldat_cible = soldat_cible
         arrivee = position_Cible
-        arrivee = C.objet_dans_case(arrivee)
-        arrivee = C.positionner_objet((arrivee[0]+0.5, arrivee[1]+0.5))
+        arrivee_case = C.objet_dans_case(arrivee)
+        arrivee = C.positionner_objet((arrivee_case[0]+0.5, arrivee_case[1]+0.5))
         self.v_x = (arrivee[0]-self._position[0])/self._animation
         self.v_y = (arrivee[1]-self._position[1])/self._animation
          # Nombre d'étapes d'affichage
         self._etape = self._animation #Gere l'animation du projectile
         self._degat = degat
 
-    def bouge(self):
+    def bouge(self,C):
         pos_tmp = (self._position[0]+self.v_x, self._position[1]+self.v_y)
+        arrivee = C.positionner_objet((self._soldat_cible._position[0]+0.5, self._soldat_cible._position[1]+0.5))
+        self.v_x = (arrivee[0]-self._position[0])/self._animation
+        self.v_y = (arrivee[1]-self._position[1])/self._animation
         self._position = pos_tmp
         self._etape -= 1
         if(self.is_over()):
@@ -53,7 +56,7 @@ class Projectile(object):
         self._soldat_cible.dommage(self._degat)
 
     def effet_projectile(self):
-        0
+        return 0
 
     def is_over(self):
         if(self._etape==0):

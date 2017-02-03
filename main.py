@@ -40,20 +40,15 @@ def main():
 		tableau_projectile =[] # Tableau des projectiles
 		continuer = 1
 		clock = pygame.time.Clock()
-		FPS = 30.
-		#font_cambria = pygame.font.SysFont('Cambria', 24)
-		#fps_label = font_cambria.render('FPS : {}'.format(clock.get_fps()), True, (255, 255, 255))
-		#fps_rect = fps_label.get_rect(bottomright = (C.largeur, C.hauteur))
-		#pygame.time.set_timer()
-		#Chargement et collage du fond
+
 		F.affichage_terrain()
 		last_time = time.time()
 		last_time_proj = time.time()
-		#F.affichage_menu(A)
+
 		compteur = 0
 		gameover_bool = False
 		etat_jeu = "play"
-		#Boucle infinie
+
 		while continuer:
 			if is_over(C):
 				if not gameover_bool:
@@ -79,18 +74,16 @@ def main():
 					if tkey[K_LALT] and tkey[K_F4]:
 						continuer = 0
 			else:
-				compteur += 1 # A modifier pour une vitesse x2
-				#clock.tick(FPS)
-				#time.sleep(0.02)
-				pygame.time.Clock().tick(60)
-				for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
-					#F._joueur.gestion_tour(event)
+				compteur += 1
+				rapidite = 60
+				pygame.time.Clock().tick(rapidite)
+				for event in pygame.event.get():
 					if event.type != MOUSEMOTION:
 						F.gestion_menu(event)
 						if F._menu.interaction_menu_haut(event) != None :
 							etat_jeu = F._menu.interaction_menu_haut(event)
-					if event.type == QUIT:     #Si un de ces événements est de type QUIT
-						continuer = 0      #On arrête la boucle
+					if event.type == QUIT:
+						continuer = 0
 					if event.type == KEYDOWN and event.key == K_ESCAPE:
 						pygame.display.toggle_fullscreen()
 
@@ -98,46 +91,36 @@ def main():
 
 				if tkey[K_LALT] and tkey[K_F4]:
 					continuer = 0
-				#dt = clock.tick() / 1000
-				dt=1
-				# Vider la fenêtre
-				#Graphic
+				if etat_jeu == "accelerate":
+					rapidite = 220
+
 				F.affiche_all(C,A)
-				#F._fenetre.blit(fps_label, fps_rect)
-				#if True:
-					# if((time.time()-last_time_proj)> 0.05):
-					#last_time_proj=time.time()
-					# Gestion de l'avancée des projectiles
-					#La boucle while sert à gérer les destructions pour éviter les dépassement d'indice
-				# Gestion des objets de la carte
 				C.actualise()
 				F.gestion_menu()
-				i =0
-				#Gestion des projectiles
-				if etat_jeu == "play":
+				if etat_jeu == "play" or etat_jeu == "accelerate":
 
 					#Mouvement des troupes
-					if (compteur%2 == 0):
-						A.actualisation(C,compteur)
-						temps = pygame.time.get_ticks()
+					A.actualisation(C,compteur)
+					temps = pygame.time.get_ticks()
 
+					#Gestion des projectiles
+					i =0
 					while(i<len(tableau_projectile)):
 						F.ajouter_element("images/tours/balle.png",tableau_projectile[i]._position)
-						tableau_projectile[i].bouge()
+						tableau_projectile[i].bouge(F._joueur._carte)
 						if(tableau_projectile[i].is_over()):
 							del(tableau_projectile[i])
 							i=i-1
 						i=i+1
+						
 					#Gestion de l'attaque des tours
-					if (compteur%2 == 0):
-						for T in F._joueur._liste_tours:
-							stock_attaque = (T.attaque(A, F._joueur.carte))
-							if(stock_attaque[0]):
-								tableau_projectile.append(stock_attaque[1])
+					for T in F._joueur._liste_tours:
+						stock_attaque = (T.attaque(A, F._joueur.carte))
+						if(stock_attaque[0]):
+							tableau_projectile.append(stock_attaque[1])
 					argent, point = A.maj_troupe(C)
 					F.joueur.actualise_valeurs((argent, point))
 				pygame.display.flip()
-					#last_time = time.time()
 
 if __name__ == '__main__':
     main()
