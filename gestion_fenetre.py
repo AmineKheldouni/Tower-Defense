@@ -19,7 +19,10 @@ from utils import *
 class Carte:
 	def __init__(self,id_carte="cartes_carte1", hauteur=700, largeur=1250, nb_cases_h = 25, \
 	nb_cases_l = 25):
-		self._liste_tours =[]
+		#contient la liste des tours actuelles
+		self._liste_tours_actuelle =[]
+		#contient la liste des tuples (tours, coordonnes) qui doivent être utilisées pour mettre à jour les cartes de couts 
+		self._liste_tours_a_actualise=[]
 		self._liste_souces=[]
 		self._pos_bases =[]
 		self._id_carte=id_carte
@@ -155,6 +158,11 @@ class Carte:
 			return self._cases[pos[0]][pos[1]].est_chemin(soldat_direction)
 
 	def actualise(self):
+		print("on rentre dans a=la fonction de mise à jour de la carte")
+		#on met à jour la liste des tours
+		self.miseajourliste_tours()
+		#mise à jour de la carte des couts liée aux tours
+		self.miseajour_carte_cout_tours()
 		for pos in self._pos_bases:
 			if(self._cases[pos[0]][pos[1]].actualisation()):
 				self.base_est_morte(pos)
@@ -186,9 +194,11 @@ class Carte:
 	def actualise_cout_chemin(self):
 		self.reinitialiser_cout_chemin()
 		voisin = [(0, 1), (-1,0), (0, -1), (1, 0)]
+		print("actualise cout chemin")
 		for i,pos_base in enumerate(self._pos_bases):
 			if(not self.get_base(i)._est_mort):
 				self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
+
 #Gestion des sources et des bases
 
 	def base_est_morte(self, pos):
@@ -257,3 +267,35 @@ class Carte:
 			case_voisin = (tmp_a, tmp_b)
 			if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
 				liste_voisins.append(case_voisin)
+
+
+	#fonction qui met à jour la liste des tours dans la carte
+	def miseajourliste_tours(self):
+		for j in range(0,self.nb_cases_l):
+			for i in range(0,self._nb_cases_h):
+				print(" on rentre dans la fonction mise a jour des listes de tours")
+				if((self.cases[i][j].type_objet=="tour") and (self.cases[i][j] not in self._liste_tours_actuelle) ):
+					self._liste_tours_a_actualise.append((self.cases[i][j],(i,j)))
+
+	#permet de mettre à jour la carte des couts en fonction des bases
+	def miseajour_carte_cout_tours(self):
+		liste_tours=self._liste_tours_a_actualise
+		for (tour,coord) in liste_tours:
+			print(tour._vie)
+			if(tour._vie!=0):
+				portee=tour._portee
+				print(portee)
+				(pos_x,pos_y)=coord
+				print(pos_x,pos_y)
+				print(portee)
+				for i in range(-portee,portee+1,1):
+					for j in range(-portee,portee+1,1):
+						#print(self.get_cout_case((pos_x+i,pos_y+j)))
+						if((pos_x+i>=0) and ((pos_x+i)<self.nb_cases_h) and (pos_y+j>=0) and ((pos_y+j)<self.nb_cases_l)):
+							print("test de la case ok")
+							print(self.get_cout_case((pos_x+i,pos_y+j)))
+							self.set_cout_case((pos_x+i,pos_y+j),1000+tour.degat)
+							print(self.get_cout_case((pos_x+i,pos_y+j)))
+
+			self._liste_tours_actuelle.append(tour)
+		self._liste_tours_a_actualise=[]

@@ -112,7 +112,7 @@ def main():
 							del(tableau_projectile[i])
 							i=i-1
 						i=i+1
-						
+
 					#Gestion de l'attaque des tours
 					for T in F._joueur._liste_tours:
 						stock_attaque = (T.attaque(A, F._joueur.carte))
