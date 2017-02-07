@@ -87,6 +87,41 @@ def affiched(dico):
     for cle,valeur in dico.items():
         print(str(cle)+","+str(valeur)+"\n")
 
+def give_score(nb_score=10):
+    with open("data/data_score.csv",'r') as fichier:
+        score = []
+        csv_file=csv.reader(fichier)
+        cpt_ligne=-1
+        for ligne in csv_file:
+            cpt_ligne+=1
+            if(cpt_ligne > 0):
+                print(ligne, cpt_ligne)
+                ligne[0] = 3
+                score.append( ( int(ligne[0]), str(ligne[1]), int(ligne[2]) )  )
+            if(cpt_ligne >nb_score):
+                    break
+        print(score)
+        return score
+
+def enter_new_score(player, player_score):
+        add_row = [0,player, player_score]
+        new_rows = [] # a holder for our modified rows when we make them
+        pivot_row = []
+        with open('data/data_score.csv', 'rb') as f1:
+            reader = csv.reader(f1) # pass the file to our csv reader
+            for row in reader:     # iterate over the rows in the file
+                new_row = row      # at first, just copy the row
+                if( int(add_row[2]) > int(new_row[2]) ):
+                    print("hello")
+                    pivot_row = [new_row[0], new_row[1], new_row[2]]
+                    new_row = [new_row[0], add_row[1], add_row[2]]
+                    add_row = [pivot_row[0], pivot_row[1] ,pivot_row[2]]
+                new_rows.append(new_row) # add the modified rows
+        with open('data/data_score.csv', 'wb') as f2:
+            # Overwrite the old file with the modified rows
+            writer = csv.writer(f2)
+            writer.writerows(new_rows)
+
 #affiche(LoadFromFile("cartes_carte1.csv",1,40,1,50))
 #print(ExtractFromFile("cartes_carte1.csv",3,2))
 #affiched(DicoFromFile("cartes_legend.csv",2,7,0,1))

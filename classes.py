@@ -15,7 +15,6 @@ Contient les classes :
 Cartes
 '''
 
-
 class Carte:
 	def __init__(self, hauteur=800, largeur=1000, nb_cases_h = 16, \
 	nb_cases_l = 20):
@@ -163,7 +162,6 @@ class Soldat:
 	    self._position = tmp_x, tmp_y
 
 	#A Faire: fonction de gestion du mouvement du soldat en fonction de sa distance à la base et du chemin
-
 
 class Armee:
     def __init__(self, tableau_soldat, position_base, carte):

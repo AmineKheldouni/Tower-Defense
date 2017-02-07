@@ -32,6 +32,7 @@ def main():
 				pseudo = pseudo[0:len(pseudo)-1]
 		pygame.display.flip()
 
+
 	print("Votre pseudo : ", pseudo)
 if __name__ == '__main__':
     main()
