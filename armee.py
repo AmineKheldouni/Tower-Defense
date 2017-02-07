@@ -20,8 +20,7 @@ class Soldat(Objet_Actif):
 		self._argent_soldat = ExtractIntFromFile("data_armee.csv",id_soldat,7)
 		self._graphic       = ExtractStrFromFile("data_armee.csv",id_soldat,8)
 
-		ligne, colonne = source._position
-		self._position = (colonne, ligne)
+		self._position = source.position
 		self._ancienne_position = self._position
 		self._is_dead = False
 		self._direction = source.get_a_direction() # 0 : bas, 1 : gauche, 2 : haut, 3 : droite
@@ -66,7 +65,7 @@ class Soldat(Objet_Actif):
 	def arriver_base(self,carte):
 		pos_case = self._position
 		if carte.get_type_case(pos_case) == "base":
-			carte._cases[pos_case[0]][pos_case[1]].dommage(self._degat)
+			carte[pos_case].dommage(self._degat)
 			return True
 		return False
 
@@ -77,9 +76,10 @@ class Soldat(Objet_Actif):
 		for i,voisin in enumerate(self._voisins):
 			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			if (carte.est_case_chemin(case_voisin,i)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
-				liste_voisins.append(case_voisin)
-				liste_direction.append(i)
+			if(case_voisin in carte):
+				if (carte.est_case_chemin(case_voisin,i)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
+					liste_voisins.append(case_voisin)
+					liste_direction.append(i)
 		if(len(liste_voisins)==1):
 			chosen_path = 0
 		if(len(liste_voisins)>1):

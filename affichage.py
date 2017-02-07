@@ -44,19 +44,19 @@ class Affichage_fenetre:
 
 	def affichage_carte(self,carte):
 		""" affiche tapis des cases (chemin par exemple)"""
-		for j in range(carte.nb_cases_l):
-			for i in range(carte.nb_cases_h):
-				value_case=carte._cases[j][i]._tapis
-				pos = carte.positionner_objet((j,i))
+		for x in range(carte.nb_cases_h):
+			for y in range(carte.nb_cases_l):
+				value_case=carte[(x,y)]._tapis
+				pos = carte.positionner_objet((x,y))
 				if(value_case!=0):
 					self.ajouter_element(self.dico_carte[value_case],pos)
 
 	def affiche_carte_objet(self,carte):
-		for j in range(carte.nb_cases_l):
-			for i in range(carte.nb_cases_h):
-				pos = carte.positionner_objet((j,i))
-				if((carte._cases[j][i])._id_graphic !=0 ):
-					graphic = self.dico_carte_object[(carte._cases[j][i])._id_graphic]
+		for x in range(carte.nb_cases_h):
+			for y in range(carte.nb_cases_l):
+				pos = carte.positionner_objet((x,y))
+				if(carte[(x,y)]._id_graphic !=0 ):
+					graphic = self.dico_carte_object[carte[x,y]._id_graphic]
 					if(graphic !="None"):
 						self.ajouter_element(graphic, pos)
 

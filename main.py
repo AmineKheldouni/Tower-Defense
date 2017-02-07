@@ -5,7 +5,7 @@ from affichage import *
 
 def is_over(carte):
 	for pos in carte._pos_bases:
-		if carte._cases[pos[0]][pos[1]]._vie > 0:
+		if carte[pos]._vie > 0:
 			return False
 	return True
 

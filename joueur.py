@@ -60,8 +60,8 @@ class Joueur:
 		if T._cout_construction <= self._argent:
 			self._liste_tours.append(T)
 			self._argent -= T._cout_construction
-			self._carte._cases[pos[0]][pos[1]] = T
-			self._carte._cases[pos[0]][pos[1]]._type_objet = "tour"
+			self._carte[pos] = T
+			self._carte[pos]._type_objet = "tour"
 			return True
 		else:
 			return False

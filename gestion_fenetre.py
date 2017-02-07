@@ -21,7 +21,7 @@ class Carte:
 	nb_cases_l = 25):
 		#contient la liste des tours actuelles
 		self._liste_tours_actuelle =[]
-		#contient la liste des tuples (tours, coordonnes) qui doivent être utilisées pour mettre à jour les cartes de couts 
+		#contient la liste des tuples (tours, coordonnes) qui doivent être utilisées pour mettre à jour les cartes de couts
 		self._liste_tours_a_actualise=[]
 		self._liste_souces=[]
 		self._pos_bases =[]
@@ -35,26 +35,32 @@ class Carte:
 		self._cout_case  =[[ 1 for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		tab_carte=LoadIntFromFile(id_carte+".csv",1,self._nb_cases_l,1,self._nb_cases_h)
 		tab_carte_objets=LoadIntFromFile(id_carte+"objets.csv",1,self._nb_cases_l,1,self._nb_cases_h)
-		self._cases =  [[ Case( (i,j), tab_carte_objets[i][j], tab_carte[i][j] ) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
+		# print(tab_carte)
+		self._cases =  [[ Case( (j,j), tab_carte_objets[i][j], tab_carte[i][j] ) for j in range(self._nb_cases_h)] for i in range(self._nb_cases_l)]
+		# cases[lig][col]
 		# self._grille = [[ extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		dico_nom_id=DicoFromFile("cartes_legend2.csv",2,16,1,0)
 		dico_name_to_id_graph=DicoFromFile("cartes_legend2.csv",2,16,1,2)
-		for j in range(0,self.nb_cases_l):
-			for i in range(0,self._nb_cases_h):
+		print(self._nb_cases_l,self.nb_cases_h)
+		for i in range(0,self.nb_cases_l):
+			for j in range(0,self._nb_cases_h):
 				ob = tab_carte_objets[i][j]
 				if(dico_nom_id[ob]=="source"):
-					self._cases[j][i] = Source((i,j),tab_carte[i][j],ob)
+					self._cases[i][j]  =   Source((j,i),tab_carte[i][j],ob)
 					self._pos_sources.append((j, i))
 				elif dico_nom_id[ob]=="base":
-					self._cases[j][i] = Base((i,j),tab_carte[i][j],ob)
+					self._cases[i][j] = Base((j,i),tab_carte[i][j],ob)
 					self._pos_bases.append((j,i))
 				elif dico_nom_id[ob]=="place_construction":
-					self._cases[j][i]= Emplacement((i,j),tab_carte[i][j],ob)
+					self._cases[i][j]= Emplacement((j,i),tab_carte[i][j],ob)
 				chemin = tab_carte[i][j]
 				if(chemin==1):
-					self._cases[j][i]._est_chemin=chemin;
-					self._cases[j][i]._tapis = 1;
-					self.set_cout_case((i,j),1)
+					self._cases[i][j]._est_chemin=chemin;
+					self._cases[i][j]._tapis = 1;
+					self.set_cout_case((j,i),1)
+		# for x in range(0,self.nb_cases_h):
+		# 	for y in range(0,self._nb_cases_l):
+		# 		print((x,y) , (x,y) in self )
 
 	@property
 	def carte_couts(self):
@@ -75,38 +81,51 @@ class Carte:
 	def nb_cases_l(self):
 		return self._nb_cases_l
 	@property
-	def cases(self):
-		return self._cases
+	# def cases(self):
+	# 	return self._cases
 	# def __contains__(self, pos):
 	# 	return (pos[0]<self.nb_cases_l) and (pos[1]<self.nb_cases_h) or (pos[0]>=0)or (pos[1]>=0)
 
+	def set_chemin(self, (x,y), value):
+		self[y][x].est_chemin = value
+
 	def __contains__(self, position):
-	    lig, col = position
+	    col, lig = position
 	    return (lig >= 0) and (lig < self._nb_cases_l) and (col >= 0) \
 		and (col < self._nb_cases_h)
 
+	def __getitem__(self, col, lig):
+		if (lig,col) in self:
+			return self._cases[lig][col]
+
 	def __getitem__(self, position):
-		lig, col = position
+		col, lig = position
 		if position in self:
-			return self.cases[lig][col]
+			return self._cases[lig][col]
+		else:
+			print("error")
+
+	def set_case(self, position, valeur):
+		self[position]= valeur
 
 	def __setitem__(self, position, valeur):
-	    lig, col = position
-	    if position in self:
-	        self._cases[lig][col] = valeur
+		col, lig = position
+		# print("i am the setter hello")
+		if position in self:
+			self._cases[lig][col] = valeur
 
 # Getteur setter des cout
-	def get_cout_chemin(self,(i,j)):
-		return self._cout_chemin[i][j]
+	def get_cout_chemin(self,(pos_x,pos_y)):
+		return self._cout_chemin[pos_y][pos_x]
 
-	def get_cout_case(self,(i,j)):
-		return self._cout_case[i][j]
+	def get_cout_case(self,(pos_x,pos_y)):
+		return self._cout_case[pos_y][pos_x]
 
-	def set_cout_chemin(self,(i,j),cout):
-		self._cout_chemin[i][j] = cout;
+	def set_cout_chemin(self,(pos_x,pos_y),cout):
+		self._cout_chemin[pos_y][pos_x] = cout;
 
-	def set_cout_case(self,(i,j),cout):
-		self._cout_case[i][j] = cout;
+	def set_cout_case(self,(pos_x,pos_y),cout):
+		self._cout_case[pos_y][pos_x] = cout;
 
 
 	def objet_dans_case(self, objet_position):
@@ -125,51 +144,47 @@ class Carte:
 		tab_carte_objets=LoadIntFromFile(self._id_carte+"objets.csv",1,max_ligne_tab_objet,1,len(tab_objet))
 		for j in range(len(tab_objet)):
 			for i in range(tab_objet[j]):
-				tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(1, self.nb_cases_h-1)
-				while self._cases[tmp1][tmp2]._tapis!=0 and self.get_type_case((tmp1,tmp2))!="place_construction":
-					tmp1, tmp2 = np.random.randint(self.nb_cases_l-1), np.random.randint(self.nb_cases_h-1)
-				pos_x, pos_y = self.positionner_objet((tmp1,tmp2))
-				self._cases[tmp1][tmp2] = Element_decor((tmp1,tmp2),1000+j+1,0)
+				x, y = np.random.randint(self.nb_cases_h-1), np.random.randint(1, self.nb_cases_l-1)
+				while self[(x,y)]._tapis!=0 and self.get_type_case((x,y))!="place_construction":
+					x, y = np.random.randint(self.nb_cases_h-1), np.random.randint(self.nb_cases_l-1)
+				self[(x,y)] = Element_decor((x,y),1000+j+1,0)
 
 
 #@getter et setter
-	def case_objet(self,i,j):
-		return self._objets[i][j]
-
-	def get_case(self,i,j):
-		return self._cases[i][j]
-
-	def get_case(self,pos):
-		return self._cases[pos[0]][pos[1]]
+	# def get_case(self,i,j):
+	# 	return self._cases[i][j]
+	#
+	# def get_case(self,pos):
+	# 	return self[pos[1]][pos[0]]
 
 	def get_type_case(self, pos):
 		return self[pos]._type_objet
 
 	def get_base(self,i):
-		return self.get_case(self._pos_bases[i])
+		return self[self._pos_bases[i]]
 
 	def get_source(self,i):
-		return self.get_case(self._pos_sources[i])
+		return self[self._pos_sources[i]]
 
 	def est_case_chemin(self,pos,soldat_direction=0):
 		if  (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
 			return False
 		else:
-			return self._cases[pos[0]][pos[1]].est_chemin(soldat_direction)
+			return self[pos].est_chemin(soldat_direction)
 
 	def actualise(self):
-		print("on rentre dans a=la fonction de mise à jour de la carte")
+		# print("on rentre dans a=la fonction de mise à jour de la carte")
 		#on met à jour la liste des tours
 		self.miseajourliste_tours()
 		#mise à jour de la carte des couts liée aux tours
 		self.miseajour_carte_cout_tours()
 		for pos in self._pos_bases:
-			if(self._cases[pos[0]][pos[1]].actualisation()):
+			if(self[pos].actualisation()):
 				self.base_est_morte(pos)
 				self.actualise_cout_chemin()
-		for i in range(self._nb_cases_l):
-			for j in range(self._nb_cases_h):
-				self._cases[i][j].actualisation()
+		for x in range(self._nb_cases_h):
+			for y in range(self._nb_cases_l):
+				self[(x,y)].actualisation()
 
 #Gestion de la carte de cout
 	def rec_actualise_cout_chemin(self, pos_case, vect_voisin, cout_actuel):
@@ -181,10 +196,11 @@ class Carte:
 			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
 			# Si je suis un chemin et que Cout_CHemin +COut_case < Cout_chemin je remplace et j'actualise
-			if (self.est_case_chemin(case_voisin,direction)) and \
-			(self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case) < self.get_cout_chemin(case_voisin) ):
-				new_cost = self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case)
-				self.rec_actualise_cout_chemin(case_voisin, vect_voisin, new_cost )
+			if(case_voisin in self):
+				if (self.est_case_chemin(case_voisin,direction)) and \
+				(self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case) < self.get_cout_chemin(case_voisin) ):
+					new_cost = self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case)
+					self.rec_actualise_cout_chemin(case_voisin, vect_voisin, new_cost )
 
 	def reinitialiser_cout_chemin(self):
 		for i in range(self._nb_cases_h):
@@ -194,7 +210,6 @@ class Carte:
 	def actualise_cout_chemin(self):
 		self.reinitialiser_cout_chemin()
 		voisin = [(0, 1), (-1,0), (0, -1), (1, 0)]
-		print("actualise cout chemin")
 		for i,pos_base in enumerate(self._pos_bases):
 			if(not self.get_base(i)._est_mort):
 				self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
@@ -211,16 +226,18 @@ class Carte:
 		for voisin in voisins:
 			tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
-				liste_voisins.append(case_voisin)
+			if(case_voisin in self):
+				if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
+					liste_voisins.append(case_voisin)
 		if(len(liste_voisins)==1):
 			while len(liste_voisins)<=1:
 				liste_voisins =[]
 				for voisin in voisins:
 					tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
 					case_voisin = (tmp_a, tmp_b)
-					if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
-						liste_voisins.append(case_voisin)
+					if(case_voisin in self):
+						if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
+							liste_voisins.append(case_voisin)
 				if(len(liste_voisins)==0):
 					print("la carte est une ligne droite non ?")
 					return 0
@@ -229,7 +246,7 @@ class Carte:
 					pos_act=liste_voisins[0]
 			#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
 			direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
-			self._cases[old_pos[0]][old_pos[1]]._est_chemin= dico_dir_vers_entier[direction]
+			self[old_pos]._est_chemin= dico_dir_vers_entier[direction]
 			# self._cases[old_pos[0]][old_pos[1]]._tapis = 0; # NE PAS EFFACER CETTE LIGNE !!!!!!!!!!!!!!!!!!!!!!
 		else :
 			# La base ou la source a plusieurs voisins et il ne faut pas toucher au reste.
@@ -243,8 +260,9 @@ class Carte:
 			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
 			assert(case_voisin != (source._position))
-			if (self.est_case_chemin(case_voisin,(i+2)%4)):
-				source._direction.append(i)
+			if(case_voisin in self):
+				if (self.est_case_chemin(case_voisin,(i+2)%4)):
+					source._direction.append(i)
 
 	def initialiser_sources(self):
 		for i in range(len(self._pos_sources)):
@@ -265,37 +283,31 @@ class Carte:
 		for voisin in voisins:
 			tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
-				liste_voisins.append(case_voisin)
+			if(case_voisin in self):
+				if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
+					liste_voisins.append(case_voisin)
 
 
 	#fonction qui met à jour la liste des tours dans la carte
 	def miseajourliste_tours(self):
-		for j in range(0,self.nb_cases_l):
-			for i in range(0,self._nb_cases_h):
-				print(" on rentre dans la fonction mise a jour des listes de tours")
-				if((self.cases[i][j].type_objet=="tour") and (self.cases[i][j] not in self._liste_tours_actuelle) ):
-					self._liste_tours_a_actualise.append((self.cases[i][j],(i,j)))
+		for x in range(0,self.nb_cases_h):
+			for y in range(0,self._nb_cases_l):
+				# print(" on rentre dans la fonction mise a jour des listes de tours")
+				if((self[(x,y)].type_objet=="tour") and (self[x,y] not in self._liste_tours_actuelle) ):
+					self._liste_tours_a_actualise.append((self[x,y],(x,y)))
 
 	#permet de mettre à jour la carte des couts en fonction des bases
 	def miseajour_carte_cout_tours(self):
 		liste_tours=self._liste_tours_a_actualise
 		for (tour,coord) in liste_tours:
-			print(tour._vie)
 			if(tour._vie!=0):
 				portee=tour._portee
-				print(portee)
 				(pos_x,pos_y)=coord
-				print(pos_x,pos_y)
-				print(portee)
 				for i in range(-portee,portee+1,1):
 					for j in range(-portee,portee+1,1):
 						#print(self.get_cout_case((pos_x+i,pos_y+j)))
 						if((pos_x+i>=0) and ((pos_x+i)<self.nb_cases_h) and (pos_y+j>=0) and ((pos_y+j)<self.nb_cases_l)):
-							print("test de la case ok")
-							print(self.get_cout_case((pos_x+i,pos_y+j)))
 							self.set_cout_case((pos_x+i,pos_y+j),1000+tour.degat)
-							print(self.get_cout_case((pos_x+i,pos_y+j)))
 
 			self._liste_tours_actuelle.append(tour)
 		self._liste_tours_a_actualise=[]
