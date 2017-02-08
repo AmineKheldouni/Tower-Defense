@@ -69,7 +69,7 @@ class Affichage_fenetre:
 			for T in self._joueur.liste_tours:
 				if T._position == pos:
 					pos = self.carte.positionner_objet((tmp[0]+0.5, tmp[1]+0.5))
-					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee, 2)
+					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee*self._scale_l, 2)
 
 	def affiche_soldat(self,soldat):
 		dir_voisin = soldat._voisins[soldat._direction]
@@ -122,6 +122,20 @@ class Affichage_fenetre:
 				str(elt._id_tour)+"amelioration"+\
 				str(5-i)+".png",elt._position)
 			pygame.display.flip()
+
+
+	def affiche_score(self, player="", score =-1):
+		font =  pygame.font.Font("Blacksword.otf",20)
+		scores = give_score()
+		for i  in range(len(scores)):
+			if player == scores[i][1] and score == scores[i][2]:
+				a=1
+			else:
+				a=255
+			for j in range(3):
+				txt = font.render(str(scores[i][j]), 1, (255, a, 1))
+				self._fenetre.blit(  txt,  (50+150*j, 50+i*20))
+		pygame.display.flip()
 
 	def affiche_all(self,Carte,Arme):
 		self.affichage_terrain()

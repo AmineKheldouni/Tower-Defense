@@ -41,7 +41,6 @@ class Carte:
 		# self._grille = [[ extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
 		dico_nom_id=DicoFromFile("cartes_legend2.csv",2,16,1,0)
 		dico_name_to_id_graph=DicoFromFile("cartes_legend2.csv",2,16,1,2)
-		print(self._nb_cases_l,self.nb_cases_h)
 		for i in range(0,self.nb_cases_l):
 			for j in range(0,self._nb_cases_h):
 				ob = tab_carte_objets[i][j]
@@ -149,7 +148,6 @@ class Carte:
 					x, y = np.random.randint(self.nb_cases_h-1), np.random.randint(self.nb_cases_l-1)
 				self[(x,y)] = Element_decor((x,y),1000+j+1,0)
 
-
 #@getter et setter
 	# def get_case(self,i,j):
 	# 	return self._cases[i][j]
@@ -167,7 +165,7 @@ class Carte:
 		return self[self._pos_sources[i]]
 
 	def est_case_chemin(self,pos,soldat_direction=0):
-		if  (pos[0]>=self.nb_cases_l) or (pos[1]>=self.nb_cases_h) or (pos[0]<0)or (pos[1]<0):
+		if  (pos[0]>=self.nb_cases_h) or (pos[1]>=self.nb_cases_l) or (pos[0]<0)or (pos[1]<0):
 			return False
 		else:
 			return self[pos].est_chemin(soldat_direction)
@@ -213,6 +211,9 @@ class Carte:
 		for i,pos_base in enumerate(self._pos_bases):
 			if(not self.get_base(i)._est_mort):
 				self.rec_actualise_cout_chemin(pos_base, voisin, 1 )
+		# affiche_tableau(self._cout_case)
+		# affiche_tableau(self._cout_chemin)
+
 
 #Gestion des sources et des bases
 
@@ -246,8 +247,8 @@ class Carte:
 					pos_act=liste_voisins[0]
 			#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
 			direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
-			self[old_pos]._est_chemin= dico_dir_vers_entier[direction]
-			# self._cases[old_pos[0]][old_pos[1]]._tapis = 0; # NE PAS EFFACER CETTE LIGNE !!!!!!!!!!!!!!!!!!!!!!
+			self[old_pos]._est_chemin = dico_dir_vers_entier[direction]
+			# self[old_pos]._tapis = 0; # NE PAS EFFACER CETTE LIGNE !!!!!!!!!!!!!!!!!!!!!!
 		else :
 			# La base ou la source a plusieurs voisins et il ne faut pas toucher au reste.
 			None
@@ -287,7 +288,6 @@ class Carte:
 				if self.est_case_chemin(case_voisin) and case_voisin != old_pos:
 					liste_voisins.append(case_voisin)
 
-
 	#fonction qui met à jour la liste des tours dans la carte
 	def miseajourliste_tours(self):
 		for x in range(0,self.nb_cases_h):
@@ -307,7 +307,6 @@ class Carte:
 					for j in range(-portee,portee+1,1):
 						#print(self.get_cout_case((pos_x+i,pos_y+j)))
 						if((pos_x+i>=0) and ((pos_x+i)<self.nb_cases_h) and (pos_y+j>=0) and ((pos_y+j)<self.nb_cases_l)):
-							self.set_cout_case((pos_x+i,pos_y+j),1000+tour.degat)
-
+							self.set_cout_case((pos_x+i,pos_y+j),tour.degat)
 			self._liste_tours_actuelle.append(tour)
 		self._liste_tours_a_actualise=[]

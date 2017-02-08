@@ -5,8 +5,10 @@
 
 def affiche_tableau(vecteur):
     stig = ""
-    for j in range(len(vecteur[0])):
-        strig = ""
-        for i in range(len(vecteur)):
-            strig = strig +"|"+ str(vecteur[i][j])
-        print(strig)
+    for j in range(len(vecteur)):
+        print(vecteur[j])
+        # strig = ""
+        # for i in range(len(vecteur)):
+        #     strig = strig +"|"+ str(vecteur[i][j])
+        # print(strig)
+    print("/")

@@ -63,7 +63,6 @@ class Carte:
 		self._liste_construction.append((i, j))
 		self._grille[i, j] = 2
 
-
 	def case_chemin(self, i, j):
 		self._liste_chemin.append((i, j))
 		self._grille[i, j] = 0 # La case est un chemin

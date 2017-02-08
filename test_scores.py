@@ -3,9 +3,7 @@
 
 from affichage import *
 
-def main():
-	pygame.init()
-	F = pygame.display.set_mode((640, 360), pygame.RESIZABLE)	# A MODIFIER
+def test_score(F):
 	continuer = 1
 	ask = str("Entrez votre pseudo ")
 	font =  pygame.font.Font("Blacksword.otf",65)
@@ -31,6 +29,7 @@ def main():
 			if event.type == KEYDOWN and (event.key == K_BACKSPACE):
 				pseudo = pseudo[0:len(pseudo)-1]
 		pygame.display.flip()
+	return pseudo
 
 
 	print("Votre pseudo : ", pseudo)

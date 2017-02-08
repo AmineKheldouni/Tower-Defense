@@ -149,6 +149,10 @@ class Tour(Case):
     def projectile(self,soldat,carte):
         return Projectile(self._position, carte.positionner_objet(soldat._position), 0, carte, soldat, self._degat)
 
+    # def est_a_porte(self, pos):
+    #     print(self._position)
+    #     return  abs(self._position[0] - pos[0]) <= self._portee and abs(self._position[1]-pos[1]) <= self._portee
+
     def attaque(self, armee, C):
         '''_liste_soldat est le tableau des personnages de Armee'''
         '''Renvoie (False/True, un projectile si true)'''
@@ -157,8 +161,9 @@ class Tour(Case):
         for indice_soldat, soldat in enumerate(armee._liste_soldat):
             pos_case = soldat._position
             pos_tour = C.objet_dans_case(self.position)
-            distance_soldat = abs(pos_tour[0]-pos_case[0])+abs(pos_tour[1]-pos_case[1])
-            if distance_soldat < self._portee/C.nb_cases_l :
+            # distance_soldat = abs(pos_tour[0]-pos_case[0])+abs(pos_tour[1]-pos_case[1])
+            distance_soldat = max(abs(pos_tour[0]-pos_case[0]), abs(pos_tour[1]-pos_case[1]))
+            if  distance_soldat <= self._portee  :
                if distance_soldat < distance_cible:
                    cible = indice_soldat
                    distance_cible = distance_soldat

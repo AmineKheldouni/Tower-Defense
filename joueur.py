@@ -56,6 +56,9 @@ class Joueur:
 			T = Tour_Glace(self.carte.positionner_objet(pos), id_tour)
 		elif(id_tour == 1):
 			T = Tour_Feu(self.carte.positionner_objet(pos), id_tour)
+
+
+
 		assert(self.carte.get_type_case(pos) == "place_construction")
 		if T._cout_construction <= self._argent:
 			self._liste_tours.append(T)

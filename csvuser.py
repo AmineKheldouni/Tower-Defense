@@ -94,13 +94,9 @@ def give_score(nb_score=10):
         cpt_ligne=-1
         for ligne in csv_file:
             cpt_ligne+=1
-            if(cpt_ligne > 0):
-                print(ligne, cpt_ligne)
-                ligne[0] = 3
-                score.append( ( int(ligne[0]), str(ligne[1]), int(ligne[2]) )  )
+            score.append( ( int(ligne[0]), str(ligne[1]), int(ligne[2]) )  )
             if(cpt_ligne >nb_score):
                     break
-        print(score)
         return score
 
 def enter_new_score(player, player_score):

@@ -83,7 +83,7 @@ class Soldat(Objet_Actif):
 		if(len(liste_voisins)==1):
 			chosen_path = 0
 		if(len(liste_voisins)>1):
-			chosen_path  = self.choix_chemin_pondere(liste_voisins, carte)
+			chosen_path  = self.choix_chemin_deterministe(liste_voisins, carte)
 		if len(liste_voisins)>0:
 			self._ancienne_position = self._position
 			self._direction = liste_direction[chosen_path]

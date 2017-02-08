@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #encoding: utf8
 
+from test_scores import *
 from affichage import *
 
 def is_over(carte):
@@ -48,7 +49,6 @@ def main():
 		compteur = 0
 		gameover_bool = False
 		etat_jeu = "play"
-
 		while continuer:
 			if is_over(C):
 				if not gameover_bool:
@@ -62,6 +62,11 @@ def main():
 					    F.ajouter_element("images/interface/GameOver2.png",(0,0))
 					    F._fenetre.fill((i,i,i),special_flags=BLEND_RGB_SUB)
 					    pygame.display.flip()
+					name =test_score(F._fenetre)
+					score=J.score
+					enter_new_score(name, score)
+					F.affichage_terrain()
+					F.affiche_score(name, score)
 				else:
 					pygame.time.Clock().tick(60)
 
