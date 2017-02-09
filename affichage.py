@@ -6,26 +6,23 @@ from menu import *
 from csvuser import *
 
 class Affichage_fenetre:
-	def __init__(self, joueur):
+	def __init__(self, joueur, C):
 		self.dico_carte=DicoFromFile("cartes_legend.csv",2,7,1,2)
 		self.dico_carte_object=DicoFromFile("cartes_legend2.csv",2,16,1,2)
-		self._tableau_type_armee = [1] # la position i de ce tableau renvoie le nombre de soldats de type i dans l'armee qui passe actuellement
+		self._tableau_type_armee = [1] 
 		self._joueur = joueur
-		self._menu = Menu(self._joueur)
-		self._fenetre = pygame.display.set_mode((self.carte.largeur, self.carte.hauteur+self._menu.hauteur), pygame.RESIZABLE)	# A MODIFIER
-		self._scale_l = self.carte.largeur/self.carte.nb_cases_l
-		self._scale_h = self.carte.hauteur/self.carte.nb_cases_h
+		self._menu = Menu(self._joueur, C.largeur)
+		self._fenetre = pygame.display.set_mode((C.largeur, C.hauteur+self._menu.hauteur),\
+		 pygame.RESIZABLE)	# A MODIFIER
+		self._scale_l = C.largeur/C.nb_cases_l
+		self._scale_h = C.hauteur/C.nb_cases_h
 		pygame.display.set_caption("Tower Defense")
-
-	@property
-	def carte(self):
-		return self._joueur._carte
 
 	@property
 	def joueur(self):
 		return self._joueur
 
-	def ajouter_element(self, nom_image, position):
+	def ajouter_element(self, nom_image, position, C):
 		element = pygame.image.load(nom_image).convert_alpha()
 		if not "background" in nom_image and not "GameOver" in nom_image \
 		and not "menu_bas" in nom_image and not "balle" in nom_image and \
@@ -33,14 +30,13 @@ class Affichage_fenetre:
 		"base_state1" in nom_image:
 			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
 		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
-			#element = pygame.transform.scale(element, (self.carte.largeur/self.carte.nb_cases_l, 2*self.carte.hauteur/self.carte.nb_cases_h))
 			self._fenetre.blit(element, (position[0], position[1]-\
-			2.35*self.carte.hauteur/self.carte.nb_cases_h))
+			2.35*C.hauteur/C.nb_cases_h))
 		else:
 			self._fenetre.blit(element, position)
 
-	def affichage_terrain(self):
-		self.ajouter_element("images/interface/background2.jpg", (0, 0))
+	def affichage_terrain(self, C):
+		self.ajouter_element("images/interface/background2.jpg", (0, 0), C)
 
 	def affichage_carte(self,carte):
 		""" affiche tapis des cases (chemin par exemple)"""
@@ -49,7 +45,7 @@ class Affichage_fenetre:
 				value_case=carte[(x,y)]._tapis
 				pos = carte.positionner_objet((x,y))
 				if(value_case!=0):
-					self.ajouter_element(self.dico_carte[value_case],pos)
+					self.ajouter_element(self.dico_carte[value_case],pos, carte)
 
 	def affiche_carte_objet(self,carte):
 		for x in range(carte.nb_cases_h):
@@ -58,57 +54,59 @@ class Affichage_fenetre:
 				if(carte[(x,y)]._id_graphic !=0 ):
 					graphic = self.dico_carte_object[carte[x,y]._id_graphic]
 					if(graphic !="None"):
-						self.ajouter_element(graphic, pos)
+						self.ajouter_element(graphic, pos, carte)
 
-	def affichage_portee(self):
+	def affichage_portee(self,C):
 		pos = pygame.mouse.get_pos()
-		pos_case = self.carte.objet_dans_case(pos)
-		if pos_case in self._joueur.carte and self.carte.get_type_case(pos_case) == "tour" :
-			tmp = self.carte.objet_dans_case(pos)
-			pos = self.carte.positionner_objet(tmp)
+		pos_case = C.objet_dans_case(pos)
+		if pos_case in C and C.get_type_case(pos_case) == "tour" :
+			tmp = C.objet_dans_case(pos)
+			pos = C.positionner_objet(tmp)
 			for T in self._joueur.liste_tours:
 				if T._position == pos:
-					pos = self.carte.positionner_objet((tmp[0]+0.5, tmp[1]+0.5))
-					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), int(pos[1])), T._portee*self._scale_l, 2)
+					pos = C.positionner_objet((tmp[0]+0.5, tmp[1]+0.5))
+					pygame.draw.circle(self._fenetre, (255, 255, 255), (int(pos[0]), \
+					int(pos[1])), T._portee*self._scale_l, 2)
 
-	def affiche_soldat(self,soldat):
+	def affiche_soldat(self,soldat, C):
 		dir_voisin = soldat._voisins[soldat._direction]
-		pos_carte = self._joueur.carte.positionner_objet(soldat._position)
+		pos_carte = C.positionner_objet(soldat._position)
 		pos_x=pos_carte[0] + dir_voisin[0]*((soldat._pas-50)*self._scale_l)/100
 		pos_y=pos_carte[1] + dir_voisin[1]*((soldat._pas-50)*self._scale_h)/100
-		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+soldat.dir_to_graph()+".png",(pos_x,pos_y))
-		self.affiche_etat(soldat._etat, (pos_x,pos_y))
+		self.ajouter_element("images/armee/"+soldat._graphic+"/"+soldat._graphic+\
+		soldat.dir_to_graph()+".png",(pos_x,pos_y), C)
+		self.affiche_etat(soldat._etat, (pos_x,pos_y), C)
 
-	def affiche_etat(self,etat, pos_pix):
+	def affiche_etat(self,etat, pos_pix, C):
 		if(etat._nom != "0"):
-			self.ajouter_element("images/etat/"+(etat._nom)+"/"+"0.png",pos_pix)
+			self.ajouter_element("images/etat/"+(etat._nom)+"/"+"0.png",pos_pix, C)
 
-	def affichage_armee(self, armee):
+	def affichage_armee(self, armee, C):
 		for soldat in armee._liste_soldat:
 			if not soldat._is_dead:
 				type_soldat = soldat._type_soldat
 				anim_soldat = soldat._animation
-				self.affiche_soldat(soldat)
+				self.affiche_soldat(soldat, C)
 
-	def affichage_projectile(self, projectile):
+	def affichage_projectile(self, projectile, C):
 		# im_projectile = pygame.image.load("images/tours/balle.png").convert_alpha()
 		if projectile._position != projectile._arrivee:
-			self.ajouter_element("images/tours/balle.png",projectile._position)
+			self.ajouter_element("images/tours/balle.png",projectile._position, C)
 
-	def gestion_menu_statique(self):
-		pos_menu = self.carte.positionner_objet((0, self.carte.nb_cases_h))
-		self.ajouter_element("images/interface/Menubas/menu_bas3.png", pos_menu)
-		self._menu.affichage_menu_haut(self)
-		self._menu.menu_statique(self)
+	def gestion_menu_statique(self, C):
+		pos_menu = C.positionner_objet((0, C.nb_cases_h))
+		self.ajouter_element("images/interface/Menubas/menu_bas3.png", pos_menu, C)
+		self._menu.affichage_menu_haut(self, C)
+		self._menu.menu_statique(self, C)
 
-	def gestion_menu(self, event=None):
+	def gestion_menu(self, C, event=None):
 		""" Nouvelle gestion du Menu avec la classe Menu """
-		self.gestion_menu_statique()
-		self._menu.maj_menu(event, self)
-		self._menu.image(self)
-		self._menu.caracteristiques(self)
-		self._menu.boutons(self)
-		self._menu.interaction(event, self)
+		self.gestion_menu_statique(C)
+		self._menu.maj_menu(event, C, self)
+		self._menu.image(self, C)
+		self._menu.caracteristiques(self, C)
+		self._menu.boutons(self, C)
+		self._menu.interaction(event, self, C)
 
 	def animation_amelioration(self, elt):
 		for i in range(5):
@@ -116,31 +114,47 @@ class Affichage_fenetre:
 			if i<=2:
 				self.ajouter_element("images/tours/tour"+\
 				str(elt._id_tour)+"amelioration"+\
-				str(i+1)+".png",elt._position)
+				str(i+1)+".png",elt._position, C)
 			else:
 				self.ajouter_element("images/tours/tour"+\
 				str(elt._id_tour)+"amelioration"+\
-				str(5-i)+".png",elt._position)
+				str(5-i)+".png",elt._position, C)
 			pygame.display.flip()
 
 
-	def affiche_score(self, player="", score =-1):
-		font =  pygame.font.Font("Blacksword.otf",20)
+	def affiche_score(self, C, player="", score =-1):
+		self._fenetre.fill((0,0,0))
+		font =  pygame.font.Font("Blacksword.otf",30)
+		font_titre = pygame.font.Font("Blacksword.otf",60)
+		font_soustitre = pygame.font.Font("Blacksword.otf",40)
+		h = C.hauteur+self._menu.hauteur
+		l = C.largeur
 		scores = give_score()
+		txt = font_titre.render("Top 10 des meilleurs scores" ,1, (255, 255, 255))
+		self._fenetre.blit(txt,(2.5*l/6,h/15))
+		txt = font_soustitre.render("Classement" ,1, (255, 255, 255))
+		self._fenetre.blit(txt,(l/6,3*h/15))
+		txt = font_soustitre.render("Pseudo" ,1, (255, 255, 255))
+		self._fenetre.blit(txt,(2*l/6,3*h/15))
+		txt = font_soustitre.render("Score" ,1, (255, 255, 255))
+		self._fenetre.blit(txt,(5*l/6,3*h/15))
 		for i  in range(len(scores)):
 			if player == scores[i][1] and score == scores[i][2]:
 				a=1
 			else:
 				a=255
-			for j in range(3):
-				txt = font.render(str(scores[i][j]), 1, (255, a, 1))
-				self._fenetre.blit(  txt,  (50+150*j, 50+i*20))
-		pygame.display.flip()
+			txt = font.render(str(scores[i][0]), 1, (255, a, 255))
+			self._fenetre.blit(  txt,  (l/6, (i+4)*h/15))
+			txt = font.render(str(scores[i][1]), 1, (255, a, 255))
+			self._fenetre.blit(  txt,  (2*l/6, (i+4)*h/15))
+			txt = font.render(str(scores[i][2]), 1, (255, a, 255))
+			self._fenetre.blit(  txt,  (5*l/6, (i+4)*h/15))
+
 
 	def affiche_all(self,Carte,Arme):
-		self.affichage_terrain()
+		self.affichage_terrain(Carte)
 		self.affichage_carte(Carte)
-		self.affichage_armee(Arme)
-		self._menu.affichage_menu_haut(self)
+		self.affichage_armee(Arme, Carte)
+		self._menu.affichage_menu_haut(self,Carte)
 		self.affiche_carte_objet(Carte)
-		self.affichage_portee()
+		self.affichage_portee(Carte)

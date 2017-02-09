@@ -3,7 +3,8 @@
 import random
 
 class Case(object):
-	def __init__(self, position, type_objet="",tapis=0, id_graphic=0, is_chemin=0):
+	def __init__(self, position, type_objet="",tapis=0, id_graphic=0,\
+	 is_chemin=0):
 		self._position = position
 		self._type_objet = type_objet # String de legend2
 		self._tapis = tapis	# Int de legend1
@@ -44,13 +45,15 @@ class Case(object):
 
 class Emplacement(Case):
 	def __init__(self, position, tapis, id_excel):
-		super(Emplacement,self).__init__(position, "place_construction", tapis,id_excel)
+		super(Emplacement,self).__init__(position, "place_construction",\
+		 tapis,id_excel)
 
 # Pour faire un No_Objet : (self,position,graphic,arg,id_exel)
 class Element_decor(Case):
 	"""docstring for Element_decor."""
 	def __init__(self, position,  id_excel,tapis,):
-		super(Element_decor,self).__init__(position,"element_decor",tapis,id_excel)
+		super(Element_decor,self).__init__(position,"element_decor", \
+		tapis,id_excel)
 
 class Source(Case):
 	"""docstring for Element_decor."""

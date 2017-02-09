@@ -17,11 +17,9 @@ import numpy.random as rd
 from utils import *
 
 class Carte:
-	def __init__(self,id_carte="cartes_carte1", hauteur=700, largeur=1250, nb_cases_h = 25, \
+	def __init__(self,id_carte="cartes_carte1", hauteur=700, largeur=1250, nb_cases_h = 25,\
 	nb_cases_l = 25):
-		#contient la liste des tours actuelles
 		self._liste_tours_actuelle =[]
-		#contient la liste des tuples (tours, coordonnes) qui doivent être utilisées pour mettre à jour les cartes de couts
 		self._liste_tours_a_actualise=[]
 		self._liste_souces=[]
 		self._pos_bases =[]
@@ -31,14 +29,17 @@ class Carte:
 		self._hauteur = hauteur
 		self._largeur = largeur
 		self._pos_sources = []
-		self._cout_chemin=[[ 1000 for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
-		self._cout_case  =[[ 1 for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
-		tab_carte=LoadIntFromFile(id_carte+".csv",1,self._nb_cases_l,1,self._nb_cases_h)
-		tab_carte_objets=LoadIntFromFile(id_carte+"objets.csv",1,self._nb_cases_l,1,self._nb_cases_h)
-		# print(tab_carte)
-		self._cases =  [[ Case( (j,j), tab_carte_objets[i][j], tab_carte[i][j] ) for j in range(self._nb_cases_h)] for i in range(self._nb_cases_l)]
-		# cases[lig][col]
-		# self._grille = [[ extract_carte(id_carte,i+1,j+1) for i in range(self._nb_cases_h)] for j in range(self._nb_cases_l)]
+		self._cout_chemin=[[ 1000 for i in range(self._nb_cases_h)] for j in \
+		range(self._nb_cases_l)]
+		self._cout_case  =[[ 1 for i in range(self._nb_cases_h)] for j in \
+		range(self._nb_cases_l)]
+		tab_carte=LoadIntFromFile(id_carte+".csv",1,self._nb_cases_l,1, \
+		self._nb_cases_h)
+		tab_carte_objets=LoadIntFromFile(id_carte+"objets.csv",1,self._nb_cases_l,1, \
+		self._nb_cases_h)
+		self._cases =  [[ Case( (j,j), tab_carte_objets[i][j], tab_carte[i][j] ) for j in\
+		 range(self._nb_cases_h)] for i in range(self._nb_cases_l)]
+
 		dico_nom_id=DicoFromFile("cartes_legend2.csv",2,16,1,0)
 		dico_name_to_id_graph=DicoFromFile("cartes_legend2.csv",2,16,1,2)
 		for i in range(0,self.nb_cases_l):
@@ -79,11 +80,7 @@ class Carte:
 	@property
 	def nb_cases_l(self):
 		return self._nb_cases_l
-	@property
-	# def cases(self):
-	# 	return self._cases
-	# def __contains__(self, pos):
-	# 	return (pos[0]<self.nb_cases_l) and (pos[1]<self.nb_cases_h) or (pos[0]>=0)or (pos[1]>=0)
+
 
 	def set_chemin(self, (x,y), value):
 		self[y][x].est_chemin = value
@@ -126,7 +123,6 @@ class Carte:
 	def set_cout_case(self,(pos_x,pos_y),cout):
 		self._cout_case[pos_y][pos_x] = cout;
 
-
 	def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnées de la case de l'objet """
 		pas_l = int(self.largeur/self.nb_cases_l)
@@ -140,12 +136,16 @@ class Carte:
 
 	def genere_decor(self,tab_objet):
 		max_ligne_tab_objet=max([tab_objet[j] for j in range(len(tab_objet))])
-		tab_carte_objets=LoadIntFromFile(self._id_carte+"objets.csv",1,max_ligne_tab_objet,1,len(tab_objet))
+		tab_carte_objets=LoadIntFromFile(self._id_carte+"objets.csv",1, \
+		max_ligne_tab_objet,1,len(tab_objet))
 		for j in range(len(tab_objet)):
 			for i in range(tab_objet[j]):
-				x, y = np.random.randint(self.nb_cases_h-1), np.random.randint(1, self.nb_cases_l-1)
-				while self[(x,y)]._tapis!=0 and self.get_type_case((x,y))!="place_construction":
-					x, y = np.random.randint(self.nb_cases_h-1), np.random.randint(self.nb_cases_l-1)
+				x, y = np.random.randint(self.nb_cases_h-1), np.random.randint(1,\
+				 self.nb_cases_l-1)
+				while self[(x,y)]._tapis!=0 and self.get_type_case((x,y))!=\
+				"place_construction":
+					x, y = np.random.randint(self.nb_cases_h-1), np.random.randint(\
+					self.nb_cases_l-1)
 				self[(x,y)] = Element_decor((x,y),1000+j+1,0)
 
 #@getter et setter
@@ -165,7 +165,8 @@ class Carte:
 		return self[self._pos_sources[i]]
 
 	def est_case_chemin(self,pos,soldat_direction=0):
-		if  (pos[0]>=self.nb_cases_h) or (pos[1]>=self.nb_cases_l) or (pos[0]<0)or (pos[1]<0):
+		if  (pos[0]>=self.nb_cases_h) or (pos[1]>=self.nb_cases_l) or (pos[0]<0)or \
+		(pos[1]<0):
 			return False
 		else:
 			return self[pos].est_chemin(soldat_direction)
@@ -193,11 +194,12 @@ class Carte:
 			voisin = vect_voisin[i]
 			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
-			# Si je suis un chemin et que Cout_CHemin +COut_case < Cout_chemin je remplace et j'actualise
 			if(case_voisin in self):
 				if (self.est_case_chemin(case_voisin,direction)) and \
-				(self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case) < self.get_cout_chemin(case_voisin) ):
-					new_cost = self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case)
+				(self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case) < \
+				self.get_cout_chemin(case_voisin) ):
+					new_cost = self.get_cout_case(case_voisin) + \
+					self.get_cout_chemin(pos_case)
 					self.rec_actualise_cout_chemin(case_voisin, vect_voisin, new_cost )
 
 	def reinitialiser_cout_chemin(self):
@@ -218,7 +220,6 @@ class Carte:
 #Gestion des sources et des bases
 
 	def base_est_morte(self, pos):
-		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
 		dico_dir_vers_entier = { (0,1) : -3 , (0,-1) : -1 , (1,0) : -2 , (-1,0) : -4}
 		old_pos = pos
 		pos_act = pos
@@ -245,12 +246,9 @@ class Carte:
 				if(len(liste_voisins)==1):
 					old_pos = pos_act
 					pos_act=liste_voisins[0]
-			#On est sur une intersection il faut donc modifier old_pos pour empêcher les ennemis de l'intersection d'y accéder
 			direction = (old_pos[0]-pos_act[0],old_pos[1]-pos_act[1])
 			self[old_pos]._est_chemin = dico_dir_vers_entier[direction]
-			# self[old_pos]._tapis = 0; # NE PAS EFFACER CETTE LIGNE !!!!!!!!!!!!!!!!!!!!!!
 		else :
-			# La base ou la source a plusieurs voisins et il ne faut pas toucher au reste.
 			None
 
 	def initialiser_source(self, i):
@@ -277,9 +275,7 @@ class Carte:
 
 
 	def get_voisins_case(self,pos, liste_voisin, old_pos = (-50,-50)):
-		"Renvoie la liste des voisins d'une case dans la liste liste_voisin (supposée vide au départ), qui est modifiée en place"
 		assert(len(liste_voisin)==0)
-		'''s'active quand un base meurt modifie la carte afin que les ennemis n'y accèdent plus'''
 		voisins = [(0, 1), (-1,0), (0, -1), (1, 0)]
 		for voisin in voisins:
 			tmp_a, tmp_b = int(pos_act[0]+voisin[0]), int(pos_act[1]+voisin[1])
@@ -293,7 +289,8 @@ class Carte:
 		for x in range(0,self.nb_cases_h):
 			for y in range(0,self._nb_cases_l):
 				# print(" on rentre dans la fonction mise a jour des listes de tours")
-				if((self[(x,y)].type_objet=="tour") and (self[x,y] not in self._liste_tours_actuelle) ):
+				if((self[(x,y)].type_objet=="tour") and (self[x,y] not in \
+				self._liste_tours_actuelle) ):
 					self._liste_tours_a_actualise.append((self[x,y],(x,y)))
 
 	#permet de mettre à jour la carte des couts en fonction des bases
@@ -306,7 +303,8 @@ class Carte:
 				for i in range(-portee,portee+1,1):
 					for j in range(-portee,portee+1,1):
 						#print(self.get_cout_case((pos_x+i,pos_y+j)))
-						if((pos_x+i>=0) and ((pos_x+i)<self.nb_cases_h) and (pos_y+j>=0) and ((pos_y+j)<self.nb_cases_l)):
+						if((pos_x+i>=0) and ((pos_x+i)<self.nb_cases_h) and (pos_y+j>=0) \
+						and ((pos_y+j)<self.nb_cases_l)):
 							self.set_cout_case((pos_x+i,pos_y+j),tour.degat)
 			self._liste_tours_actuelle.append(tour)
 		self._liste_tours_a_actualise=[]

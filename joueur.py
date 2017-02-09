@@ -5,14 +5,11 @@ from gestion_fenetre import *
 from tours import *
 
 class Joueur:
-	def __init__(self, carte, argent = 500, score = 0):
+	def __init__(self, argent = 500, score = 0):
 		self._argent = argent
 		self._score = score
-		self._carte = carte
 		self._liste_tours = []
-	@property
-	def carte(self):
-		return self._carte
+
 	@property
 	def liste_tours(self):
 		return self._liste_tours
@@ -49,22 +46,19 @@ class Joueur:
 			return True
 		return False
 
-	def construire_tour(self, id_tour, pos):
+	def construire_tour(self, id_tour, pos, C):
 		if(id_tour == 0):
-			T = Tour(self.carte.positionner_objet(pos), id_tour)
+			T = Tour(C.positionner_objet(pos), id_tour)
 		elif(id_tour == 2):
-			T = Tour_Glace(self.carte.positionner_objet(pos), id_tour)
+			T = Tour_Glace(C.positionner_objet(pos), id_tour)
 		elif(id_tour == 1):
-			T = Tour_Feu(self.carte.positionner_objet(pos), id_tour)
+			T = Tour_Feu(C.positionner_objet(pos), id_tour)
 
-
-
-		assert(self.carte.get_type_case(pos) == "place_construction")
 		if T._cout_construction <= self._argent:
 			self._liste_tours.append(T)
 			self._argent -= T._cout_construction
-			self._carte[pos] = T
-			self._carte[pos]._type_objet = "tour"
+			C[pos] = T
+			C[pos]._type_objet = "tour"
 			return True
 		else:
 			return False

@@ -12,11 +12,13 @@ class Vague(object):
     def __init__(self, nb_ennemis = 4, max_wave = 2):
         self._nb_type_ennemis = 4
         self._id_vague = 1
-        self._nb_ennemis = [ExtractIntFromFile("vague.csv",self.get_id(),col) for col in range(1,self._nb_type_ennemis+2)]
+        self._nb_ennemis = [ExtractIntFromFile("vague.csv",self.get_id(),col) \
+        for col in range(1,self._nb_type_ennemis+2)]
         self._nb_tot_ennemis = 0
         for i in range(1,len(self._nb_ennemis)):
             self._nb_tot_ennemis += self._nb_ennemis[i]
-        self._nb_max_ennemis_sur_carte = ExtractIntFromFile("vague.csv",self.get_id(),nb_ennemis+2)
+        self._nb_max_ennemis_sur_carte = ExtractIntFromFile("vague.csv", \
+        self.get_id(),nb_ennemis+2)
 
     def decrease(self,id_decrease):
         """ Diminue le compteur correspondant à une pause ou un ennemis"""
@@ -54,11 +56,13 @@ class Vague(object):
     def new_wave(self):
         assert(self._nb_tot_ennemis ==0)
         self.new_id()
-        self._nb_ennemis = [ExtractIntFromFile("vague.csv",self.get_id(),col) for col in range(1,self._nb_type_ennemis+2)]
+        self._nb_ennemis = [ExtractIntFromFile("vague.csv",self.get_id(),col)\
+         for col in range(1,self._nb_type_ennemis+2)]
         self._nb_tot_ennemis = 0
         for i in range(1,len(self._nb_ennemis)):
             self._nb_tot_ennemis += self._nb_ennemis[i]
-        self._nb_max_ennemis_sur_carte = ExtractIntFromFile("vague.csv",self.get_id(),self._nb_type_ennemis+2)
+        self._nb_max_ennemis_sur_carte = ExtractIntFromFile("vague.csv", \
+        self.get_id(),self._nb_type_ennemis+2)
 
 #  nb ennemis
 #  temps

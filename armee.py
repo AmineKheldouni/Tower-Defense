@@ -16,7 +16,7 @@ class Soldat(Objet_Actif):
 		self._vie           = ExtractIntFromFile("data_armee.csv",id_soldat,2)
 		self._vitesse       = ExtractIntFromFile("data_armee.csv",id_soldat,4)
 		self._degat         = ExtractIntFromFile("data_armee.csv",id_soldat,5)
-		self._valeur_soldat = ExtractIntFromFile("data_armee.csv",id_soldat,6)	# Score du joueur en tuant ce type de soldat
+		self._valeur_soldat = ExtractIntFromFile("data_armee.csv",id_soldat,6)
 		self._argent_soldat = ExtractIntFromFile("data_armee.csv",id_soldat,7)
 		self._graphic       = ExtractStrFromFile("data_armee.csv",id_soldat,8)
 
@@ -77,7 +77,8 @@ class Soldat(Objet_Actif):
 			tmp_a, tmp_b = (pos_case[0]+voisin[0]), (pos_case[1]+voisin[1])
 			case_voisin = (tmp_a, tmp_b)
 			if(case_voisin in carte):
-				if (carte.est_case_chemin(case_voisin,i)) and case_voisin != (self._position) and case_voisin != (self._ancienne_position):
+				if (carte.est_case_chemin(case_voisin,i)) and case_voisin != \
+				(self._position) and case_voisin != (self._ancienne_position):
 					liste_voisins.append(case_voisin)
 					liste_direction.append(i)
 		if(len(liste_voisins)==1):
@@ -108,9 +109,11 @@ class Soldat(Objet_Actif):
 	def choix_chemin_pondere(self, liste_voisin, carte):
 		ind = 0
 		coef = 0
-		cout = [self.pondere_inverse(carte.get_cout_chemin(liste_voisin[0]))]*len(liste_voisin)
+		cout = [self.pondere_inverse(carte.get_cout_chemin(liste_voisin[0]))]\
+		*len(liste_voisin)
 		for i in range(1,len(liste_voisin)):
-			cout[i]= cout[i-1]+self.pondere_inverse(carte.get_cout_chemin(liste_voisin[i]))
+			cout[i]= cout[i-1]+self.pondere_inverse(carte.get_cout_chemin(\
+			liste_voisin[i]))
 		value_random = random.uniform(0,cout[len(cout)-1])
 		while(value_random>cout[ind]):
 			ind = ind+1
