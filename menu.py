@@ -286,11 +286,11 @@ class Menu(object):
                                ,pos_bouton_entretenir)
                                  }
             if Vue._joueur._argent < elt._cout_entretien:
-                self._dict_boutons["entretenir"] = ("images/interface/\
+                self._dict_boutons["entretenir"] = ("images/interface/"+"\
                 reparation_indisponible.png",pos_bouton_entretenir)
 
             if Vue._joueur._argent < elt._cout_amelioration:
-                self._dict_boutons["ameliorer"] = ("images/interface/\
+                self._dict_boutons["ameliorer"] = ("images/interface/"+"\
                 amelioration_indisponible.png",pos_bouton_ameliorer)
             if self._dict_boutons != None :
                 for b in self._dict_boutons.keys():
@@ -310,11 +310,11 @@ class Menu(object):
             for i in range(3):
                 if Vue._joueur._argent < ExtractIntFromFile("data_tourelle.csv"\
                 ,i+1,3):
-                    self._dict_boutons["tour"+str(i)] = ("images/tours/\
-                    construction_tour_indisponible.png", liste_boutons_tour[i])
+                    self._dict_boutons["tour"+str(i)] = ("images/tours/"+\
+                    "construction_tour_indisponible.png", liste_boutons_tour[i])
                 else:
-                    self._dict_boutons["tour"+str(i)] = ("images/tours/\
-                    construction_tour"+str(i)+".png", liste_boutons_tour[i])
+                    self._dict_boutons["tour"+str(i)] = ("images/tours/"+\
+                    "construction_tour"+str(i)+".png", liste_boutons_tour[i])
 
             if self._dict_boutons != None :
                 for b in self._dict_boutons.keys():
