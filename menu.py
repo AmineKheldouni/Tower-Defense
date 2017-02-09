@@ -48,6 +48,10 @@ class MenuJeu:
                 image_menu =pygame.image.load("images/Menu/Menu_TD_Quit.jpg").convert_alpha()
                 self._fenetre.fill((0,0,0))
                 self._fenetre.blit(image_menu, (0,0))
+        else:
+            image_menu =pygame.image.load("images/Menu/Menu_TD.jpg").convert_alpha()
+            self._fenetre.fill((0,0,0))
+            self._fenetre.blit(image_menu, (0,0))
         pygame.display.flip()
 
 class Menu(object):
