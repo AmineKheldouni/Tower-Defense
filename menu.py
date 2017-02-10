@@ -280,18 +280,18 @@ class Menu(object):
                 elt = C.get_base(self._index_objet)
 
             self._dict_boutons = {
-                               "amelioreraff":("images/interface/amelioration.png"\
+                               "ameliorer":("images/interface/amelioration.png"\
                                ,pos_bouton_ameliorer),
                                "entretenir":("images/interface/reparation.png"\
                                ,pos_bouton_entretenir)
                                  }
             if Vue._joueur._argent < elt._cout_entretien:
-                self._dict_boutons["entretenir"] = ("images/interface/"+"\
-                reparation_indisponible.png",pos_bouton_entretenir)
+                self._dict_boutons["entretenir"] = ("images/interface/"+\
+                "reparation_indisponible.png",pos_bouton_entretenir)
 
             if Vue._joueur._argent < elt._cout_amelioration:
-                self._dict_boutons["ameliorer"] = ("images/interface/"+"\
-                amelioration_indisponible.png",pos_bouton_ameliorer)
+                self._dict_boutons["ameliorer"] = ("images/interface/"+\
+                "amelioration_indisponible.png",pos_bouton_ameliorer)
             if self._dict_boutons != None :
                 for b in self._dict_boutons.keys():
                     image = pygame.image.load(self._dict_boutons[b][0])\
@@ -337,7 +337,7 @@ class Menu(object):
                         -1)<3 and abs(pos_y-pos_boutton[1]-1)<3:
                             if b == "ameliorer":
                                 self._joueur.ameliorer_tour(self._joueur.\
-                                liste_tours[self._index_objet], Vue)
+                                liste_tours[self._index_objet], C, Vue)
                             elif b == "entretenir":
                                 self._joueur.reparer_tour(self._joueur.\
                                 liste_tours[self._index_objet])

@@ -30,12 +30,12 @@ class Joueur:
 		self.gain_argent(pos[0])
 		self.gain_score(pos[1])
 
-	def ameliorer_tour(self, T, Vue=None):
+	def ameliorer_tour(self, T, C, Vue=None):
 		if self._argent >= T.cout_amelioration:
 			if Vue!=None:
-				Vue.animation_amelioration(T)
+				Vue.animation_amelioration(T, C)
 			self._argent -= T.cout_amelioration
-			T.ameliore(self.carte)
+			T.ameliore(C)
 			return True
 
 	def reparer_tour(self, T):

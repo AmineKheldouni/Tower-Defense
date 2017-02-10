@@ -108,7 +108,7 @@ class Affichage_fenetre:
 		self._menu.boutons(self, C)
 		self._menu.interaction(event, self, C)
 
-	def animation_amelioration(self, elt):
+	def animation_amelioration(self, elt, C):
 		for i in range(5):
 			pygame.time.wait(50)
 			if i<=2:
