@@ -191,7 +191,7 @@ class Menu(object):
                 self._dernier_click = (pos_x, pos_y)
             elif (pos_x, pos_y) in C and C.get_type_case((pos_x, pos_y)) \
             == "base":
-                for i in range(len(Vue.joueur.carte._pos_bases)):
+                for i in range(len(C._pos_bases)):
                     if (pos_x,pos_y) == C._pos_bases[i]:
                         self._index_objet = i
                 self._etat = "base"
@@ -202,7 +202,7 @@ class Menu(object):
                 self._dict_boutons = None
 
     def image(self, Vue, C):
-        pos_image = C.positionner_objet((8,0))
+        pos_image = self.positionner_objet((8,0), C)
         if self._etat == "tour" and self._index_objet!=None:
             # Le menu affiche l'image d'une tour
             image_tour = pygame.image.load("images/tours/tour"+str\
@@ -226,12 +226,12 @@ class Menu(object):
     def caracteristiques(self, Vue,C):
         if self._etat == "tour" and self._index_objet!=None:
             # Le menu affiche l'image d'une tour
-            pos_vie=  self.positionner_objet((20,0.757))
-            pos_degat= self.positionner_objet((20,1.61))
-            pos_portee= self.positionner_objet((20,2.47))
-            pos_cout_amelioration= self.positionner_objet((20,3.33))
-            pos_cout_entretien= self.positionner_objet((20,4.185))
-            pos_munitions = self.positionner_objet((20, 5.04))
+            pos_vie=  self.positionner_objet((20,0.757), C)
+            pos_degat= self.positionner_objet((20,1.61), C)
+            pos_portee= self.positionner_objet((20,2.47), C)
+            pos_cout_amelioration= self.positionner_objet((20,3.33), C)
+            pos_cout_entretien= self.positionner_objet((20,4.185), C)
+            pos_munitions = self.positionner_objet((20, 5.04), C)
             tour = self._joueur.liste_tours[self._index_objet]
             self._dict_infos = {
                             "vie : ":(pos_vie,tour._vie),
@@ -251,9 +251,9 @@ class Menu(object):
                     Vue._fenetre.blit(text_donnee, self._dict_infos[d][0])
 
         if self._etat == "base" and self._index_objet != None :
-            pos_vie= self.positionner_objet((20,0.5))
-            pos_cout_entretien= self.positionner_objet((20,2.5))
-            pos_cout_amelioration = self.positionner_objet((20,4.5))
+            pos_vie= self.positionner_objet((20,0.5), C)
+            pos_cout_entretien= self.positionner_objet((20,2.5), C)
+            pos_cout_amelioration = self.positionner_objet((20,4.5), C)
             b = C.get_base(self._index_objet)
             self._dict_infos= {
                             "vie : ":(pos_vie,b._vie),
@@ -272,15 +272,15 @@ class Menu(object):
     def boutons(self, Vue, C):
         if (self._etat == "tour" or self._etat == "base") and \
         self._index_objet != None:
-            pos_bouton_ameliorer= self.positionner_objet((35,2))
-            pos_bouton_entretenir= self.positionner_objet((45,2))
+            pos_bouton_ameliorer= self.positionner_objet((35,2), C)
+            pos_bouton_entretenir= self.positionner_objet((45,2), C)
             if (self._etat == "tour"):
                 elt = self._joueur.liste_tours[self._index_objet]
             elif (self._etat == "base"):
                 elt = C.get_base(self._index_objet)
 
             self._dict_boutons = {
-                               "ameliorer":("images/interface/amelioration.png"\
+                               "amelioreraff":("images/interface/amelioration.png"\
                                ,pos_bouton_ameliorer),
                                "entretenir":("images/interface/reparation.png"\
                                ,pos_bouton_entretenir)

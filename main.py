@@ -59,8 +59,8 @@ def main():
 				        pygame.display.flip()
 					#~ apparition
 					for i in range(255,0,-4):
-					    F.ajouter_element("images/interface/\
-						GameOver2.png",(0,0), C)
+					    F.ajouter_element("images/interface/"+\
+						"GameOver2.png",(0,0), C)
 					    F._fenetre.fill((i,i,i),special_flags=\
 						BLEND_RGB_SUB)
 					    pygame.display.flip()

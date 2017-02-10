@@ -9,7 +9,7 @@ class Affichage_fenetre:
 	def __init__(self, joueur, C):
 		self.dico_carte=DicoFromFile("cartes_legend.csv",2,7,1,2)
 		self.dico_carte_object=DicoFromFile("cartes_legend2.csv",2,16,1,2)
-		self._tableau_type_armee = [1] 
+		self._tableau_type_armee = [1]
 		self._joueur = joueur
 		self._menu = Menu(self._joueur, C.largeur)
 		self._fenetre = pygame.display.set_mode((C.largeur, C.hauteur+self._menu.hauteur),\
@@ -131,7 +131,7 @@ class Affichage_fenetre:
 		l = C.largeur
 		scores = give_score()
 		txt = font_titre.render("Top 10 des meilleurs scores" ,1, (255, 255, 255))
-		self._fenetre.blit(txt,(2.5*l/6,h/15))
+		self._fenetre.blit(txt,(1.7*l/6,h/15))
 		txt = font_soustitre.render("Classement" ,1, (255, 255, 255))
 		self._fenetre.blit(txt,(l/6,3*h/15))
 		txt = font_soustitre.render("Pseudo" ,1, (255, 255, 255))
