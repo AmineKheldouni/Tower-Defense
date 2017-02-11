@@ -32,7 +32,7 @@ def main():
 			return 0
 	if En_jeu == "Jouer":
 		#Ouverture de la fenêtre Pygame
-		C = Carte("cartes_carte3")
+		C = Carte("cartes_carte4")
 		J = Joueur()
 		F = Affichage_fenetre(J, C)
 		S=[]

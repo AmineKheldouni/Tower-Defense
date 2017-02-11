@@ -17,8 +17,7 @@ import numpy.random as rd
 from utils import *
 
 class Carte:
-	def __init__(self,id_carte="cartes_carte1", hauteur=700, largeur=1250, nb_cases_h = 25,\
-	nb_cases_l = 25):
+	def __init__(self,id_carte="cartes_carte1", hauteur=1200, largeur=1850):
 		self._liste_tours_actuelle =[]
 		self._liste_tours_a_actualise=[]
 		self._liste_souces=[]
@@ -182,7 +181,6 @@ class Carte:
 		for x in range(self._nb_cases_h):
 			for y in range(self._nb_cases_l):
 				self[(x,y)].actualisation()
-		affiche_tableau(self._cout_chemin)
 
 #Gestion de la carte de cout
 	def rec_actualise_cout_chemin(self, pos_case, vect_voisin, cout_actuel):

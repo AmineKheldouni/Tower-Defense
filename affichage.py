@@ -13,7 +13,11 @@ class Affichage_fenetre:
 		self._joueur = joueur
 		self._menu = Menu(self._joueur, C.largeur)
 		self._fenetre = pygame.display.set_mode((C.largeur, C.hauteur+self._menu.hauteur),\
-		 pygame.RESIZABLE)	# A MODIFIER
+		pygame.RESIZABLE)	# A MODIFIER
+		print(C.largeur)
+		print(C.hauteur)
+		self._resolution_h = C.hauteur
+		self._resolution_l = C.largeur
 		self._scale_l = C.largeur/C.nb_cases_l
 		self._scale_h = C.hauteur/C.nb_cases_h
 		pygame.display.set_caption("Tower Defense")
@@ -29,9 +33,13 @@ class Affichage_fenetre:
 		not "arbre" in nom_image and not "tour" in nom_image and not \
 		"base_state1" in nom_image:
 			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
-		if "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
-			self._fenetre.blit(element, (position[0], position[1]-\
-			2.35*C.hauteur/C.nb_cases_h))
+			self._fenetre.blit(element, position)
+		elif "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
+			element = pygame.transform.scale(element, (self._scale_l, self._scale_h*2))
+			self._fenetre.blit(element, (position[0], position[1]-self._scale_h))
+		elif "background2" in nom_image:
+			element = pygame.transform.scale(element, (self._resolution_l, self._resolution_h))
+			self._fenetre.blit(element, position)
 		else:
 			self._fenetre.blit(element, position)
 
