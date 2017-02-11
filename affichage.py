@@ -15,12 +15,9 @@ class Affichage_fenetre:
 		self._menu = Menu(self._joueur, resolution_l, resolution_h)
 		self._fenetre = pygame.display.set_mode((C.largeur, C.hauteur+self._menu.hauteur),\
 pygame.RESIZABLE)	# A MODIFIER
-		print(C.largeur)
-		print(C.hauteur)
 		self._resolution_h = resolution_h
 		self._resolution_l = resolution_l
 		# Taille d'une case en hauteur et largeur
-		print( C.largeur, C.nb_cases_l)
 		self._scale_l = C.largeur/C.nb_cases_h
 		self._scale_h = C.hauteur/C.nb_cases_l
 		pygame.display.set_caption("Tower Defense")
@@ -32,12 +29,7 @@ pygame.RESIZABLE)	# A MODIFIER
 	def ajouter_element(self, nom_image, position, C):
 		element = pygame.image.load(nom_image).convert_alpha()
 		(a,b) = position
-		if not "background" in nom_image and not "GameOver" in nom_image \
-		and not "menu_bas" in nom_image and not "balle" in nom_image and \
-		not "arbre" in nom_image and not "tour" in nom_image and not \
-		"base_state1" in nom_image:
-			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
-		elif "balle" in nom_image:
+		if "balle" in nom_image:
 			None
 		elif "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
 			element = pygame.transform.scale(element, (self._scale_l, self._scale_h*2))
@@ -46,6 +38,12 @@ pygame.RESIZABLE)	# A MODIFIER
 			element = pygame.transform.scale(element, (self._resolution_l, self._resolution_h))
 		elif "menu_bas" in nom_image:
 			element = pygame.transform.scale(element, (self._resolution_l, int(self._resolution_h*0.2)))
+		elif "dragon" in nom_image:
+			element = pygame.transform.scale(element, (self._scale_l*2, self._scale_h*2))
+			a-=self._scale_h
+			b-=self._scale_l
+		else:
+			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
 		self._fenetre.blit(element, (a,b))
 
 	def affichage_terrain(self, C):

@@ -12,8 +12,8 @@ def is_over(carte):
 
 def main():
 	# RESOLUTION A RENTRER AUTREMENT
-	res_h = 620
-	res_l = 1200
+	res_h = 1080
+	res_l = 1920
 	pygame.init()
 	En_jeu = 0
 	MJ = MenuJeu()

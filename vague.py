@@ -9,8 +9,8 @@ class Vague(object):
     correspond à une pause et une apparation d'aucun ennemis.
     actualise est la réelle utilité de Vague, elle renvoie les ennemis à créer.
      """
-    def __init__(self, nb_ennemis = 4, max_wave = 2):
-        self._nb_type_ennemis = 4
+    def __init__(self, nb_ennemis = 7, max_wave = 2):
+        self._nb_type_ennemis = nb_ennemis
         self._id_vague = 1
         self._nb_ennemis = [ExtractIntFromFile("vague.csv",self.get_id(),col) \
         for col in range(1,self._nb_type_ennemis+2)]
