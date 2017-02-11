@@ -5,7 +5,7 @@ from gestion_fenetre import *
 from tours import *
 
 class Joueur:
-	def __init__(self, argent = 500, score = 0):
+	def __init__(self, argent = 100000, score = 0):
 		self._argent = argent
 		self._score = score
 		self._liste_tours = []
@@ -16,14 +16,16 @@ class Joueur:
 	@property
 	def argent(self):
 		return self._argent
+
 	@property
 	def score(self):
 		return self._score
 
 	def gain_score(self,point):
-		self._score+=point
-	def gain_argent(self,gain):
-		self._argent+= gain
+		self._score +=point
+
+	def gain_argent(self, gain):
+		self._argent += gain
 
 	def actualise_valeurs(self, pos):
 		""" pos = [argent, point_score] """
