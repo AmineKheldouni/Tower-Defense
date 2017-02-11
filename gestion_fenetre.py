@@ -174,9 +174,7 @@ class Carte:
 	def actualise(self):
 		# print("on rentre dans a=la fonction de mise à jour de la carte")
 		#on met à jour la liste des tours
-		self.miseajourliste_tours()
 		#mise à jour de la carte des couts liée aux tours
-		self.miseajour_carte_cout_tours()
 		for pos in self._pos_bases:
 			if(self[pos].actualisation()):
 				self.base_est_morte(pos)
@@ -184,6 +182,7 @@ class Carte:
 		for x in range(self._nb_cases_h):
 			for y in range(self._nb_cases_l):
 				self[(x,y)].actualisation()
+		affiche_tableau(self._cout_chemin)
 
 #Gestion de la carte de cout
 	def rec_actualise_cout_chemin(self, pos_case, vect_voisin, cout_actuel):
@@ -197,15 +196,20 @@ class Carte:
 			if(case_voisin in self):
 				if (self.est_case_chemin(case_voisin,direction)) and \
 				(self.get_cout_case(case_voisin) + self.get_cout_chemin(pos_case) < \
-				self.get_cout_chemin(case_voisin) ):
+				self.get_cout_chemin(case_voisin)):
 					new_cost = self.get_cout_case(case_voisin) + \
 					self.get_cout_chemin(pos_case)
 					self.rec_actualise_cout_chemin(case_voisin, vect_voisin, new_cost )
 
+	def reinitialiser_cout_case(self):
+		for i in range(self._nb_cases_h):
+			for j in range(self._nb_cases_l):
+				self._cout_case[j][i] = 1
+
 	def reinitialiser_cout_chemin(self):
 		for i in range(self._nb_cases_h):
 			for j in range(self._nb_cases_l):
-				self._cout_chemin[j][i] = 1000
+				self._cout_chemin[j][i] = float('inf')
 
 	def actualise_cout_chemin(self):
 		self.reinitialiser_cout_chemin()
@@ -285,26 +289,12 @@ class Carte:
 					liste_voisins.append(case_voisin)
 
 	#fonction qui met à jour la liste des tours dans la carte
-	def miseajourliste_tours(self):
-		for x in range(0,self.nb_cases_h):
-			for y in range(0,self._nb_cases_l):
-				# print(" on rentre dans la fonction mise a jour des listes de tours")
-				if((self[(x,y)].type_objet=="tour") and (self[x,y] not in \
-				self._liste_tours_actuelle) ):
-					self._liste_tours_a_actualise.append((self[x,y],(x,y)))
-
-	#permet de mettre à jour la carte des couts en fonction des bases
-	def miseajour_carte_cout_tours(self):
-		liste_tours=self._liste_tours_a_actualise
-		for (tour,coord) in liste_tours:
-			if(tour._vie!=0):
-				portee=tour._portee
-				(pos_x,pos_y)=coord
-				for i in range(-portee,portee+1,1):
-					for j in range(-portee,portee+1,1):
-						#print(self.get_cout_case((pos_x+i,pos_y+j)))
-						if((pos_x+i>=0) and ((pos_x+i)<self.nb_cases_h) and (pos_y+j>=0) \
-						and ((pos_y+j)<self.nb_cases_l)):
-							self.set_cout_case((pos_x+i,pos_y+j),tour.degat)
-			self._liste_tours_actuelle.append(tour)
-		self._liste_tours_a_actualise=[]
+	# def miseajourliste_tours(self):
+	# 	for x in range(0,self.nb_cases_h):
+	# 		for y in range(0,self._nb_cases_l):
+	# 			# print(" on rentre dans la fonction mise a jour des listes de tours")
+	# 			if((self[(x,y)].type_objet=="tour") and (self[x,y] not in \
+	# 			self._liste_tours_actuelle) ):
+	# 				self._liste_tours_a_actualise.append((self[x,y],(x,y)))
+	#
+	# #permet de mettre à jour la carte des couts en fonction des bases

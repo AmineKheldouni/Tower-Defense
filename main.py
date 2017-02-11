@@ -106,6 +106,7 @@ def main():
 
 				F.affiche_all(C,A)
 				C.actualise()
+				J.miseajour_carte_cout_tours(C)
 				F.gestion_menu(C)
 				if etat_jeu == "play" or etat_jeu == "accelerate":
 

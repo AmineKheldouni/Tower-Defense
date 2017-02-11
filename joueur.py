@@ -64,3 +64,18 @@ class Joueur:
 			return True
 		else:
 			return False
+
+	def miseajour_carte_cout_tours(self, carte):
+		carte.reinitialiser_cout_case()
+		for tour in self._liste_tours:
+			if(tour._munitions>0):
+				portee=tour._portee
+				print(portee)
+				(pos_x,pos_y)=carte.objet_dans_case(tour._position)
+				for i in range(-portee,portee+1,1):
+					for j in range(-portee,portee+1,1):
+						pos = (pos_x+i, pos_y+j)
+						if pos in carte:
+							carte.set_cout_case(pos,carte.get_cout_case(pos)+tour._degat*tour._vitesse)
+		carte.actualise_cout_chemin()
+		affiche_tableau(carte._cout_chemin)
