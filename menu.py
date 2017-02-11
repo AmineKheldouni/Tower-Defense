@@ -73,12 +73,12 @@ class Menu(object):
         self._dict_play = None
         self._etat_play = "play"
 
-    def objet_dans_case(self, objet_position, C):
+    def objet_dans_case(self, objet_position, hauteur):
 		""" Retourne les coordonnees de la case de l'objet """
 		pas_l = int(self.largeur/self.nb_cases_l)
 		pas_h = int(self.hauteur/self.nb_cases_h)
 		return (objet_position[0]//pas_l, (objet_position[1]-\
-        C.hauteur)//pas_h)
+        hauteur)//pas_h)
 
     def positionner_objet(self, pos_case, C):
 		a = int(pos_case[0]*self.largeur/self.nb_cases_l)
@@ -116,8 +116,7 @@ class Menu(object):
     	# Affichage des vies des bases
     	pos_vie = []
     	for i in range(len(C._pos_bases)):
-    		pos_vie.append(C.positionner_objet((C.\
-            nb_cases_l-len(C._pos_bases)+i, 0)))
+    		pos_vie.append(C.positionner_objet(  (C.nb_cases_h - len(C._pos_bases) + i, 0)))
     	for i in range(len(C._pos_bases)):
             b = C.get_base(i)
             if b._vie > b.vie_depart/2:
@@ -132,8 +131,8 @@ class Menu(object):
 
         # Boutons play/pause
         pos_x, pos_y = pos_vie[0]
-        pix_x = C.largeur/C.nb_cases_l
-        pix_y = C.hauteur/C.nb_cases_h
+        pix_x = C.largeur/C.nb_cases_h
+        pix_y = C.hauteur/C.nb_cases_l
         pos_y += pix_y
         self._dict_play = {
                         "images/interface/play.png":  (pos_x,pos_y),
@@ -177,9 +176,12 @@ class Menu(object):
     def maj_menu(self, event, C, Vue=None):
         if event !=None and event.type == MOUSEBUTTONDOWN and event.button==1:
             pos_x, pos_y = C.objet_dans_case(event.pos)
+            if((pos_x,pos_y) in C):
+                C[pos_x,pos_y]._tapis = 5 #Test pour voir sur quelle case je clique
             if (pos_x,pos_y) in C and C.get_type_case((pos_x,pos_y)) == "tour":
                 pos_case_tour = (pos_x, pos_y)
                 for i in range(len(self._joueur.liste_tours)):
+                    print(pos_case_tour, C.objet_dans_case(self._joueur.liste_tours[i]._position))
                     if pos_case_tour == C.objet_dans_case(self._joueur.\
                     liste_tours[i]._position):
                         self._index_objet = i
@@ -272,7 +274,7 @@ class Menu(object):
     def boutons(self, Vue, C):
         if (self._etat == "tour" or self._etat == "base") and \
         self._index_objet != None:
-            pos_bouton_ameliorer= self.positionner_objet((35,2), C)
+            pos_bouton_ameliorer = self.positionner_objet((35,2), C)
             pos_bouton_entretenir= self.positionner_objet((45,2), C)
             if (self._etat == "tour"):
                 elt = self._joueur.liste_tours[self._index_objet]
@@ -327,12 +329,12 @@ class Menu(object):
     def interaction(self, event, Vue, C):
         if event != None and event.type == MOUSEBUTTONDOWN:
             pos_x, pos_y = event.pos
-            pos_x, pos_y = self.objet_dans_case((pos_x, pos_y), C)
+            pos_x, pos_y = self.objet_dans_case((pos_x, pos_y), C.hauteur)
             if self._dict_boutons != None:
                 if self._etat == "tour":
                     for b in self._dict_boutons.keys():
                         pos_boutton = self.objet_dans_case(\
-                        self._dict_boutons[b][1], C)
+                        self._dict_boutons[b][1], C.hauteur)
                         if (pos_x,pos_y) in self and abs(pos_x-pos_boutton[0]\
                         -1)<3 and abs(pos_y-pos_boutton[1]-1)<3:
                             if b == "ameliorer":
@@ -344,7 +346,7 @@ class Menu(object):
                 if self._etat == "place_construction":
                     for b in self._dict_boutons.keys():
                         pos_boutton = self.objet_dans_case(\
-                        self._dict_boutons[b][1], C)
+                        self._dict_boutons[b][1], C.hauteur)
                         if (pos_x,pos_y) in self and abs(pos_x-pos_boutton[0]\
                         -1)<4 and abs(pos_y-pos_boutton[1]-1)<4:
                             for i in range(3):

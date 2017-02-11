@@ -126,11 +126,13 @@ class Carte:
 		""" Retourne les coordonnées de la case de l'objet """
 		pas_l = int(self.largeur/self.nb_cases_h)
 		pas_h = int(self.hauteur/self.nb_cases_l)
-		return (objet_position[0]//pas_l, objet_position[1]//pas_h)
+		a = int(objet_position[0]*self._nb_cases_h/self._largeur)
+		b = int(objet_position[1]*self._nb_cases_l/self._hauteur)
+		return (a,b)
 
 	def positionner_objet(self, pos_case):
-		a = int(pos_case[0]*self.largeur/self.nb_cases_h)
-		b = int(pos_case[1]*self.hauteur/self.nb_cases_l)
+		a = int(pos_case[0]*self.largeur/self.nb_cases_h)+1
+		b = int(pos_case[1]*self.hauteur/self.nb_cases_l)+1
 		return (a, b)
 
 	def genere_decor(self,tab_objet):

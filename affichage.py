@@ -53,11 +53,6 @@ pygame.RESIZABLE)	# A MODIFIER
 
 	def affichage_carte(self,carte):
 		""" affiche tapis des cases (chemin par exemple)"""
-		print("------------")
-		print(carte.positionner_objet((50,1)))
-		print(carte.positionner_objet((50,30)))
-		print(carte._hauteur, carte._nb_cases_h)
-		print("----------")
 		for x in range(carte.nb_cases_h):
 			for y in range(carte.nb_cases_l):
 				value_case=carte[(x,y)]._tapis

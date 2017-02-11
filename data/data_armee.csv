@@ -1,5 +1,5 @@
 id,nom,pv,defense,vitesse,attaque,valeur,argent,nom_dossier
-1,Bowser,20,1,60,100,10,10,boss
+1,Bowser,20,1,60,1,10,10,boss
 2,Aquadragon,150,10,35,50,100,50,Aquadragon
 3,Buck,50,1,50,2,30,25,Chocobo
 4,Chef Guerrier,200,1,30,40,1,1,ChefArmee
