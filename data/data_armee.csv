@@ -1,11 +1,11 @@
 id,nom,pv,defense,vitesse,attaque,valeur,argent,nom_dossier
-1,Bowser,20,1,60,1,10,10,boss
-2,Buck,50,1,50,2,30,25,Chocobo
-3,Dark Knight,1000,1,50,10,1,1,BlackKnight
-4,Aquadragon,150,10,50,50,100,50,Aquadragon
-5,Brigand,50,50,50,50,2,1,brigand
-6,Chef Guerrier,200,50,50,40,1,1,ChefArmee
-7,Dragon,400,70,50,10,1,1,dragon
+1,Bowser,20,0,20,2,3,1,boss
+2,Buck,40,0,40,4,10,5,Chocobo
+3,Dark Knight,120,0,25,8,30,15,BlackKnight
+4,Aquadragon,150,0,20,20,100,20,Aquadragon
+5,Brigand,150,0,45,15,100,25,brigand
+6,Chef Guerrier,300,0,25,20,120,40,ChefArmee
+7,Dragon,1000,0,20,85,1000,200,dragon
 8,Loup,100,1,2,20,1,1,Loup
 9,Garuda,1500,100,3,50,1,1,Garuda
 10,Dragon,1000,500,2,80,1,1,Dragon
