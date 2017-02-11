@@ -17,7 +17,7 @@ import numpy.random as rd
 from utils import *
 
 class Carte:
-	def __init__(self,id_carte="cartes_carte1", hauteur=1200, largeur=1850):
+	def __init__(self,id_carte, resolution_h, resolution_l):
 		self._liste_tours_actuelle =[]
 		self._liste_tours_a_actualise=[]
 		self._liste_souces=[]
@@ -25,8 +25,9 @@ class Carte:
 		self._id_carte=id_carte
 		self._nb_cases_h = ExtractIntFromFile(id_carte+".csv",0,1)
 		self._nb_cases_l = ExtractIntFromFile(id_carte+".csv",0,2)
-		self._hauteur = hauteur
-		self._largeur = largeur
+		# Le menu prend les 20% du bas
+		self._hauteur = int(resolution_h*0.8)
+		self._largeur = resolution_l
 		self._pos_sources = []
 		self._cout_chemin=[[ 1000 for i in range(self._nb_cases_h)] for j in \
 		range(self._nb_cases_l)]
@@ -38,7 +39,6 @@ class Carte:
 		self._nb_cases_h)
 		self._cases =  [[ Case( (j,j), tab_carte_objets[i][j], tab_carte[i][j] ) for j in\
 		 range(self._nb_cases_h)] for i in range(self._nb_cases_l)]
-
 		dico_nom_id=DicoFromFile("cartes_legend2.csv",2,16,1,0)
 		dico_name_to_id_graph=DicoFromFile("cartes_legend2.csv",2,16,1,2)
 		for i in range(0,self.nb_cases_l):
@@ -124,13 +124,13 @@ class Carte:
 
 	def objet_dans_case(self, objet_position):
 		""" Retourne les coordonnées de la case de l'objet """
-		pas_l = int(self.largeur/self.nb_cases_l)
-		pas_h = int(self.hauteur/self.nb_cases_h)
+		pas_l = int(self.largeur/self.nb_cases_h)
+		pas_h = int(self.hauteur/self.nb_cases_l)
 		return (objet_position[0]//pas_l, objet_position[1]//pas_h)
 
 	def positionner_objet(self, pos_case):
-		a = int(pos_case[0]*self.largeur/self.nb_cases_l)
-		b = int(pos_case[1]*self.hauteur/self.nb_cases_h)
+		a = int(pos_case[0]*self.largeur/self.nb_cases_h)
+		b = int(pos_case[1]*self.hauteur/self.nb_cases_l)
 		return (a, b)
 
 	def genere_decor(self,tab_objet):

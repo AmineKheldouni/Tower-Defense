@@ -59,15 +59,15 @@ class MenuJeu:
         pygame.display.flip()
 
 class Menu(object):
-    def __init__(self, joueur, largeur):
+    def __init__(self, joueur, resolution_l, resolution_h):
         self._etat = None
         self._index_objet = None
         self._dict_infos= None
         self._joueur = joueur
         self.nb_cases_l = 50
         self.nb_cases_h = 6
-        self.hauteur = 150
-        self.largeur = largeur
+        self.hauteur = int(resolution_h*0.2)
+        self.largeur = resolution_l
         self._dict_boutons= None
         self._dernier_click = None
         self._dict_play = None

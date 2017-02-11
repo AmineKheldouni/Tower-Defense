@@ -1,5 +1,5 @@
 id,nb_ennemis_max, pauses,Bowser,Serpent,Chocobo,Chevalier, nb_ennemis_max
-1,50,1,10,3,4,10
+1,1000,100,0,0,0,10
 2,50,15,0,0,0,10
 3,150,50,20,2,0,20
 4,600,150,50,10,1,30

@@ -108,7 +108,6 @@ def enter_new_score(player, player_score):
             for row in reader:     # iterate over the rows in the file
                 new_row = row      # at first, just copy the row
                 if( int(add_row[2]) > int(new_row[2]) ):
-                    print("hello")
                     pivot_row = [new_row[0], new_row[1], new_row[2]]
                     new_row = [new_row[0], add_row[1], add_row[2]]
                     add_row = [pivot_row[0], pivot_row[1] ,pivot_row[2]]

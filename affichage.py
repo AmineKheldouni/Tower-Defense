@@ -1,25 +1,28 @@
 #!/usr/bin/python
 #encoding: utf8
 
+
 from joueur import *
 from menu import *
 from csvuser import *
 
 class Affichage_fenetre:
-	def __init__(self, joueur, C):
+	def __init__(self, joueur, C, resolution_l, resolution_h):
 		self.dico_carte=DicoFromFile("cartes_legend.csv",2,7,1,2)
 		self.dico_carte_object=DicoFromFile("cartes_legend2.csv",2,16,1,2)
-		self._tableau_type_armee = [1]
+		# self._tableau_type_armee = [1]
 		self._joueur = joueur
-		self._menu = Menu(self._joueur, C.largeur)
+		self._menu = Menu(self._joueur, resolution_l, resolution_h)
 		self._fenetre = pygame.display.set_mode((C.largeur, C.hauteur+self._menu.hauteur),\
-		pygame.RESIZABLE)	# A MODIFIER
+pygame.RESIZABLE)	# A MODIFIER
 		print(C.largeur)
 		print(C.hauteur)
-		self._resolution_h = C.hauteur
-		self._resolution_l = C.largeur
-		self._scale_l = C.largeur/C.nb_cases_l
-		self._scale_h = C.hauteur/C.nb_cases_h
+		self._resolution_h = resolution_h
+		self._resolution_l = resolution_l
+		# Taille d'une case en hauteur et largeur
+		print( C.largeur, C.nb_cases_l)
+		self._scale_l = C.largeur/C.nb_cases_h
+		self._scale_h = C.hauteur/C.nb_cases_l
 		pygame.display.set_caption("Tower Defense")
 
 	@property
@@ -28,29 +31,37 @@ class Affichage_fenetre:
 
 	def ajouter_element(self, nom_image, position, C):
 		element = pygame.image.load(nom_image).convert_alpha()
+		(a,b) = position
 		if not "background" in nom_image and not "GameOver" in nom_image \
 		and not "menu_bas" in nom_image and not "balle" in nom_image and \
 		not "arbre" in nom_image and not "tour" in nom_image and not \
 		"base_state1" in nom_image:
 			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
-			self._fenetre.blit(element, position)
+		elif "balle" in nom_image:
+			None
 		elif "tour" in nom_image or "arbre" in nom_image or "base_state1" in nom_image:
 			element = pygame.transform.scale(element, (self._scale_l, self._scale_h*2))
-			self._fenetre.blit(element, (position[0], position[1]-self._scale_h))
+			b-=self._scale_h
 		elif "background2" in nom_image:
 			element = pygame.transform.scale(element, (self._resolution_l, self._resolution_h))
-			self._fenetre.blit(element, position)
-		else:
-			self._fenetre.blit(element, position)
+		elif "menu_bas" in nom_image:
+			element = pygame.transform.scale(element, (self._resolution_l, int(self._resolution_h*0.2)))
+		self._fenetre.blit(element, (a,b))
 
 	def affichage_terrain(self, C):
 		self.ajouter_element("images/interface/background2.jpg", (0, 0), C)
 
 	def affichage_carte(self,carte):
 		""" affiche tapis des cases (chemin par exemple)"""
+		print("------------")
+		print(carte.positionner_objet((50,1)))
+		print(carte.positionner_objet((50,30)))
+		print(carte._hauteur, carte._nb_cases_h)
+		print("----------")
 		for x in range(carte.nb_cases_h):
 			for y in range(carte.nb_cases_l):
 				value_case=carte[(x,y)]._tapis
+
 				pos = carte.positionner_objet((x,y))
 				if(value_case!=0):
 					self.ajouter_element(self.dico_carte[value_case],pos, carte)
@@ -102,7 +113,7 @@ class Affichage_fenetre:
 			self.ajouter_element("images/tours/balle.png",projectile._position, C)
 
 	def gestion_menu_statique(self, C):
-		pos_menu = C.positionner_objet((0, C.nb_cases_h))
+		pos_menu = C.positionner_objet((0, C.nb_cases_l))
 		self.ajouter_element("images/interface/Menubas/menu_bas3.png", pos_menu, C)
 		self._menu.affichage_menu_haut(self, C)
 		self._menu.menu_statique(self, C)

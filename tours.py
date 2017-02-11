@@ -23,7 +23,7 @@ class Projectile(object):
         self._animation = 5
         position_initiale = position_Tour
         pos_init_case = C.objet_dans_case(position_initiale)
-        position_initiale = C.positionner_objet((pos_init_case[0]+0.5, pos_init_case[1]+1))
+        position_initiale = C.positionner_objet((pos_init_case[0]+0.5, pos_init_case[1]-1))
         self._position = position_initiale
         self._id = id_projectile
         self._soldat_cible = soldat_cible

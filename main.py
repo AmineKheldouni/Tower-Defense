@@ -11,6 +11,9 @@ def is_over(carte):
 	return True
 
 def main():
+	# RESOLUTION A RENTRER AUTREMENT
+	res_h = 1080
+	res_l = 1920
 	pygame.init()
 	En_jeu = 0
 	MJ = MenuJeu()
@@ -32,9 +35,9 @@ def main():
 			return 0
 	if En_jeu == "Jouer":
 		#Ouverture de la fenêtre Pygame
-		C = Carte("cartes_carte4")
+		C = Carte("cartes_carte4", res_h, res_l)
 		J = Joueur()
-		F = Affichage_fenetre(J, C)
+		F = Affichage_fenetre(J, C, res_l, res_h)
 		S=[]
 		C.initialiser_carte([0,10,0,20])
 		A = Armee()
