@@ -12,7 +12,9 @@ def is_over(carte):
 
 def duree_jeu():
 	tmp = 1
-	C = Carte("cartes_carte3")
+	res_h = 800
+	res_l = 1600
+	C = Carte("cartes_carte4", res_h, res_l)
 	J = Joueur()
 	S=[]
 	C.initialiser_carte([0,10,0,20])

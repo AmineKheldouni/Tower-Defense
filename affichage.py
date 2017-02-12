@@ -43,7 +43,7 @@ pygame.RESIZABLE)	# A MODIFIER
 			a-=self._scale_h
 			b-=self._scale_l
 		else:
-			element = pygame.transform.scale(element, (self._scale_l, self._scale_h))
+			element = pygame.transform.scale(element, (self._scale_l, self._scale_h+1))
 		self._fenetre.blit(element, (a,b))
 
 	def affichage_terrain(self, C):

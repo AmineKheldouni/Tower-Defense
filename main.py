@@ -12,13 +12,13 @@ def is_over(carte):
 
 def main():
 	# RESOLUTION A RENTRER AUTREMENT
-	res_h = 1080
-	res_l = 1920
+	res_h = 800
+	res_l = 1600
 	pygame.init()
 	En_jeu = 0
 	MJ = MenuJeu()
 	tmp = 1
-	while(En_jeu == 0 and tmp == 1):
+	while(En_jeu != "Jouer" and tmp == 1):
 		MJ.maj_image()
 		for event in pygame.event.get():
 			if event.type == QUIT:

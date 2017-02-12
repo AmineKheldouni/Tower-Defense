@@ -28,34 +28,96 @@ class MenuJeu:
     def maj_menu(self, event=None):
         if event != None and event.type == MOUSEBUTTONDOWN and event.button == 1:
             pos_x, pos_y = event.pos
-            if (pos_x >= 266 and pos_y>= 194 and pos_x < 394 and pos_y < 218):
+            if (pos_x >= 253 and pos_y>= 153 and pos_x < 405 and pos_y < 174):
                 self._etat = "Jouer"
-            elif (pos_x >= 288 and pos_y>= 240 and pos_x < 371 and pos_y < 261):
-                self._etat = "Options"
-            elif (pos_x >= 303 and pos_y>= 292 and pos_x < 352 and pos_y < 310):
+            elif (pos_x >= 258 and pos_y>= 198 and pos_x < 403 and pos_y < 222):
+                self._etat = "Regles"
+            elif (pos_x >= 295 and pos_y>= 250 and pos_x < 376 and pos_y < 271):
+                self._etat = "Scores"
+            elif (pos_x >= 266 and pos_y>= 296 and pos_x < 410 and pos_y < 319):
                 self._etat = "Quit"
+            if (self._etat == "Regles" and ((pos_x >= 47 and pos_y>= 300 and \
+            pos_x < 88 and pos_y < 329) or \
+            (pos_x >= 16 and pos_y >= 328 and pos_x < 88 and pos_y < 350))):
+                self._etat = 0
+            if (self._etat == "Scores" and (pos_x>=34 and pos_y >= 283 \
+            and pos_x < 88 and pos_y < 305) or \
+            (pos_x >= 6 and pos_y >= 305 and pos_x < 71 and pos_y < 332)):
+                self._etat = 0
+
     def maj_image(self):
-        pos_x, pos_y = pygame.mouse.get_pos()
-        if (pos_x >= 266 and pos_y>= 194 and pos_x < 394 and pos_y < 218):
-            image_menu =pygame.image.load("images/Menu/Menu_TD_NewGame.jpg")\
-            .convert_alpha()
-            self._fenetre.fill((0,0,0))
-            self._fenetre.blit(image_menu, (0,0))
-        elif (pos_x >= 288 and pos_y>= 240 and pos_x < 371 and pos_y < 261):
-            image_menu =pygame.image.load("images/Menu/Menu_TD_Options.jpg")\
-            .convert_alpha()
-            self._fenetre.fill((0,0,0))
-            self._fenetre.blit(image_menu, (0,0))
-        elif (pos_x >= 303 and pos_y>= 292 and pos_x < 352 and pos_y < 310):
-                image_menu =pygame.image.load("images/Menu/Menu_TD_Quit.jpg")\
+        if (self._etat == 0):
+            pos_x, pos_y = pygame.mouse.get_pos()
+            if (pos_x >= 253 and pos_y>= 153 and pos_x < 405 and pos_y < 174):
+                image_menu =pygame.image.load("images/Menu/Menu_TD_NewGame.jpg")\
                 .convert_alpha()
-                self._fenetre.fill((0,0,0))
-                self._fenetre.blit(image_menu, (0,0))
-        else:
-            image_menu =pygame.image.load("images/Menu/Menu_TD.jpg")\
-            .convert_alpha()
+            elif (pos_x >= 288 and pos_y>= 198 and pos_x < 403 and pos_y < 222):
+                image_menu =pygame.image.load("images/Menu/Menu_TD_Options.jpg")\
+                .convert_alpha()
+            elif (pos_x >= 295 and pos_y>= 250 and pos_x < 376 and pos_y < 271):
+                image_menu =pygame.image.load("images/Menu/Menu_TD_Scores.jpg")\
+                .convert_alpha()
+            elif (pos_x >= 303 and pos_y>= 296 and pos_x < 410 and pos_y < 319):
+                    image_menu =pygame.image.load("images/Menu/Menu_TD_Quit.jpg")\
+                    .convert_alpha()
+            else:
+                image_menu =pygame.image.load("images/Menu/Menu_TD.jpg")\
+                .convert_alpha()
             self._fenetre.fill((0,0,0))
             self._fenetre.blit(image_menu, (0,0))
+            pygame.display.flip()
+
+        elif (self._etat == "Regles"):
+            pos = pygame.mouse.get_pos()
+            pos_x, pos_y = pos
+            if ((pos_x >= 47 and pos_y>= 300 and pos_x < 88 and pos_y < 329) or \
+            (pos_x >= 16 and pos_y >= 328 and pos_x < 88 and pos_y < 350)):
+                image_menu =pygame.image.load(\
+                "images/Menu/TD_reglesjeu_clic.jpg").convert_alpha()
+            else:
+                image_menu =pygame.image.load(\
+                "images/Menu/TD_reglesjeu.jpg").convert_alpha()
+            self._fenetre.fill((0,0,0))
+            self._fenetre.blit(image_menu, (0,0))
+            pygame.display.flip()
+
+        elif (self._etat == "Scores"):
+            self.menu_scores()
+
+    def menu_scores(self):
+        self._fenetre.fill((0,0,0))
+        player=""
+        score = -1
+        font =  pygame.font.Font("Blacksword.otf",12)
+        font_titre = pygame.font.Font("Blacksword.otf",26)
+        font_soustitre = pygame.font.Font("Blacksword.otf",16)
+        h = 360
+        l = 640
+        scores = give_score()
+        txt = font_titre.render("Top 10 des meilleurs scores" ,1, (255, 255, 255))
+        self._fenetre.blit(txt,(1.7*l/6,h/15))
+        txt = font_soustitre.render("Classement" ,1, (255, 255, 255))
+        self._fenetre.blit(txt,(l/6,3*h/15))
+        txt = font_soustitre.render("Pseudo" ,1, (255, 255, 255))
+        self._fenetre.blit(txt,(2*l/6,3*h/15))
+        txt = font_soustitre.render("Score" ,1, (255, 255, 255))
+        self._fenetre.blit(txt,(5*l/6,3*h/15))
+        for i  in range(len(scores)):
+            txt = font.render(str(scores[i][0]), 1, (255, 255, 255))
+            self._fenetre.blit(  txt,  (l/6, (i+4)*h/15))
+            txt = font.render(str(scores[i][1]), 1, (255, 255, 255))
+            self._fenetre.blit(  txt,  (2*l/6, (i+4)*h/15))
+            txt = font.render(str(scores[i][2]), 1, (255, 255, 255))
+            self._fenetre.blit(  txt,  (5*l/6, (i+4)*h/15))
+        # Ajout du retour au Menu
+        pos_x, pos_y =  pygame.mouse.get_pos()
+        image_fleche = pygame.image.load("images/Menu/fleche.png")\
+        .convert_alpha()
+        if (pos_x>=34 and pos_y >= 283 and pos_x < 88 and pos_y < 305) or \
+        (pos_x >= 6 and pos_y >= 305 and pos_x < 71 and pos_y < 332):
+            image_fleche = pygame.image.load("images/Menu/fleche_rouge.png")\
+        .convert_alpha()
+        self._fenetre.blit(image_fleche, (0,280))
         pygame.display.flip()
 
 class Menu(object):
