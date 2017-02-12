@@ -145,6 +145,7 @@ class Carte:
 				 self.nb_cases_l-1)
 				while self[(x,y)]._tapis!=0 and self.get_type_case((x,y))!=\
 				"place_construction":
+					print(self.get_type_case((x,y)))
 					x, y = np.random.randint(self.nb_cases_h-1), np.random.randint(\
 					self.nb_cases_l-1)
 				self[(x,y)] = Element_decor((x,y),1000+j+1,0)

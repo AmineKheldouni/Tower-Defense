@@ -176,12 +176,11 @@ class Menu(object):
     def maj_menu(self, event, C, Vue=None):
         if event !=None and event.type == MOUSEBUTTONDOWN and event.button==1:
             pos_x, pos_y = C.objet_dans_case(event.pos)
-            if((pos_x,pos_y) in C):
-                C[pos_x,pos_y]._tapis = 5 #Test pour voir sur quelle case je clique
+            # if((pos_x,pos_y) in C):
+            #     C[pos_x,pos_y]._tapis = 5 #Test pour voir sur quelle case je clique
             if (pos_x,pos_y) in C and C.get_type_case((pos_x,pos_y)) == "tour":
                 pos_case_tour = (pos_x, pos_y)
                 for i in range(len(self._joueur.liste_tours)):
-                    print(pos_case_tour, C.objet_dans_case(self._joueur.liste_tours[i]._position))
                     if pos_case_tour == C.objet_dans_case(self._joueur.\
                     liste_tours[i]._position):
                         self._index_objet = i

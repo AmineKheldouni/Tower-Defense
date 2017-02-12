@@ -8,7 +8,7 @@ from csvuser import *
 
 class Affichage_fenetre:
 	def __init__(self, joueur, C, resolution_l, resolution_h):
-		self.dico_carte=DicoFromFile("cartes_legend.csv",2,7,1,2)
+		self.dico_carte=DicoFromFile("cartes_legend.csv",2,8,1,2)
 		self.dico_carte_object=DicoFromFile("cartes_legend2.csv",2,16,1,2)
 		# self._tableau_type_armee = [1]
 		self._joueur = joueur
