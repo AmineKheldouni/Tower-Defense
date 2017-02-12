@@ -19,9 +19,13 @@ def main():
 	res_h = int(screen.get_height())
 	res_l = int(screen.get_width())
 	pygame.init()
+	pygame.mixer.music.load("musique/musique_partie.wav")
+	music_jeu_menu=pygame.mixer.Sound("musique/musique_menu.wav")
+	music_game_over=pygame.mixer.Sound("musique/musique_gameover.wav")
 	En_jeu = 0
 	MJ = MenuJeu()
 	tmp = 1
+	music_jeu_menu.play()
 	while(En_jeu != "Jouer" and tmp == 1):
 		MJ.maj_image()
 		for event in pygame.event.get():
@@ -38,7 +42,7 @@ def main():
 			print("Sortie du jeu")
 			return 0
 	if En_jeu == "Jouer":
-		#Ouverture de la fenêtre Pygame
+		music_jeu_menu.fadeout(300)
 		C = Carte("cartes_carte4", res_h, res_l)
 		J = Joueur()
 		F = Affichage_fenetre(J, C, res_l, res_h)
@@ -48,7 +52,7 @@ def main():
 		tableau_projectile =[] # Tableau des projectiles
 		continuer = 1
 		clock = pygame.time.Clock()
-
+		pygame.mixer.music.play()
 		F.affichage_terrain(C)
 		last_time = time.time()
 		last_time_proj = time.time()
@@ -58,6 +62,8 @@ def main():
 		etat_jeu = "play"
 		while continuer:
 			if is_over(C):
+				pygame.mixer.music.fadeout(300)
+				music_game_over.play()
 				if not gameover_bool:
 					gameover_bool = True
 				  	#~ disparition

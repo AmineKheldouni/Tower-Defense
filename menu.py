@@ -164,10 +164,10 @@ class Menu(object):
         image_score = pygame.image.load("images/interface/etoile.png")\
         .convert_alpha()
         Vue._fenetre.blit(image_score, pos_image)
-        font_score = pygame.font.Font(None, 50)
+        font_score = pygame.font.Font("HumaneJonson.ttf", 50)
         score_joueur = str(self._joueur._score)
         texte_score = font_score.render(score_joueur, 1, (0, 0, 255))
-        Vue._fenetre.blit(texte_score, (60, pos_image[1]+5))
+        Vue._fenetre.blit(texte_score, (60, pos_image[1]-10))
 
     def __contains__(self, position):
         lig, col = position
@@ -289,12 +289,13 @@ class Menu(object):
     def caracteristiques(self, Vue,C):
         if self._etat == "tour" and self._index_objet!=None:
             # Le menu affiche l'image d'une tour
-            pos_vie=  self.positionner_objet((20,0.757), C)
-            pos_degat= self.positionner_objet((20,1.61), C)
-            pos_portee= self.positionner_objet((20,2.47), C)
-            pos_cout_amelioration= self.positionner_objet((20,3.33), C)
-            pos_cout_entretien= self.positionner_objet((20,4.185), C)
-            pos_munitions = self.positionner_objet((20, 5.04), C)
+            h = float(self.nb_cases_h)/8
+            pos_vie=  self.positionner_objet((20,h), C)
+            pos_degat= self.positionner_objet((20,2*h), C)
+            pos_portee= self.positionner_objet((20,3*h), C)
+            pos_cout_amelioration= self.positionner_objet((20,4*h), C)
+            pos_cout_entretien= self.positionner_objet((20,5*h), C)
+            pos_munitions = self.positionner_objet((20, 6*h), C)
             tour = self._joueur.liste_tours[self._index_objet]
             self._dict_infos = {
                             "vie : ":(pos_vie,tour._vie),
@@ -308,32 +309,26 @@ class Menu(object):
                             }
             if self._dict_infos != None :
                 for d in self._dict_infos.keys():
-                    font_donnee = pygame.font.Font(None, 30)
+                    font_donnee = pygame.font.Font("HumaneJonson.ttf", 30)
                     text_donnee = font_donnee.render(d+" "+str(\
                     self._dict_infos[d][1]), 1, (255, 255, 255))
                     Vue._fenetre.blit(text_donnee, self._dict_infos[d][0])
 
         if self._etat == "base" and self._index_objet != None :
-            pos_vie= self.positionner_objet((20,0.5), C)
-            pos_cout_entretien= self.positionner_objet((20,2.5), C)
-            pos_cout_amelioration = self.positionner_objet((20,4.5), C)
+            pos_vie= self.positionner_objet((22,2.5), C)
             b = C.get_base(self._index_objet)
             self._dict_infos= {
-                            "vie : ":(pos_vie,b._vie),
-                            "couts d'entretien : ":(pos_cout_entretien, \
-                            b._cout_entretien),
-                            "couts d'amelioration : ":(pos_cout_amelioration, \
-                            b._cout_amelioration)
+                            "points de vie : ":(pos_vie,b._vie)
                             }
             if self._dict_infos != None :
                 for d in self._dict_infos.keys():
-                    font_donnee = pygame.font.Font(None, 30)
+                    font_donnee = pygame.font.Font("HumaneJonson.ttf", 40)
                     text_donnee = font_donnee.render(d+" "+str(\
                     self._dict_infos[d][1]), 1, (255, 255, 255))
                     Vue._fenetre.blit(text_donnee, self._dict_infos[d][0])
 
     def boutons(self, Vue, C):
-        if (self._etat == "tour" or self._etat == "base") and \
+        if (self._etat == "tour") and \
         self._index_objet != None:
             pos_bouton_ameliorer = self.positionner_objet((35,2), C)
             pos_bouton_entretenir= self.positionner_objet((45,2), C)
