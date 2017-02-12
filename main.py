@@ -3,6 +3,8 @@
 
 from test_scores import *
 from affichage import *
+import gtk, pygtk
+
 
 def is_over(carte):
 	for pos in carte._pos_bases:
@@ -12,8 +14,10 @@ def is_over(carte):
 
 def main():
 	# RESOLUTION A RENTRER AUTREMENT
-	res_h = 800
-	res_l = 1600
+	window = gtk.Window()
+	screen = window.get_screen()
+	res_h = int(screen.get_height())
+	res_l = int(screen.get_width())
 	pygame.init()
 	En_jeu = 0
 	MJ = MenuJeu()
