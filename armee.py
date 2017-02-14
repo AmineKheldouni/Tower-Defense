@@ -84,7 +84,7 @@ class Soldat(Objet_Actif):
 		if(len(liste_voisins)==1):
 			chosen_path = 0
 		if(len(liste_voisins)>1):
-			chosen_path  = self.choix_chemin_deterministe(liste_voisins, carte)
+			chosen_path  = self.choix_chemin_pondere(liste_voisins, carte)
 		if len(liste_voisins)>0:
 			self._ancienne_position = self._position
 			self._direction = liste_direction[chosen_path]
@@ -104,16 +104,15 @@ class Soldat(Objet_Actif):
 		return ind
 
 	def pondere_inverse(self, valeur):
-		return 100/(float(valeur*valeur))
+		return 100000/(float(valeur*valeur*valeur))
 
 	def choix_chemin_pondere(self, liste_voisin, carte):
 		ind = 0
 		coef = 0
-		cout = [self.pondere_inverse(carte.get_cout_chemin(liste_voisin[0]))]\
-		*len(liste_voisin)
+		cout = [0]*len(liste_voisin)
+		cout[0]=self.pondere_inverse(carte.get_cout_chemin(liste_voisin[0]))
 		for i in range(1,len(liste_voisin)):
-			cout[i]= cout[i-1]+self.pondere_inverse(carte.get_cout_chemin(\
-			liste_voisin[i]))
+			cout[i]= cout[i-1]+self.pondere_inverse(carte.get_cout_chemin(liste_voisin[i]))
 		value_random = random.uniform(0,cout[len(cout)-1])
 		while(value_random>cout[ind]):
 			ind = ind+1
